@@ -1,68 +1,78 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#User Story
 
-## Available Scripts
+##MVP
 
-In the project directory, you can run:
+User is first directed to home page<br/>
+User can login or register<br/>
+login page asks for users username and password<br/>
+reegister page asks for username and password<br/>
+once user is logged in or registered, user is redirected to the home page<br/>
+user can then have the option to logout instead<br/>
+the home page will have an index of all the murals<br/>
+User can use the search bar to navigate through photos<br/>
+The search bar can be used to search for specific key properties of mural:
+Artist, Affiliation, zipcode<br/>
+which will reduce the index of the murals by that property<br/>
+each mural in index displays a titlle, address, and small image<br/>
+each title is a link to that murals show page<br/>
+specific mural information is displayed to the user:
+Location, Artist, Title, Description, affiliation, year installed, and image(credit for user who posted image)<br/>
+Links To specific index based artist, affiliation, and zipcode on each mural<br/>
 
-### `npm start`
+user would have option to upload a photo to be displayed of mural<br/>
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+##Nice to Haves
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+a map with markers showing locations for each<br/>
+User can create a new mural and uplaod assoicated properties for it<br/>
+Murals are organized by city, expanding who can post a mural<br/>
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##Stretch
+user page to display contributions from that user<br/>
+Organize locations by neighborhoods that can be searched<br/>
+upvote pictures to be the main photo
 
-### `npm run build`
+##Models
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+###Mural<br/>
+{
+  street address,<br/>
+  artist,<br/>
+  artwork title,<br/>
+  art description,<br/>
+  affiliation,<br/>
+  year installed,<br/>
+  latitude,<br/>
+  longitude,<br/>
+  zip,<br/>
+  location description,<br/>
+  image<br/>
+}
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+###User<br/>
+{
+  Username,<br/>
+  Passwrod,<br/>
+  Mural ref,<br/>
+  mural image ref<br/>
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+##Routes
 
-### `npm run eject`
+###User
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+<br/>
+GET (/user/logout) -- logs user out, kills session<br/>
+GET (/user/:id) -- show page for user displays murals a/o images uploaded by user<br/>
+POST (/user/register) -- creates user, starts session<br/>
+POST (/user/login) -- login user, start sesssion<br/>
+DELETE (/user/:id) -- delete specific user and associated posts<br/>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+###Mural
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+GET (/mural) -- list all the murals<br/>
+GET (/mural/:id) -- show page for spacific mural<br/>
+POST (/mural) -- Adds a mural to the list<br/>
+PUT (/mural/:id) -- Update Mural you have created or info youve added to mural<br/>
+DELETE (/mural/:id) -- Delete Mural you have created<br/>
