@@ -1,9 +1,10 @@
 import React from 'react';
 import './App.css';
-import MuralContainer from './MuralContainer';
-import Login from './Login';
+import MuralContainer from './Murals/MuralContainer';
+import Login from './Users/Login';
 import Header from './Header'
-import CreateMural from './CreateMural'
+import CreateMural from './Murals/CreateMural'
+import Register from './Users/Register'
 import { Route, Link, Switch, Redirect } from 'react-router-dom'
 
 const My404 = () => {
@@ -40,6 +41,7 @@ class App extends React.Component {
       this.setState({
         murals: [...this.state.murals, parsedResponse.mural]
       })
+      //redirect to home page...
     }
     catch(error){
       console.log(error);
@@ -57,6 +59,7 @@ class App extends React.Component {
           <Route exact path="/murals/new" render={(props) => 
           <CreateMural {...props} addMural={this.addMural} />} />
           <Route exact path="/users/user/login" component={ Login } />
+          <Route exact path="/users" component={ Register } />
           <Route component={My404} />
         </Switch>
       </main>
