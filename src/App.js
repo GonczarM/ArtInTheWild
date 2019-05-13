@@ -1,15 +1,25 @@
 import React from 'react';
 import './App.css';
 import MuralContainer from './MuralContainer';
+import { Route, Switch } from 'react-router-dom'
 
-class App extends React.Component {
-  render(){
-    return (
-      <div className="App">
-        <MuralContainer/>
-      </div>
-    );
-  }
+const My404 = () => {
+  return(
+    <div>
+      You Are Lost
+    </div>
+  )
+}
+
+const App = () => {
+  return (
+    <main>
+      <Switch>
+        <Route exact path="/murals/home" component={ MuralContainer }/>
+        <Route component={My404} />
+      </Switch>
+    </main>
+  );
 }
 
 export default App;
