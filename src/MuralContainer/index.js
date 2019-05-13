@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Murals from '../MuralsList'
+import CreateMural from '../CreateMural'
 
 class MuralContainer extends Component {
   constructor(){
@@ -9,6 +10,7 @@ class MuralContainer extends Component {
     }
   }
 
+
   componentDidMount(){
     this.getMurals()
   }
@@ -16,7 +18,6 @@ class MuralContainer extends Component {
   getMurals = async () => {
     try{
       const foundMurals = await fetch('http://localhost:9000/murals/home');
-      console.log(foundMurals);
       if(foundMurals.status !== 200){
         throw Error(foundMurals.statusText)
       }
@@ -29,9 +30,32 @@ class MuralContainer extends Component {
     }    
   }
 
+  addMural = async (mural, event) => {
+    event.preventDefault()
+    try{
+      const createdMural = await fetch('http://localhost:9000/murals/', {
+        method: 'POST',
+        body: JSON.stringify(mural),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      })
+      console.log(createdMural);
+      const parsedResponse = await createdMural.json()
+      this.setState({
+        murals: [...this.state.murals, parsedResponse.mural]
+      })
+    }
+    catch(error){
+      console.log(error);
+      return error
+    }
+  }
+
   render(){
     return(
       <div>
+        <CreateMural addMural={this.addMural}/>
         <Murals murals={this.state.murals}/>
       </div>
     )
