@@ -10,6 +10,7 @@ const Murals = (props) => {
 				Address: <span>{mural.address}</span><br/>
 				zipcode: <span>{mural.zipcode}</span><br/>
 				<button onClick={props.deleteMural.bind(null, mural._id)}>Delete</button>
+				<button onClick={props.showModal.bind(null, mural._id)}>Edit</button>
 			</li>
 		);
 	});

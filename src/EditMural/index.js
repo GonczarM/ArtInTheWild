@@ -1,0 +1,124 @@
+import React, { component } from 'react';
+
+const EditMural = (props) => {
+	return(
+		<div>
+			<h4>Edit Movie</h4>
+			<form onSubmit={props.editMural}>
+				<label>
+					Title:
+					<input 
+						type="text" 
+						name="title"
+						onChange={props.updateMural}
+						value={props.muralToEdit.title}
+					/>
+				</label>
+				<br/>
+				<label>
+					Artist:
+					<input
+						type="text"
+						name="artist"
+						onChange={props.updateMural}
+						value={props.muralToEdit.artist}
+					/>
+				</label>
+				<br/>
+				<label>
+					Image:
+					<input
+						type="text"
+						name="image"
+						onChange={props.updateMural}
+						value={props.muralToEdit.image}
+					/>
+				</label>
+				<br/>
+				<label>
+					Description:
+					<input
+						type="text"
+						name="description"
+						onChange={props.updateMural}
+						value={props.muralToEdit.description}
+					/>
+				</label>
+				<br/>
+				<label>
+					Location Description:
+					<input
+						type="text"
+						name="locationDescription"
+						onChange={props.updateMural}
+						value={props.muralToEdit.locationDescription}
+					/>
+				</label>
+				<br/>
+				<label>
+					Year Installed:
+					<input
+						type="number"
+						name="year"
+						onChange={props.updateMural}
+						value={props.muralToEdit.year}
+					/>
+				</label>
+				<br/>
+				<label>
+					Affiliation/Commisioner:
+					<input
+						type="text"
+						name="affiliation"
+						onChange={props.updateMural}
+						value={props.muralToEdit.affiliation}
+					/>
+				</label>
+				<br/>
+				<label>
+					Address:
+					<input
+						type="text"
+						name="address"
+						onChange={props.updateMural}
+						value={props.muralToEdit.address}
+					/>
+				</label>
+				<br/>
+				<label>
+					Zipcode:
+					<input
+						type="number"
+						name="zipcode"
+						onChange={props.updateMural}
+						value={props.muralToEdit.zipcode}
+					/>
+				</label>
+				<br/>
+				<label>
+					Latitude:
+					<input
+						type="number"
+						name="lat"
+						onChange={props.updateMural}
+						value={props.muralToEdit.lat}
+					/>
+				</label>
+				<br/>
+				<label>
+					Longitude:
+					<input
+						type="number"
+						name="lng"
+						onChange={props.updateMural}
+						value={props.muralToEdit.lng}
+					/>
+				</label>
+				<br/>
+				<button>Update Mural</button>
+			</form>
+		</div>
+	)
+}
+
+export default EditMural
