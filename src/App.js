@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.css';
 import MuralContainer from './MuralContainer';
-import { Route, Switch } from 'react-router-dom'
+import Login from './Login';
+import Header from './Header'
+import CreateMural from './CreateMural'
+import { Route, Link, Switch, Redirect } from 'react-router-dom'
 
 const My404 = () => {
   return(
@@ -11,15 +14,54 @@ const My404 = () => {
   )
 }
 
-const App = () => {
-  return (
-    <main>
-      <Switch>
-        <Route exact path="/murals/home" component={ MuralContainer }/>
-        <Route component={My404} />
-      </Switch>
-    </main>
-  );
+class App extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      murals: []
+    }
+  }
+
+  addMural = async (mural, event) => {
+    event.preventDefault()
+    try{
+      const createdMural = await fetch('http://localhost:9000/murals', {
+        credentials: 'include',
+        method: 'POST',
+        body: JSON.stringify(mural),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      })
+      if(createdMural.status !== 200){
+        throw Error(createdMural.statusText)
+      }
+      const parsedResponse = await createdMural.json()
+      this.setState({
+        murals: [...this.state.murals, parsedResponse.mural]
+      })
+    }
+    catch(error){
+      console.log(error);
+      return error
+    }
+  }
+
+  render(){
+    return (
+      <main>
+        <Header/>
+        <Switch>
+          <Route exact path="/murals/home" render={(props) => 
+          <MuralContainer {...props} murals={this.state.murals} />} />
+          <Route exact path="/murals/new" render={(props) => 
+          <CreateMural {...props} addMural={this.addMural} />} />
+          <Route exact path="/users/user/login" component={ Login } />
+          <Route component={My404} />
+        </Switch>
+      </main>
+    );
+  }
 }
 
 export default App;

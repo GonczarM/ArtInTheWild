@@ -9,12 +9,12 @@ class CreateMural extends Component {
 			image: '',
 			description: '',
 			locationDescription: '',
-			year: null,
+			year: '',
 			affiliation: '',
 			address: '',
-			zipcode: null,
-			lat: null,
-			lng: null
+			zipcode: '',
+			lat: '',
+			lng: ''
 		}
 	}
 

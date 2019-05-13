@@ -16,24 +16,27 @@ class MuralContainer extends Component {
         image: '',
         description: '',
         locationDescription: '',
-        year: null,
+        year: '',
         affiliation: '',
         address: '',
-        zipcode: null,
-        lat: null,
-        lng: null
+        zipcode: '',
+        lat: '',
+        lng: ''
       }
     }
   }
 
-
   componentDidMount(){
     this.getMurals()
+    this.state.murals = this.props.murals
   }
 
   getMurals = async () => {
     try{
-      const foundMurals = await fetch('http://localhost:9000/murals/home');
+      const foundMurals = await fetch('http://localhost:9000/murals/home', {
+        credentials: 'include',
+        method: 'GET'
+      });
       if(foundMurals.status !== 200){
         throw Error(foundMurals.statusText)
       }
@@ -46,34 +49,16 @@ class MuralContainer extends Component {
     }    
   }
 
-  addMural = async (mural, event) => {
-    event.preventDefault()
-    try{
-      const createdMural = await fetch('http://localhost:9000/murals/', {
-        method: 'POST',
-        body: JSON.stringify(mural),
-        headers:{
-          'Content-Type': 'application/json'
-        }
-      })
-      console.log(createdMural);
-      const parsedResponse = await createdMural.json()
-      this.setState({
-        murals: [...this.state.murals, parsedResponse.mural]
-      })
-    }
-    catch(error){
-      console.log(error);
-      return error
-    }
-  }
-
   deleteMural = async (id, event) => {
     event.preventDefault()
     try{
       const deleteMural = await fetch('http://localhost:9000/murals/mural/' + id, {
+        credentials: 'include',
         method: 'DELETE'
       })
+      if(deleteMural.status !== 200){
+        throw Error(deleteMural.statusText)
+      }
       const parsedResponse = await deleteMural.json()
       this.setState({
         murals: this.state.murals.filter((mural, i) => mural._id !== id)
@@ -97,12 +82,16 @@ class MuralContainer extends Component {
     event.preventDefault()
     try{
       const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.editMuralId, {
+        credentials: 'include',
         method: 'PUT',
         body: JSON.stringify(this.state.muralToEdit),
         headers:{
           'Content-Type': 'application/json'
         }
       })
+      if(editResponse.status !== 200){
+        throw Error(editResponse.statusText)
+      }
       const parsedResponse = await editResponse.json()
       const editedMuralArray = this.state.murals.map((mural) => {
         if(mural._id === this.state.editMuralId){
@@ -141,7 +130,6 @@ class MuralContainer extends Component {
   render(){
     return(
       <div>
-        <CreateMural addMural={this.addMural}/>
         {this.state.showEdit ? 
           <EditMural 
             editMural={this.editMural} 
