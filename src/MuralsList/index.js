@@ -9,6 +9,7 @@ const Murals = (props) => {
 				Location: <span>{mural.locationDescription}</span><br/>
 				Address: <span>{mural.address}</span><br/>
 				zipcode: <span>{mural.zipcode}</span><br/>
+				<button onClick={props.deleteMural.bind(null, mural._id)}>Delete</button>
 			</li>
 		);
 	});

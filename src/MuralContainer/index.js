@@ -52,11 +52,27 @@ class MuralContainer extends Component {
     }
   }
 
+  deleteMural = async (id, event) => {
+    event.preventDefault()
+    try{
+      const deleteMural = await fetch('http://localhost:9000/murals/mural/' + id, {
+        method: 'DELETE'
+      })
+      const parsedResponse = await deleteMural.json()
+      this.setState({
+        murals: this.state.murals.filter((mural, i) => mural._id !== id)
+      })
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
   render(){
     return(
       <div>
         <CreateMural addMural={this.addMural}/>
-        <Murals murals={this.state.murals}/>
+        <Murals murals={this.state.murals} deleteMural={this.deleteMural}/>
       </div>
     )
   }
