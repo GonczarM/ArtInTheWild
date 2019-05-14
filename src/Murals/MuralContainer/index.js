@@ -3,6 +3,7 @@ import Murals from '../MuralsList'
 import CreateMural from '../CreateMural'
 import EditMural from '../EditMural'
 import MuralSearch from '../MuralSearch'
+import ShowMural from '../ShowMural'
 
 class MuralContainer extends Component {
   constructor(){
@@ -10,9 +11,9 @@ class MuralContainer extends Component {
     this.state = {
       murals: [],
       showEdit: false,
-      showSearch: false,
-      editMuralId: null,
-      muralToEdit: {
+      showMural: false,
+      MuralId: '',
+      mural: {
         title: '',
         artist: '',
         image: '',
@@ -53,7 +54,7 @@ class MuralContainer extends Component {
   searchMurals = async (search, event) => {
     event.preventDefault()
     try{
-      const foundMurals = await fetch(`http://localhost:9000/murals/search/${search.searchTerm}`, {
+      const foundMurals = await fetch(`http://localhost:9000/murals/${search.searchProperty}/${search.searchTerm}`, {
         credentials: 'include',
         method: 'GET'
       })
@@ -92,22 +93,56 @@ class MuralContainer extends Component {
     }
   }
 
-  showModal = (id, event) => {
+  showMuralModal = (id, event) => {
+    console.log('clicked');
+    console.log(id);
+    const muralToShow = this.state.murals.find((mural) => mural._id === id)
+    console.log(muralToShow);
+    this.setState({
+      showMural: true,
+      MuralId: id,
+      mural: muralToShow
+    })
+    console.log(this.state.mural);
+  }
+
+  showEditModal = (id, event) => {
     const muralToEdit = this.state.murals.find((mural) => mural._id === id)
     this.setState({
       showEdit: true,
-      editMuralId: id,
-      muralToEdit: muralToEdit
+      MuralId: id,
+      mural: muralToEdit
     })
+  }
+
+  muralShow = async (event) => {
+    event.preventDefault()
+    try{
+      const showResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.MuralId, {
+        credentials: 'include',
+        methed: 'GET'
+      })
+      if(showResponse.status !== 200){
+        throw Error(showResponse.statusText)
+      }
+      const muralParsed = await showResponse.json()
+      this.setState({
+        mural: muralParsed.mural,
+        showMural: true
+      })
+    }
+    catch(error){
+      console.log(error);
+    }  
   }
 
   editMural = async (event) => {
     event.preventDefault()
     try{
-      const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.editMuralId, {
+      const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.MuralId, {
         credentials: 'include',
         method: 'PUT',
-        body: JSON.stringify(this.state.muralToEdit),
+        body: JSON.stringify(this.state.mural),
         headers:{
           'Content-Type': 'application/json'
         }
@@ -117,7 +152,7 @@ class MuralContainer extends Component {
       }
       const parsedResponse = await editResponse.json()
       const editedMuralArray = this.state.murals.map((mural) => {
-        if(mural._id === this.state.editMuralId){
+        if(mural._id === this.state.MuralId){
           mural.title = parsedResponse.mural.title;
           mural.artist = parsedResponse.mural.artist;
           mural.description = parsedResponse.mural.description
@@ -143,7 +178,7 @@ class MuralContainer extends Component {
 
   updateMural = (event) => {
     this.setState({
-      muralToEdit: {
+      mural: {
         ...this.state.muralToEdit,
         [event.target.name]: event.target.value
       }
@@ -154,11 +189,11 @@ class MuralContainer extends Component {
   render(){
     return(
       <div>
-        {this.state.showEdit ? 
+        {this.state.showEdit ?
           <EditMural 
             editMural={this.editMural} 
             updateMural={this.updateMural} 
-            muralToEdit={this.state.muralToEdit}
+            mural={this.state.mural}
           /> :
           <div>
           <MuralSearch
@@ -167,7 +202,12 @@ class MuralContainer extends Component {
           <Murals 
             murals={this.state.murals} 
             deleteMural={this.deleteMural}
-            showModal={this.showModal}
+            showEditModal={this.showEditModal}
+            showMuralModal={this.showMuralModal}
+          />
+          <ShowMural 
+            mural={this.state.mural}
+            muralShow={this.muralShow}
           />
           </div>
         }

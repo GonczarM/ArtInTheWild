@@ -22,9 +22,10 @@ class MuralSearch extends Component {
 				<form onSubmit={this.props.searchMurals.bind(null, this.state)}>
 					<label>Choose Search Property
 						<select name="searchProperty" onChange={this.updateSearch}>
-							<option>artist</option>
-							<option>affiliation</option>
-							<option>zipcode</option>
+							<option>Choose</option>
+							<option>Artist</option>
+							<option>Affiliation</option>
+							<option>Zipcode</option>
 						</select>
 					</label>
 					<label> Search

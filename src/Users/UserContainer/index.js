@@ -7,9 +7,10 @@
 // 			session: false
 // 		}
 // 	}
+	
 // 	getUser = async () => {
 // 		try{
 // 			const foundUser = await fetch('http://localhost:9000/users/' + id)
 // 		}
 // 	}	
-// }
+// } 

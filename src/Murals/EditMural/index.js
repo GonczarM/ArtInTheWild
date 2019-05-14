@@ -11,7 +11,7 @@ const EditMural = (props) => {
 						type="text" 
 						name="title"
 						onChange={props.updateMural}
-						value={props.muralToEdit.title}
+						value={props.mural.title}
 					/>
 				</label>
 				<br/>
@@ -21,7 +21,7 @@ const EditMural = (props) => {
 						type="text"
 						name="artist"
 						onChange={props.updateMural}
-						value={props.muralToEdit.artist}
+						value={props.mural.artist}
 					/>
 				</label>
 				<br/>
@@ -31,7 +31,7 @@ const EditMural = (props) => {
 						type="text"
 						name="image"
 						onChange={props.updateMural}
-						value={props.muralToEdit.image}
+						value={props.mural.image}
 					/>
 				</label>
 				<br/>
@@ -41,7 +41,7 @@ const EditMural = (props) => {
 						type="text"
 						name="description"
 						onChange={props.updateMural}
-						value={props.muralToEdit.description}
+						value={props.mural.description}
 					/>
 				</label>
 				<br/>
@@ -51,7 +51,7 @@ const EditMural = (props) => {
 						type="text"
 						name="locationDescription"
 						onChange={props.updateMural}
-						value={props.muralToEdit.locationDescription}
+						value={props.mural.locationDescription}
 					/>
 				</label>
 				<br/>
@@ -61,7 +61,7 @@ const EditMural = (props) => {
 						type="number"
 						name="year"
 						onChange={props.updateMural}
-						value={props.muralToEdit.year}
+						value={props.mural.year}
 					/>
 				</label>
 				<br/>
@@ -71,7 +71,7 @@ const EditMural = (props) => {
 						type="text"
 						name="affiliation"
 						onChange={props.updateMural}
-						value={props.muralToEdit.affiliation}
+						value={props.mural.affiliation}
 					/>
 				</label>
 				<br/>
@@ -81,7 +81,7 @@ const EditMural = (props) => {
 						type="text"
 						name="address"
 						onChange={props.updateMural}
-						value={props.muralToEdit.address}
+						value={props.mural.address}
 					/>
 				</label>
 				<br/>
@@ -91,7 +91,7 @@ const EditMural = (props) => {
 						type="number"
 						name="zipcode"
 						onChange={props.updateMural}
-						value={props.muralToEdit.zipcode}
+						value={props.mural.zipcode}
 					/>
 				</label>
 				<br/>
@@ -101,7 +101,7 @@ const EditMural = (props) => {
 						type="number"
 						name="lat"
 						onChange={props.updateMural}
-						value={props.muralToEdit.lat}
+						value={props.mural.lat}
 					/>
 				</label>
 				<br/>
@@ -111,7 +111,7 @@ const EditMural = (props) => {
 						type="number"
 						name="lng"
 						onChange={props.updateMural}
-						value={props.muralToEdit.lng}
+						value={props.mural.lng}
 					/>
 				</label>
 				<br/>
