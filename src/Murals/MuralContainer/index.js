@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Murals from '../MuralsList'
 import CreateMural from '../CreateMural'
 import EditMural from '../EditMural'
+import MuralSearch from '../MuralSearch'
 
 class MuralContainer extends Component {
   constructor(){
@@ -9,6 +10,7 @@ class MuralContainer extends Component {
     this.state = {
       murals: [],
       showEdit: false,
+      showSearch: false,
       editMuralId: null,
       muralToEdit: {
         title: '',
@@ -27,8 +29,7 @@ class MuralContainer extends Component {
   }
 
   componentDidMount(){
-    this.getMurals()
-    this.state.murals = this.props.murals
+    this.getMurals()  
   }
 
   getMurals = async () => {
@@ -47,6 +48,28 @@ class MuralContainer extends Component {
       console.log(error);
       return error
     }    
+  }
+
+  searchMurals = async (search, event) => {
+    event.preventDefault()
+    try{
+      const foundMurals = await fetch(`http://localhost:9000/murals/search/${search.searchTerm}`, {
+        credentials: 'include',
+        method: 'GET'
+      })
+      if(foundMurals.status !== 200){
+        throw Error(foundMurals.statusText)
+      }
+      const muralsParsed = await foundMurals.json()
+      this.setState({
+        murals: muralsParsed.murals,
+        showSearch: true
+      })
+    }
+    catch(error){
+      console.log(error);
+      return error
+    }
   }
 
   deleteMural = async (id, event) => {
@@ -127,6 +150,7 @@ class MuralContainer extends Component {
     })
   }
 
+
   render(){
     return(
       <div>
@@ -136,11 +160,16 @@ class MuralContainer extends Component {
             updateMural={this.updateMural} 
             muralToEdit={this.state.muralToEdit}
           /> :
+          <div>
+          <MuralSearch
+            searchMurals={this.searchMurals}
+          />
           <Murals 
             murals={this.state.murals} 
             deleteMural={this.deleteMural}
             showModal={this.showModal}
           />
+          </div>
         }
       </div>
     )
