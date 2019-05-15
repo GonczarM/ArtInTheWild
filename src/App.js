@@ -26,7 +26,6 @@ class App extends React.Component {
   addMural = async (mural, event) => {
     event.preventDefault()
     try{
-      console.log(process.env.REACT_APP_BACKEND_URL + '/murals');
       const createdMural = await 
       fetch(process.env.REACT_APP_BACKEND_URL + '/murals', {
         credentials: 'include',

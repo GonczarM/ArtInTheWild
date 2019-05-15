@@ -22,12 +22,11 @@ class Register extends React.Component {
 			method: 'POST',
 			credentials: 'include',
 			body: JSON.stringify(this.state),
-			headers:{
+			headers: {
 				'Content-Type': 'application/json'
 			}
 		})
 		const parsedResponse = await registerResponse.json();
-		console.log(parsedResponse);
 		if(parsedResponse.session.loggedIn){
 			this.props.history.push('/murals/home');
 		}

@@ -30,28 +30,25 @@ class Header extends React.Component {
 	}
 
   	render(){
-  		let button;
-  		let login;
-  		let register;
+  		let loginLogout;
+  		let registerUser;
   		if (this.state.isLoggedIn) {
-     	 	button = <button onClick=
+     	 	loginLogout = <button onClick=
      	 	{this.handleLogoutClick}>Logout</button>;
+     	 	registerUser = <Link to='/users/user'>User</Link>
     	} 
     	else {
-      		button = <Link onClick=
+      		loginLogout = <Link onClick=
       		{this.handleLoginClick} to='/users/user/login'>Login</Link>
-      		register = <Link to='/users'>Register</Link>
-      		
-      		
-
+      		registerUser = <Link to='/users'>Register</Link>
     	}
 		return(
 			<header>
 				<ul>
 					<li><Link to='/murals/home'>Home</Link></li>
 					<li><Link to='/murals/new'>Create Mural</Link></li>
-					<li>{button}</li>
-					<li>{register}</li>
+					<li>{registerUser}</li>
+					<li>{loginLogout}</li>
 				</ul>
 			</header>	
 		)
