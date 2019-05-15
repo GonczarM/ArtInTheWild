@@ -15,6 +15,7 @@ const User = (props) => {
 		<div>
 			<h4>Show User</h4>
 			Username: <span>{props.userObj.user.username}</span>
+			<button onClick={props.deleteUser.bind(null, props.userObj.user._id)}>Delete</button>
 			<ul>{userMurals}</ul>
 		</div>
 	)

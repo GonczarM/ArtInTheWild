@@ -101,6 +101,27 @@ class MuralContainer extends React.Component {
     }
   }
 
+  deleteUser = async (id, event) => {
+    console.log('hitting deleteUser');
+    event.preventDefault()
+    try{
+      const deleteUser = await
+      fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/' + id, {
+        credentials: 'include',
+        method: 'DELETE'
+      })
+      if(deleteUser.status !== 200){
+        throw Error(deleteUser.statusText)
+      }
+      const parsedResponse = await deleteUser.json()
+      console.log(parsedResponse);
+    }
+    catch(error){
+      console.log(error);
+      return error
+    }
+  }
+
   editMural = async (event) => {
     event.preventDefault()
     try{
@@ -162,7 +183,6 @@ class MuralContainer extends React.Component {
   }
 
   showUserModal = async (id, event) => {
-
     const mural = this.state.murals.find((mural) => mural._id === id)
     event.preventDefault()
     try{
@@ -184,7 +204,6 @@ class MuralContainer extends React.Component {
       console.log(error);
       return error
     }
-  
   }
 
   updateMural = (event) => {
@@ -228,6 +247,7 @@ class MuralContainer extends React.Component {
     if(this.state.showUser){
       user = <UserShow
           userObj={this.state.userObj}
+          deleteUser={this.deleteUser}
         />
       list = ''
     }

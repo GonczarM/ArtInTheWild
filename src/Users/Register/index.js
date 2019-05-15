@@ -17,18 +17,24 @@ class Register extends React.Component {
 
 	handleRegister = async (event) => {
 		event.preventDefault()
-		const registerResponse = await 
-		fetch(process.env.REACT_APP_BACKEND_URL + '/users', {
-			method: 'POST',
-			credentials: 'include',
-			body: JSON.stringify(this.state),
-			headers: {
-				'Content-Type': 'application/json'
+		try{
+			const registerResponse = await 
+			fetch(process.env.REACT_APP_BACKEND_URL + '/users', {
+				method: 'POST',
+				credentials: 'include',
+				body: JSON.stringify(this.state),
+				headers:{
+					'Content-Type': 'application/json'
+				}
+			})
+			const parsedResponse = await registerResponse.json();
+			if(parsedResponse.session.loggedIn){
+				this.props.history.push('/murals/home');
 			}
-		})
-		const parsedResponse = await registerResponse.json();
-		if(parsedResponse.session.loggedIn){
-			this.props.history.push('/murals/home');
+		}
+		catch(error){
+			console.log(error);
+			return error
 		}
 	}
 

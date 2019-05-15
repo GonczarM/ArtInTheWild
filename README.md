@@ -63,16 +63,16 @@ upvote pictures to be the main photo
 ###User
 
 <br/>
-GET (/user/logout) -- logs user out, kills session<br/>
+GET (/logout) -- logs user out, kills session<br/>
 GET (/user/:id) -- show page for user displays murals a/o images uploaded by user<br/>
-POST (/user/register) -- creates user, starts session<br/>
+POST (/) -- creates user, starts session<br/>
 POST (/user/login) -- login user, start sesssion<br/>
 DELETE (/user/:id) -- delete specific user and associated posts<br/>
 
 ###Mural
 
-GET (/mural) -- list all the murals<br/>
-GET (/mural/:id) -- show page for spacific mural<br/>
-POST (/mural) -- Adds a mural to the list<br/>
+GET (/home) -- list all the murals<br/>
+GET (/:property/:term) -- Search specific mural list by term<br/>
+POST (/) -- Adds a mural to the list<br/>
 PUT (/mural/:id) -- Update Mural you have created or info youve added to mural<br/>
 DELETE (/mural/:id) -- Delete Mural you have created<br/>
