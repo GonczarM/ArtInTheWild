@@ -40,7 +40,7 @@ class MuralContainer extends React.Component {
   getMurals = async () => {
     try{
       const foundMurals = await 
-      fetch('http://localhost:9000/murals/home', {
+      fetch(process.env.REACT_APP_BACKEND_URL + '/murals/home', {
         credentials: 'include',
         method: 'GET'
       });
@@ -60,7 +60,7 @@ class MuralContainer extends React.Component {
     event.preventDefault()
     try{
       const foundMurals = await 
-      fetch(`http://localhost:9000/murals/${search.searchProperty}/${search.searchTerm}`, {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/murals/${search.searchProperty}/${search.searchTerm}`, {
         credentials: 'include',
         method: 'GET'
       })
@@ -84,7 +84,7 @@ class MuralContainer extends React.Component {
     event.preventDefault()
     try{
       const showResponse = await
-      fetch('http://localhost:9000/users/' + this.state.muralId, {
+      fetch(process.env.REACT_APP_BACKEND_URL + '/users/' + this.state.muralId, {
         credentials: 'include',
         method: 'GET'
       })
@@ -103,7 +103,7 @@ class MuralContainer extends React.Component {
     event.preventDefault()
     try{
       const deleteMural = await 
-      fetch('http://localhost:9000/murals/mural/' + id, {
+      fetch(process.env.REACT_APP_BACKEND_URL + '/murals/mural/' + id, {
         credentials: 'include',
         method: 'DELETE'
       })
@@ -124,7 +124,7 @@ class MuralContainer extends React.Component {
     event.preventDefault()
     try{
       const editResponse = await 
-      fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
+      fetch(process.env.REACT_APP_BACKEND_URL + '/murals/mural/' + this.state.muralId, {
         credentials: 'include',
         method: 'PUT',
         body: JSON.stringify(this.state.mural),
