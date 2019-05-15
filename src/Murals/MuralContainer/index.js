@@ -184,29 +184,38 @@ class MuralContainer extends Component {
   }
 
   render(){
+    let edit;
+    let mural;
+    let search = <MuralSearch
+            searchMurals={this.searchMurals}
+          />
+    let list = <Murals 
+            murals={this.state.murals} 
+            deleteMural={this.deleteMural}
+            showModal={this.showModal}
+          />
+    if(this.state.showEdit){
+      edit = <EditMural 
+          editMural={this.editMural} 
+          updateMural={this.updateMural} 
+          muralToEdit={this.state.muralToEdit}
+        />
+      search = ''
+      list = ''
+    }
+    if(this.state.showMural){
+      mural = <ShowMural 
+          muralShowId={this.state.muralShowId}
+          muralShow={this.muralShow}
+        />
+        list = '' 
+    }
     return(
       <div>
-        {this.state.showMural ?
-            <ShowMural 
-              muralShowId={this.state.muralShowId}
-              muralShow={this.muralShow}
-            /> 
-            : this.state.showEdit ?
-            <EditMural 
-              editMural={this.editMural} 
-              updateMural={this.updateMural} 
-              mural={this.state.mural}
-            />
-            : <MuralSearch
-              searchMurals={this.searchMurals}
-            />
-            <Murals 
-              murals={this.state.murals} 
-              deleteMural={this.deleteMural}
-              showEditModal={this.showEditModal}
-              showMuralModal={this.showMuralModal}
-            />         
-        }
+        {edit}
+        {search}
+        {mural}
+        {list}
       </div>
     )
   }
