@@ -7,7 +7,7 @@ class Header extends React.Component {
 		this.handleLoginClick = this.handleLoginClick.bind(this);
     	this.handleLogoutClick = this.handleLogoutClick.bind(this);
     	this.state = {
-    		isLoggedIn: false
+    		isLoggedIn: false,
     		user: ''
     	};
 	}
