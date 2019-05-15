@@ -152,25 +152,29 @@ class MuralContainer extends Component {
 
 
   render(){
-    return(
-      <div>
-        {this.state.showEdit ? 
-          <EditMural 
-            editMural={this.editMural} 
-            updateMural={this.updateMural} 
-            muralToEdit={this.state.muralToEdit}
-          /> :
-          <div>
-          <MuralSearch
+    let edit;
+    let search = <MuralSearch
             searchMurals={this.searchMurals}
           />
-          <Murals 
+    let list = <Murals 
             murals={this.state.murals} 
             deleteMural={this.deleteMural}
             showModal={this.showModal}
           />
-          </div>
-        }
+    if(this.state.showEdit){
+      edit = <EditMural 
+          editMural={this.editMural} 
+          updateMural={this.updateMural} 
+          muralToEdit={this.state.muralToEdit}
+        />
+      search = ''
+      list = ''
+    }
+    return(
+      <div>
+        {edit}
+        {search}
+        {list}
       </div>
     )
   }
