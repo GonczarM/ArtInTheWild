@@ -20,7 +20,7 @@ class Header extends React.Component {
 
   	handleLogoutClick = async () => {
   		const logoutResponse = await 
-  		fetch('http://localhost:9000/users/logout', {
+  		fetch(process.env.REACT_APP_BACKEND_URL + '/users/logout', {
   			method: "GET",
   			credentials: 'include'
   		})
