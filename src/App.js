@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import MuralContainer from './Murals/MuralContainer';
+import HomeContainer from './Murals/HomeContainer';
 import Login from './Users/Login';
 import Header from './Header'
 import CreateMural from './Murals/CreateMural'
@@ -55,7 +55,7 @@ class App extends React.Component {
         <Header/>
         <Switch>
           <Route exact path="/murals/home" render={(props) => 
-          <MuralContainer {...props} murals={this.state.murals} />} />
+          <HomeContainer {...props} murals={this.state.murals} />} />
           <Route exact path="/murals/new" render={(props) => 
           <CreateMural {...props} addMural={this.addMural} />} />
           <Route exact path="/users/user/login" component={ Login } />

@@ -1,19 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Murals from '../MuralsList'
 import CreateMural from '../CreateMural'
 import EditMural from '../EditMural'
 import MuralSearch from '../MuralSearch'
 import ShowMural from '../ShowMural'
+import UserShow from '../../Users/UserShow'
 
-class MuralContainer extends Component {
+class MuralContainer extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       murals: [],
       showEdit: false,
       showMural: false,
+      showUser: false,
       muralObj: {},
       muralId: '',
+      userId: '',
       mural: {
         title: '',
         artist: '',
@@ -36,7 +39,8 @@ class MuralContainer extends Component {
 
   getMurals = async () => {
     try{
-      const foundMurals = await fetch('http://localhost:9000/murals/home', {
+      const foundMurals = await 
+      fetch('http://localhost:9000/murals/home', {
         credentials: 'include',
         method: 'GET'
       });
@@ -55,7 +59,8 @@ class MuralContainer extends Component {
   searchMurals = async (search, event) => {
     event.preventDefault()
     try{
-      const foundMurals = await fetch(`http://localhost:9000/murals/${search.searchProperty}/${search.searchTerm}`, {
+      const foundMurals = await 
+      fetch(`http://localhost:9000/murals/${search.searchProperty}/${search.searchTerm}`, {
         credentials: 'include',
         method: 'GET'
       })
@@ -74,10 +79,31 @@ class MuralContainer extends Component {
     }
   }
 
+  userShow = async (event) => {
+    console.log('hitting userShow');
+    event.preventDefault()
+    try{
+      const showResponse = await
+      fetch('http://localhost:9000/users/' + this.state.muralId, {
+        credentials: 'include',
+        method: 'GET'
+      })
+      if(showResponse.status !==200){
+        throw Error(showResponse.statusText)
+      }
+      const userParsed = await showResponse.json()
+      console.log(userParsed);
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
   deleteMural = async (id, event) => {
     event.preventDefault()
     try{
-      const deleteMural = await fetch('http://localhost:9000/murals/mural/' + id, {
+      const deleteMural = await 
+      fetch('http://localhost:9000/murals/mural/' + id, {
         credentials: 'include',
         method: 'DELETE'
       })
@@ -94,49 +120,11 @@ class MuralContainer extends Component {
     }
   }
 
-  showMuralModal = (id, event) => {
-    const muralToShow = this.state.murals.find((mural) => mural._id === id)
-    this.setState({
-      showMural: true,
-      muralId: id,
-      muralObj: muralToShow
-    })
-  }
-
-  showEditModal = (id, event) => {
-    const muralToEdit = this.state.murals.find((mural) => mural._id === id)
-    this.setState({
-      showEdit: true,
-      muralId: id,
-      mural: muralToEdit
-    })
-  }
-
-  muralShow = async (event) => {
-    event.preventDefault()
-    try{
-      const showResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
-        credentials: 'include',
-        methed: 'GET'
-      })
-      if(showResponse.status !== 200){
-        throw Error(showResponse.statusText)
-      }
-      const muralParsed = await showResponse.json()
-      this.setState({
-        muralShow: muralParsed.mural,
-        showMural: false
-      })
-    }
-    catch(error){
-      console.log(error);
-    }  
-  }
-
   editMural = async (event) => {
     event.preventDefault()
     try{
-      const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
+      const editResponse = await 
+      fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
         credentials: 'include',
         method: 'PUT',
         body: JSON.stringify(this.state.mural),
@@ -173,6 +161,34 @@ class MuralContainer extends Component {
     }
   }
 
+  showMuralModal = (id, event) => {
+    const muralToShow = this.state.murals.find((mural) => mural._id === id)
+    this.setState({
+      showMural: true,
+      muralId: id,
+      muralObj: muralToShow
+    })
+  }
+
+  showEditModal = (id, event) => {
+    const muralToEdit = this.state.murals.find((mural) => mural._id === id)
+    this.setState({
+      showEdit: true,
+      muralId: id,
+      mural: muralToEdit
+    })
+  }
+
+  showUserModal = (id, event) => {
+    const mural = this.state.murals.find((mural) => mural._id === id)
+    this.setState({
+      showUser: true,
+      muralId: id
+    })
+    console.log(mural);
+    console.log(this.state.showUser);
+  }
+
   updateMural = (event) => {
     this.setState({
       mural: {
@@ -185,6 +201,7 @@ class MuralContainer extends Component {
   render(){
     let edit;
     let mural;
+    let user;
     let search = <MuralSearch
             searchMurals={this.searchMurals}
           />
@@ -192,7 +209,7 @@ class MuralContainer extends Component {
             murals={this.state.murals}            
             showMuralModal={this.showMuralModal}
           />
-    if(this.state.showEdit === true && this.state.showMural === true){
+    if(this.state.showEdit){
       edit = <EditMural 
           editMural={this.editMural} 
           updateMural={this.updateMural} 
@@ -204,11 +221,17 @@ class MuralContainer extends Component {
     if(this.state.showMural){
       mural = <ShowMural 
           muralObj={this.state.muralObj}
-          muralShow={this.muralShow}
           showEditModal={this.showEditModal}
           deleteMural={this.deleteMural}
+          showUserModal={this.showUserModal}
         />
         list = '' 
+    }
+    if(this.state.showUser){
+      user = <UserShow
+          userShow={this.userShow}
+        />
+      list = ''
     }
     return(
       <div>

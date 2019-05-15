@@ -4,7 +4,7 @@ const Murals = (props) => {
 	const muralsList = props.murals.map(mural => {
 		return(
 			<li key={mural._id}>
-				Title: <span>{mural.title}</span>
+				Title: <span>{mural.title}</span><br/>
 				Artist: <span>{mural.artist}</span><br/>
 				Image: <span>{mural.image}</span><br/>
 				Location: <span>{mural.locationDescription}</span><br/>

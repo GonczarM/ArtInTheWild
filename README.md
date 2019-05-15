@@ -76,24 +76,3 @@ GET (/mural/:id) -- show page for spacific mural<br/>
 POST (/mural) -- Adds a mural to the list<br/>
 PUT (/mural/:id) -- Update Mural you have created or info youve added to mural<br/>
 DELETE (/mural/:id) -- Delete Mural you have created<br/>
-
-       <div>
-        {this.state.showEdit ?
-          <EditMural 
-            editMural={this.editMural} 
-            updateMural={this.updateMural} 
-            mural={this.state.mural}
-          /> :
-          <div>
-            <MuralSearch
-              searchMurals={this.searchMurals}
-            />
-            <Murals 
-              murals={this.state.murals} 
-              deleteMural={this.deleteMural}
-              showEditModal={this.showEditModal}
-              showMuralModal={this.showMuralModal}
-            />
-          </div>
-        }
-      </div>

@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-class Login extends Component {
+class Login extends React.Component {
 	constructor(){
 		super()
 		this.state = {
@@ -29,7 +29,7 @@ class Login extends Component {
 		if(parsedResponse.session.loggedIn){
 			this.props.history.push('/murals/home');
 		}
-		console.log(parsedResponse.session.loggedIn);
+		console.log(parsedResponse.session);
 	}
 
 	render(){

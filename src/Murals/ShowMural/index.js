@@ -35,6 +35,7 @@ class ShowMural extends React.Component {
 				Longitude: <span>{this.state.Longitude}</span><br/>
 				<button onClick={this.props.deleteMural.bind(null, this.props.muralObj._id)}>Delete</button>
 				<button onClick={this.props.showEditModal.bind(null, this.props.muralObj._id)}>Edit</button>
+				<button onClick={this.props.showUserModal.bind(null, this.props.muralObj._id)}>User</button>
 			</div>
 		)
 	}
