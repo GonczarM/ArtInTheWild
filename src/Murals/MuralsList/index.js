@@ -5,13 +5,12 @@ const Murals = (props) => {
 		return(
 			<li key={mural._id}>
 				Title: <span>{mural.title}</span>
-				<button onClick={props.showMuralModal.bind(null, mural._id)}>Show</button><br/>
 				Artist: <span>{mural.artist}</span><br/>
+				Image: <span>{mural.image}</span><br/>
 				Location: <span>{mural.locationDescription}</span><br/>
-				Address: <span>{mural.address}</span>
-				<span>{mural.zipcode}</span><br/>
-				<button onClick={props.deleteMural.bind(null, mural._id)}>Delete</button>
-				<button onClick={props.showEditModal.bind(null, mural._id)}>Edit</button>
+				Address: <span>{mural.address}</span><br/>
+				Zipcode: <span>{mural.zipcode}</span><br/>
+				<button onClick={props.showMuralModal.bind(null, mural._id)}>Show</button><br/>			
 			</li>
 		);
 	});

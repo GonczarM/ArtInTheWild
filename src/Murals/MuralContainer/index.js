@@ -6,13 +6,13 @@ import MuralSearch from '../MuralSearch'
 import ShowMural from '../ShowMural'
 
 class MuralContainer extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       murals: [],
       showEdit: false,
       showMural: false,
-      muralShowId: {},
+      muralObj: {},
       muralId: '',
       mural: {
         title: '',
@@ -99,7 +99,7 @@ class MuralContainer extends Component {
     this.setState({
       showMural: true,
       muralId: id,
-      muralShowId: muralToShow
+      muralObj: muralToShow
     })
   }
 
@@ -136,7 +136,6 @@ class MuralContainer extends Component {
   editMural = async (event) => {
     event.preventDefault()
     try{
-      console.log(this.statue.muralId);
       const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
         credentials: 'include',
         method: 'PUT',
@@ -150,7 +149,7 @@ class MuralContainer extends Component {
       }
       const parsedResponse = await editResponse.json()
       const editedMuralArray = this.state.murals.map((mural) => {
-        if(mural._id === this.state.MuralId){
+        if(mural._id === this.state.muralId){
           mural.title = parsedResponse.mural.title;
           mural.artist = parsedResponse.mural.artist;
           mural.description = parsedResponse.mural.description
@@ -177,7 +176,7 @@ class MuralContainer extends Component {
   updateMural = (event) => {
     this.setState({
       mural: {
-        ...this.state.muralToEdit,
+        ...this.state.mural,
         [event.target.name]: event.target.value
       }
     })
@@ -190,23 +189,24 @@ class MuralContainer extends Component {
             searchMurals={this.searchMurals}
           />
     let list = <Murals 
-            murals={this.state.murals} 
-            deleteMural={this.deleteMural}
-            showModal={this.showModal}
+            murals={this.state.murals}            
+            showMuralModal={this.showMuralModal}
           />
-    if(this.state.showEdit){
+    if(this.state.showEdit === true && this.state.showMural === true){
       edit = <EditMural 
           editMural={this.editMural} 
           updateMural={this.updateMural} 
-          muralToEdit={this.state.muralToEdit}
+          mural={this.state.mural}
         />
       search = ''
       list = ''
     }
     if(this.state.showMural){
       mural = <ShowMural 
-          muralShowId={this.state.muralShowId}
+          muralObj={this.state.muralObj}
           muralShow={this.muralShow}
+          showEditModal={this.showEditModal}
+          deleteMural={this.deleteMural}
         />
         list = '' 
     }
