@@ -18,7 +18,7 @@ class Login extends React.Component {
 	handleLogin = async (event) => {
 		event.preventDefault()
 		const loginResponse = await 
-		fetch(process.env.REACT_APP_BACKEND_URL'/users/user/login', {
+		fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/login', {
 			method: 'POST',
 			credentials: 'include',
 			body: JSON.stringify(this.state),
