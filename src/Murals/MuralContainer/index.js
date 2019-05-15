@@ -12,7 +12,8 @@ class MuralContainer extends Component {
       murals: [],
       showEdit: false,
       showMural: false,
-      MuralId: '',
+      muralShowId: {},
+      muralId: '',
       mural: {
         title: '',
         artist: '',
@@ -94,23 +95,19 @@ class MuralContainer extends Component {
   }
 
   showMuralModal = (id, event) => {
-    console.log('clicked');
-    console.log(id);
     const muralToShow = this.state.murals.find((mural) => mural._id === id)
-    console.log(muralToShow);
     this.setState({
       showMural: true,
-      MuralId: id,
-      mural: muralToShow
+      muralId: id,
+      muralShowId: muralToShow
     })
-    console.log(this.state.mural);
   }
 
   showEditModal = (id, event) => {
     const muralToEdit = this.state.murals.find((mural) => mural._id === id)
     this.setState({
       showEdit: true,
-      MuralId: id,
+      muralId: id,
       mural: muralToEdit
     })
   }
@@ -118,7 +115,7 @@ class MuralContainer extends Component {
   muralShow = async (event) => {
     event.preventDefault()
     try{
-      const showResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.MuralId, {
+      const showResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
         credentials: 'include',
         methed: 'GET'
       })
@@ -127,8 +124,8 @@ class MuralContainer extends Component {
       }
       const muralParsed = await showResponse.json()
       this.setState({
-        mural: muralParsed.mural,
-        showMural: true
+        muralShow: muralParsed.mural,
+        showMural: false
       })
     }
     catch(error){
@@ -139,7 +136,8 @@ class MuralContainer extends Component {
   editMural = async (event) => {
     event.preventDefault()
     try{
-      const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.MuralId, {
+      console.log(this.statue.muralId);
+      const editResponse = await fetch('http://localhost:9000/murals/mural/' + this.state.muralId, {
         credentials: 'include',
         method: 'PUT',
         body: JSON.stringify(this.state.mural),
@@ -185,31 +183,29 @@ class MuralContainer extends Component {
     })
   }
 
-
   render(){
     return(
       <div>
-        {this.state.showEdit ?
-          <EditMural 
-            editMural={this.editMural} 
-            updateMural={this.updateMural} 
-            mural={this.state.mural}
-          /> :
-          <div>
-          <MuralSearch
-            searchMurals={this.searchMurals}
-          />
-          <Murals 
-            murals={this.state.murals} 
-            deleteMural={this.deleteMural}
-            showEditModal={this.showEditModal}
-            showMuralModal={this.showMuralModal}
-          />
-          <ShowMural 
-            mural={this.state.mural}
-            muralShow={this.muralShow}
-          />
-          </div>
+        {this.state.showMural ?
+            <ShowMural 
+              muralShowId={this.state.muralShowId}
+              muralShow={this.muralShow}
+            /> 
+            : this.state.showEdit ?
+            <EditMural 
+              editMural={this.editMural} 
+              updateMural={this.updateMural} 
+              mural={this.state.mural}
+            />
+            : <MuralSearch
+              searchMurals={this.searchMurals}
+            />
+            <Murals 
+              murals={this.state.murals} 
+              deleteMural={this.deleteMural}
+              showEditModal={this.showEditModal}
+              showMuralModal={this.showMuralModal}
+            />         
         }
       </div>
     )
