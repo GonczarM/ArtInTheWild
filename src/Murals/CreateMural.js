@@ -4,29 +4,62 @@ class CreateMural extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			title: '',
-			artist: '',
-			image: '',
-			description: '',
-			locationDescription: '',
-			year: '',
-			affiliation: '',
-			address: '',
-			zipcode: '',
-			lat: '',
-			lng: ''
+			murals: [],
+			mural: {
+				title: '',
+				artist: '',
+				image: '',
+				description: '',
+				locationDescription: '',
+				year: '',
+				affiliation: '',
+				address: '',
+				zipcode: '',
+				lat: '',
+				lng: ''
+			}
 		}
 	}
 
 	updateMural = (event) => {
 		this.setState({
-			[event.currentTarget.name]: event.currentTarget.value
+			mural: {
+				...this.state.mural,
+				[event.currentTarget.name]: event.currentTarget.value
+			}
 		})
 	}
 
+	addMural = async (mural, event) => {
+    event.preventDefault()
+    try{
+      const createdMural = await 
+      fetch(process.env.REACT_APP_BACKEND_URL + '/murals', {
+        credentials: 'include',
+        method: 'POST',
+        body: JSON.stringify(mural),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      })
+      if(createdMural.status !== 200){
+        throw Error(createdMural.statusText)
+      }
+      const parsedResponse = await createdMural.json()
+      this.setState({
+        murals: [...this.state.murals, parsedResponse.mural]
+      })
+      this.props.history.push('/murals/home');
+    }
+    catch(error){
+      console.log(error);
+      return error
+    }
+  }
+
 	render(){
 		return(
-			<form onSubmit={this.props.addMural.bind(null, this.state)}>
+			<form onSubmit={this.addMural.bind(null, this.state.mural)}>
 				<label>
 					Title:
 					<input 
