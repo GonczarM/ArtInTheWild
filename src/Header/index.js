@@ -43,7 +43,7 @@ class Header extends React.Component {
       		registerUser = <Link to='/users'>Register</Link>
     	}
 		return(
-			<header>
+			<header className="nav">
 				<ul>
 					<li><Link to='/murals/home'>Home</Link></li>
 					<li><Link to='/murals/new'>Create Mural</Link></li>

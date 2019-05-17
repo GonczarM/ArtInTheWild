@@ -57,29 +57,29 @@ class CreateMural extends React.Component {
     }
   }
 
-  onChange = async (e) => {
-    console.log(e.target);
-    console.log(e.target.files);
-    const files = e.target.files
-    console.log(files);
-    const formData = new FormData()
-    formData.append("file", files[0])
-    const createImage = await 
-    fetch(process.env.REACT_APP_BACKEND_URL + '/murals/image-upload', {
-      method: 'POST',
-      credentials: 'include',
-      body: formData
-    })
-    const parsedResponse = await createImage.json()
-    console.log(parsedResponse);
-    this.setState({ 
-      images: [...this.state.images, parsedResponse[0]]
-    })
-  }
+  // onChange = async (e) => {
+  //   console.log(e.target);
+  //   console.log(e.target.files);
+  //   const files = e.target.files
+  //   console.log(files);
+  //   const formData = new FormData()
+  //   formData.append("file", files[0])
+  //   const createImage = await 
+  //   fetch(process.env.REACT_APP_BACKEND_URL + '/murals/image-upload', {
+  //     method: 'POST',
+  //     credentials: 'include',
+  //     body: formData
+  //   })
+  //   const parsedResponse = await createImage.json()
+  //   console.log(parsedResponse);
+  //   this.setState({ 
+  //     images: [...this.state.images, parsedResponse[0]]
+  //   })
+  // }
 
 	render(){
 		return(
-			<form onSubmit={this.addMural.bind(null, this.state.mural)}>
+			<form className="form" onSubmit={this.addMural.bind(null, this.state.mural)}>
 				<label>
 					Title:
 					<input 

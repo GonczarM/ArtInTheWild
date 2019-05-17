@@ -4,7 +4,7 @@ const EditMural = (props) => {
 	return(
 		<div>
 			<h4>Edit Movie</h4>
-			<form onSubmit={props.editMural}>
+			<form className="form" onSubmit={props.editMural}>
 				<label>
 					Title:
 					<input 
