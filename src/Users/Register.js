@@ -40,7 +40,7 @@ class Register extends React.Component {
 
 	render(){
 		return(
-			<form onSubmit={this.handleRegister}>
+			<form className="form" onSubmit={this.handleRegister}>
 				<label>
 					Username:
 					<input 

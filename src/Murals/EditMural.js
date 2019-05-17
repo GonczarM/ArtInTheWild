@@ -3,7 +3,7 @@ import React from 'react';
 const EditMural = (props) => {
 	return(
 		<div>
-			<h4>Edit Movie</h4>
+			<h4>Edit Mural</h4>
 			<form className="form" onSubmit={props.editMural}>
 				<label>
 					Title:

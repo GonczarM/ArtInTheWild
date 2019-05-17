@@ -1,5 +1,6 @@
 import React from 'react'
 import EditMural from './EditMural'
+import Logo from '../Logo/artInTheWild.jpg'
 
 class ShowMural extends React.Component {
 	constructor(props){
@@ -35,9 +36,6 @@ class ShowMural extends React.Component {
         throw Error(deleteMural.statusText)
       }
       const parsedResponse = await deleteMural.json()
-      // this.setState({
-      //   murals: this.state.murals.filter((mural, i) => mural._id !== id)
-      // })
     }
     catch(error){
       console.log(error);
@@ -46,7 +44,6 @@ class ShowMural extends React.Component {
   }
 
   showUserModal = async (id, event) => {
-  	const mural = this.state.murals.find((mural) => mural._id === id)
   	event.preventDefault()
   	try{
   	  const showResponse = await
@@ -70,11 +67,10 @@ class ShowMural extends React.Component {
   }
 
   showEditModal = (id, event) => {
-  	const muralToEdit = this.state.murals.find((mural) => mural._id === id)
   	this.setState({
   		showEdit: true,
   		muralId: id,
-  		mural: muralToEdit
+  		mural: this.props.muralObj
   	})
   }
 
@@ -131,18 +127,15 @@ class ShowMural extends React.Component {
 
 	render(){
 		let show = <div>
-								<h4>Show Mural</h4>
-								Title: <span>{this.props.muralObj.title}</span><br/>
-								Artist: <span>{this.props.muralObj.artist}</span><br/>
-								Image: <span>{this.props.muralObj.image}</span><br/>
-								Description: <span>{this.props.muralObj.description}</span><br/>
-								Location: <span>{this.props.muralObj.locationDescription}</span><br/>
-								Year: <span>{this.props.muralObj.year}</span><br/>
-								Affiliation: <span>{this.props.muralObj.affiliation}</span><br/>
-								Address: <span>{this.props.muralObj.address}</span><br/>
-								Zipcode: <span>{this.props.muralObj.zipcode}</span><br/>
-								Latitude: <span>{this.props.muralObj.lat}</span><br/>
-								Longitude: <span>{this.props.muralObj.lng}</span><br/>
+								<h2>{this.props.muralObj.title}</h2><br/>
+								<h3>{this.props.muralObj.artist}</h3><br/>
+								<img src={Logo} alt="Picture"/><br/>
+								<span>{this.props.muralObj.description}</span><br/>
+								<span>{this.props.muralObj.locationDescription}</span><br/>
+								<span>{this.props.muralObj.year}</span><br/>
+								<span>{this.props.muralObj.affiliation}</span><br/>
+								<span>{this.props.muralObj.address} </span>
+								<span>{this.props.muralObj.zipcode}</span><br/>
 								<button onClick={this.deleteMural.bind(null, this.props.muralObj._id)}>Delete</button>
 								<button onClick={this.showEditModal.bind(null, this.props.muralObj._id)}>Edit</button>
 								<button onClick={this.showUserModal.bind(null, this.props.muralObj._id)}>User</button>

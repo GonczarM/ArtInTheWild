@@ -2,6 +2,10 @@ ul{
   list-style: none;
 }
 
+body{
+  background-color: lightgray;
+}
+
 a:link, a:visited{
   text-decoration: none;
   color: black;
@@ -29,8 +33,29 @@ a:hover{
 
 
 .search{
-  margin-top: 100px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
+}
+
+img {
+  margin-left: 25%;
+  margin-top: 75px;
+  height: 200px;
+  width: 400px;
+}
+
+.form {
+  width: 400px;
+  background-color: gray;
+  margin: 20px auto;
+  margin-top: 75px;
+  padding: 40px;
+  border-radius: 8px;;
+}
+.form input, .form textarea, .form button, .form p{
+  display: block;
+  margin: 5px auto;
+  width: 200px;
 }
 

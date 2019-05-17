@@ -3,6 +3,7 @@ import Murals from './MuralList'
 import MuralSearch from './MuralSearch'
 import ShowMural from './ShowMural'
 import UserShow from '../Users/UserShow'
+import Logo from '../Logo/artInTheWild.jpg'
 
 class MuralContainer extends React.Component {
   constructor(props){
@@ -94,7 +95,6 @@ class MuralContainer extends React.Component {
   }
 
   render(){
-    let edit;
     let mural;
     let user;
     let search = <MuralSearch
@@ -111,7 +111,8 @@ class MuralContainer extends React.Component {
           deleteMural={this.deleteMural}
           showUserModal={this.showUserModal}
         />
-        list = '' 
+        list = ''
+        search = ''
     }
     if(this.state.showUser){
       user = <UserShow
@@ -119,9 +120,11 @@ class MuralContainer extends React.Component {
           deleteUser={this.deleteUser}
         />
       list = ''
+      search = ''
     }
     return(
-      <div>
+      <div className="home">
+      <img src={Logo}/>
         {search}
         {mural}
         {list}

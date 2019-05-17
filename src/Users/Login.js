@@ -40,7 +40,7 @@ class Login extends React.Component {
 
 	render(){
 		return(
-			<form onSubmit={this.handleLogin}>
+			<form className="form" onSubmit={this.handleLogin}>
 				<label>
 					Username:
 					<input 

@@ -19,9 +19,9 @@ class MuralSearch extends React.Component {
 		return(
 			<div>
 				<form className="search" onSubmit={this.props.searchMurals.bind(null, this.state)}>
-					<label>Search By
+					<label>
 						<select name="searchProperty" onChange={this.updateSearch}>
-							<option>Choose</option>
+							<option>Filter Search</option>
 							<option>Artist</option>
 							<option>Affiliation</option>
 							<option>Zipcode</option>
