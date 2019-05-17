@@ -30,44 +30,17 @@ class CreateMural extends React.Component {
 		})
 	}
 
-	// addMural = async (mural, event) => {
- //    event.preventDefault()
- //    try{
- //      const createdMural = await 
- //      fetch(process.env.REACT_APP_BACKEND_URL + '/murals', {
- //        credentials: 'include',
- //        method: 'POST',
- //        body: JSON.stringify(mural),
- //        headers:{
- //          'Content-Type': 'application/json'
- //        }
- //      })
- //      if(createdMural.status !== 200){
- //        throw Error(createdMural.statusText)
- //      }
- //      const parsedResponse = await createdMural.json()
- //      this.setState({
- //        murals: [...this.state.murals, parsedResponse.mural]
- //      })
- //      this.props.history.push('/murals/home');
- //    }
- //    catch(error){
- //      console.log(error);
- //      return error
- //    }
- //  }
-
-  addMural = async (mural, event) => {
+	addMural = async (mural, event) => {
     event.preventDefault()
     try{
       const createdMural = await 
-      fetch(process.env.REACT_APP_BACKEND_URL + '/murals/seed', {
+      fetch(process.env.REACT_APP_BACKEND_URL + '/murals', {
         credentials: 'include',
         method: 'POST',
-        // body: JSON.stringify(mural),
-        // headers:{
-        //   'Content-Type': 'application/json'
-        // }
+        body: JSON.stringify(mural),
+        headers:{
+          'Content-Type': 'application/json'
+        }
       })
       if(createdMural.status !== 200){
         throw Error(createdMural.statusText)
