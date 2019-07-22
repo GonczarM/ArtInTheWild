@@ -5,6 +5,7 @@ import Login from './Users/Login.js';
 import Header from './Header'
 import CreateMural from './Murals/CreateMural.js'
 import Register from './Users/Register.js'
+import ShowMural from './Murals/ShowMural.js'
 import { Route, Link, Switch, Redirect } from 'react-router-dom'
 
 const My404 = () => {
@@ -26,6 +27,7 @@ class App extends React.Component {
         <Header/>
         <Switch>
           <Route exact path="/murals/home" component={ HomeContainer } />
+          <Route exact path="/mural" component={ ShowMural } />
           <Route exact path="/murals/new" component={ CreateMural } />
           <Route exact path="/users/user/login" component={ Login } />
           <Route exact path="/users" component={ Register } />

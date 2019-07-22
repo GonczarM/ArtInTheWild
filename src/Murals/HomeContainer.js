@@ -4,6 +4,7 @@ import MuralSearch from './MuralSearch'
 import ShowMural from './ShowMural'
 import UserShow from '../Users/UserShow'
 import Logo from '../Logo/artInTheWild.jpg'
+import { Route, Switch } from 'react-router-dom'
 
 class MuralContainer extends React.Component {
   constructor(props){
@@ -92,6 +93,7 @@ class MuralContainer extends React.Component {
       muralId: id,
       muralObj: muralToShow
     })
+    this.props.history.push('/mural')
   }
 
   render(){
@@ -132,6 +134,18 @@ class MuralContainer extends React.Component {
       </div>
     )
   }
+    // return (
+    //   <main>
+    //     <Switch>
+    //       <Route exact path="/search" render={(props) => 
+    //         <MuralSearch{...props} searchMurals={this.searchMurals} />}
+    //       />
+    //       <Route exact path="/mural" render={(props) => 
+    //         <ShowMural {...props} muralObj={this.state.muralObj} />} 
+    //       />
+    //     </Switch>
+    //   </main>
+    // );
 }
 
 export default MuralContainer;
