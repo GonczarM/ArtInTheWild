@@ -1,58 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-class Header extends React.Component {
-	constructor(props){
-		super(props)
-		this.handleLoginClick = this.handleLoginClick.bind(this);
-    	this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    	this.state = {
-    		isLoggedIn: false,
-    		user: ''
-    	};
-	}
-
-	handleLoginClick() {
-	    this.setState({
-	    	isLoggedIn: true
-	    });
+function Header({isLoggedIn, setIsLoggedIn, user}){
+	
+	const handleLoginClick = () => {
+		console.log('login button clicked')
   	}
 
-  	handleLogoutClick = async () => {
-  		const logoutResponse = await 
-  		fetch(process.env.REACT_APP_BACKEND_URL + '/users/logout', {
+  	const handleLogout = async () => {
+  		const logoutResponse = await fetch(
+			process.env.REACT_APP_BACKEND_URL + '/users/logout', 
+			{
   			method: "GET",
-  			credentials: 'include'
-  		})
-	    this.setState({
-	    	isLoggedIn: false
-	    });
+  			}
+		)
+		if(logoutResponse.status !== 200){
+			throw Error(logoutResponse.statusText)
+		}
+		const logoutParsed = await logoutResponse.json()
+		if(logoutParsed.status === 200){
+			setIsLoggedIn(false)
+		}
 	}
 
-  	render(){
-  		let loginLogout;
-  		let registerUser;
-  		if (this.state.isLoggedIn) {
-     	 	loginLogout = <button onClick=
-     	 	{this.handleLogoutClick}>Logout</button>;
-     	 	registerUser = <Link to='/users/user'>User</Link>
-    	} 
-    	else {
-      		loginLogout = <Link onClick=
-      		{this.handleLoginClick} to='/users/user/login'>Login</Link>
-      		registerUser = <Link to='/users'>Register</Link>
-    	}
-		return(
-			<header className="nav">
-				<ul>
-					<li><Link to='/murals/home'>Home</Link></li>
-					<li><Link to='/murals/new'>Create Mural</Link></li>
-					<li>{registerUser}</li>
-					<li>{loginLogout}</li>
-				</ul>
-			</header>	
-		)
-	}
+	return(
+		<header className="nav">
+			<ul>
+				<li><Link to='/home'>Home</Link></li>
+				<li><Link to='/createMural'>Create Mural</Link></li>
+				{isLoggedIn ?
+				<>
+					<li><Link to='user'>{user.username}</Link></li>
+					<li onClick={handleLogout}>Logout</li>
+				</>
+				:
+				<> 
+					<li><Link to='/register'>Register</Link></li>
+					<li><Link to='/login'>Login</Link></li>
+				</>
+				}
+			</ul>
+		</header>	
+	)
 }
 
 export default Header;

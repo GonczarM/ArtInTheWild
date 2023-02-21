@@ -1,35 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-class Register extends React.Component {
-	constructor(){
-		super()
-		this.state = {
-			username: '',
-			password: ''
-		}
+const initialUser = {
+	username: '',
+	password: ''
+}
+
+function Register({setIsLoggedIn, setUser}){
+	const [ form, setForm] = useState(initialUser)
+
+	const navigate = useNavigate()
+
+	const handleChange = (event) => {
+		setForm({ ...form, [event.target.name]: event.target.value})
 	}
 
-	handleChange = (event) => {
-		this.setState({
-			[event.target.name]: event.target.value
-		})
-	}
-
-	handleRegister = async (event) => {
+	const handleRegister = async (event) => {
 		event.preventDefault()
 		try{
 			const registerResponse = await 
-			fetch(process.env.REACT_APP_BACKEND_URL + '/users', {
+			fetch(process.env.REACT_APP_BACKEND_URL + '/users/register', {
 				method: 'POST',
 				credentials: 'include',
-				body: JSON.stringify(this.state),
+				body: JSON.stringify(form),
 				headers:{
 					'Content-Type': 'application/json'
 				}
 			})
 			const parsedResponse = await registerResponse.json();
+			console.log(parsedResponse)
 			if(parsedResponse.session.loggedIn){
-				this.props.history.push('/murals/home');
+				setIsLoggedIn(true)
+				setUser(parsedResponse.user)
+				navigate('/home')
 			}
 		}
 		catch(error){
@@ -38,15 +41,14 @@ class Register extends React.Component {
 		}
 	}
 
-	render(){
 		return(
-			<form className="form" onSubmit={this.handleRegister}>
+			<form className="form" onSubmit={handleRegister}>
 				<label>
 					Username:
 					<input 
 						type="text" 
 						name="username"
-						onChange={this.handleChange}
+						onChange={handleChange}
 					/>
 				</label>
 				<label>
@@ -54,13 +56,12 @@ class Register extends React.Component {
 					<input 
 						type="password" 
 						name="password"
-						onChange={this.handleChange}
+						onChange={handleChange}
 					/>
 				</label>
 				<button>Register</button>
 			</form>
 		)
-	}
 }
 
 export default Register

@@ -1,35 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+const initialUser = {
+	username: '',
+	password: ''
+}
+function Login({setIsLoggedIn, setUser}){
+	const [form, setForm] = useState(initialUser)
 
-class Login extends React.Component {
-	constructor(){
-		super()
-		this.state = {
-			username: '',
-			password: ''
-		}
+	const navigate = useNavigate()
+
+	const handleChange = (event) => {
+		setForm({ ...form, [event.target.name]: event.target.value})
 	}
 
-	handleChange = (event) => {
-		this.setState({
-			[event.target.name]: event.target.value
-		})
-	}
-
-	handleLogin = async (event) => {
+	const handleLogin = async (event) => {
 		event.preventDefault()
 		try{
 			const loginResponse = await 
-			fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/login', {
+			fetch(process.env.REACT_APP_BACKEND_URL + '/users/login', {
 				method: 'POST',
 				credentials: 'include',
-				body: JSON.stringify(this.state),
+				body: JSON.stringify(form),
 				headers:{
 					'Content-Type': 'application/json'
 				}
 			})
 			const parsedResponse = await loginResponse.json()
 			if(parsedResponse.session.loggedIn){
-				this.props.history.push('/murals/home');
+				setIsLoggedIn(true)
+				setUser(parsedResponse.user)
+				navigate('/home');
 			}
 		}
 		catch(error){
@@ -38,15 +38,14 @@ class Login extends React.Component {
     	}
 	}
 
-	render(){
 		return(
-			<form className="form" onSubmit={this.handleLogin}>
+			<form className="form" onSubmit={handleLogin}>
 				<label>
 					Username:
 					<input 
 						type="text" 
 						name="username"
-						onChange={this.handleChange}
+						onChange={handleChange}
 					/>
 				</label>
 				<label>
@@ -54,13 +53,12 @@ class Login extends React.Component {
 					<input 
 						type="password" 
 						name="password"
-						onChange={this.handleChange}
+						onChange={handleChange}
 					/>
 				</label>
 				<button>Login</button>
 			</form>
 		)
-	}
 }
 
 export default Login

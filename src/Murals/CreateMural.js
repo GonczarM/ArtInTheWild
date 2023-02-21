@@ -1,36 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-class CreateMural extends React.Component {
-	constructor(props){
-		super(props);
-		this.state = {
-			murals: [],
-			mural: {
-				title: '',
-				artist: '',
-				image: '',
-				description: '',
-				locationDescription: '',
-				year: '',
-				affiliation: '',
-				address: '',
-				zipcode: '',
-				lat: '',
-				lng: ''
-			}
-		}
+const initialMural = {
+	title: '',
+	artist: '',
+	description: '',
+	locationDescription: '',
+	year: '',
+	lat: '',
+	lng: ''
+}
+
+function CreateMural(props){
+	const [mural, setMural] = useState(initialMural)
+
+	const navigate = useNavigate()
+
+	const updateMural = (event) => {
+		setMural({ ...mural, [event.target.name]: event.target.value})
 	}
 
-	updateMural = (event) => {
-		this.setState({
-			mural: {
-				...this.state.mural,
-				[event.currentTarget.name]: event.currentTarget.value
-			}
-		})
-	}
-
-	addMural = async (mural, event) => {
+	const addMural = async (mural, event) => {
     event.preventDefault()
     try{
       const createdMural = await 
@@ -45,11 +35,10 @@ class CreateMural extends React.Component {
       if(createdMural.status !== 200){
         throw Error(createdMural.statusText)
       }
-      const parsedResponse = await createdMural.json()
-      this.setState({
-        murals: [...this.state.murals, parsedResponse.mural]
-      })
-      this.props.history.push('/murals/home');
+	  else{
+     	const parsedResponse = await createdMural.json()
+      	navigate('/home');
+	  }
     }
     catch(error){
       console.log(error);
@@ -57,37 +46,16 @@ class CreateMural extends React.Component {
     }
   }
 
-  // onChange = async (e) => {
-  //   console.log(e.target);
-  //   console.log(e.target.files);
-  //   const files = e.target.files
-  //   console.log(files);
-  //   const formData = new FormData()
-  //   formData.append("file", files[0])
-  //   const createImage = await 
-  //   fetch(process.env.REACT_APP_BACKEND_URL + '/murals/image-upload', {
-  //     method: 'POST',
-  //     credentials: 'include',
-  //     body: formData
-  //   })
-  //   const parsedResponse = await createImage.json()
-  //   console.log(parsedResponse);
-  //   this.setState({ 
-  //     images: [...this.state.images, parsedResponse[0]]
-  //   })
-  // }
-
-	render(){
 		return(
 			<div>
 				<h4>Create Mural</h4>
-				<form className="form" onSubmit={this.addMural.bind(null, this.state.mural)}>
+				<form className="form" onSubmit={(e) => addMural(mural, e)}>
 					<label>
 						Title:
 						<input 
 							type="text" 
 							name="title"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -96,16 +64,7 @@ class CreateMural extends React.Component {
 						<input
 							type="text"
 							name="artist"
-							onChange={this.updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Image:
-						<input
-							type="file"
-							name="image"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -114,7 +73,7 @@ class CreateMural extends React.Component {
 						<input
 							type="text"
 							name="description"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -123,7 +82,7 @@ class CreateMural extends React.Component {
 						<input
 							type="text"
 							name="locationDescription"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -132,34 +91,7 @@ class CreateMural extends React.Component {
 						<input
 							type="number"
 							name="year"
-							onChange={this.updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Affiliation/Commisioner:
-						<input
-							type="text"
-							name="affiliation"
-							onChange={this.updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Address:
-						<input
-							type="text"
-							name="address"
-							onChange={this.updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Zipcode:
-						<input
-							type="number"
-							name="zipcode"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -168,7 +100,7 @@ class CreateMural extends React.Component {
 						<input
 							type="number"
 							name="lat"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -177,7 +109,7 @@ class CreateMural extends React.Component {
 						<input
 							type="number"
 							name="lng"
-							onChange={this.updateMural}
+							onChange={updateMural}
 						/>
 					</label>
 					<br/>
@@ -185,7 +117,6 @@ class CreateMural extends React.Component {
 				</form>
 			</div>
 		)
-	}
 }
 
 export default CreateMural;
