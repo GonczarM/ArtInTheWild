@@ -19,12 +19,12 @@ function App(){
       <main>
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} />
         <Routes>
-          <Route path="/" element={ <HomeContainer/>} />
+          <Route path="/" element={ <HomeContainer setMural={setMural} />} />
           <Route path="/mural" element={ <ShowMural mural={mural} /> } />
-          <Route path="/createMural" element={ <CreateMural/> } />
+          <Route path="/createMural" element={ <CreateMural setMural={setMural} /> } />
           <Route path="/login" element={ <Login setIsLoggedIn={setIsLoggedIn} setUser={setUser}/> } />
           <Route path="/register" element={ <Register setIsLoggedIn={setIsLoggedIn} setUser={setUser}/> } />
-          <Route path="/user" element={ <UserShow user={user} />} />
+          <Route path="/user" element={ <UserShow user={user} setMural={setMural} />} />
           <Route path='/search' element={ <MuralSearch setMural={setMural} /> } />
         </Routes>
       </main>

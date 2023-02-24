@@ -1,11 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const User = ({user}) => {
+const User = ({user, setMural}) => {
+
+	const navigate = useNavigate()
+
+	const handleClick = (mural) => {
+		setMural(mural)
+		navigate('/mural')
+	}
+
 	const userMurals = user.murals.map((mural) => 
 		<li key={mural._id}>
-			Title: <span>{mural.title}</span><br/>
-			Artist: <span>{mural.artist}</span><br/>
-			Location: <span>{mural.locationDescription}</span><br/>
+			Title: <button onClick={() => handleClick(mural)}>{mural.title}</button><br/>
 		</li>
 	)
 	return(

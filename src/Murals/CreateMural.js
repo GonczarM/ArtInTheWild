@@ -37,7 +37,8 @@ function CreateMural(props){
       }
 	  else{
      	const parsedResponse = await createdMural.json()
-      	navigate('/');
+		props.setMural(parsedResponse.mural)
+      	navigate('/mural');
 	  }
     }
     catch(error){
@@ -78,37 +79,10 @@ function CreateMural(props){
 					</label>
 					<br/>
 					<label>
-						Location Description:
-						<input
-							type="text"
-							name="locationDescription"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
 						Year Installed:
 						<input
 							type="number"
 							name="year"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Latitude:
-						<input
-							type="number"
-							name="lat"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Longitude:
-						<input
-							type="number"
-							name="lng"
 							onChange={updateMural}
 						/>
 					</label>

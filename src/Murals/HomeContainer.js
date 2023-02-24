@@ -104,8 +104,8 @@ function MuralContainer(props){
   //   }
     return(
       <div className="home">
-        <img src={Logo}/>
-        <MuralList murals={murals} />
+        <img src={Logo} alt="logo"/>
+        <MuralList murals={murals} setMural={props.setMural} />
       </div>
     )
 

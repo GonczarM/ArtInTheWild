@@ -108,12 +108,12 @@ function ShowMural({ mural }){
 	console.log(mural)
 	return(
 		<div>
-			<h2>{mural.title}</h2><br/>
-			<h3>{mural.artist}</h3><br/>
-			<span>{mural.description}</span><br/>
-			<span>{mural.locationDescription}</span><br/>
-			<span>{mural.year}</span><br/>
-			<span>{mural.affiliation}</span><br/>
+			<h2>{mural.title || mural.artwork_title}</h2><br/>
+			<h3>{mural.artist || mural.artist_credit}</h3><br/>
+			<span>{mural.description || mural.description_of_artwork}</span><br/>
+			<span>{mural.year || mural.year_installed}</span><br/>
+			<span>{mural.affiliated_or_commissioning}</span><br/>
+			<span>{mural.street_address}</span><br/>
 		</div>
 	)
 	// 	let edit;

@@ -1,9 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Murals = (props) => {
-	const muralsList = props.murals.map((mural, i) => 
+const Murals = ({murals, setMural}) => {
+
+	const navigate = useNavigate()
+
+	const handleClick = (mural) => {
+		setMural(mural)
+		navigate('/mural')
+	}
+
+	const muralsList = murals.map((mural, i) => 
 		<li key={i}>
-			<h2>{mural.artwork_title}</h2><br/>
+			<button onClick={() => handleClick(mural)}>{mural.artwork_title}</button><br/>
 		</li>
 	);
 
