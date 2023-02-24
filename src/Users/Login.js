@@ -29,7 +29,7 @@ function Login({setIsLoggedIn, setUser}){
 			if(parsedResponse.session.loggedIn){
 				setIsLoggedIn(true)
 				setUser(parsedResponse.user)
-				navigate('/home');
+				navigate('/');
 			}
 		}
 		catch(error){

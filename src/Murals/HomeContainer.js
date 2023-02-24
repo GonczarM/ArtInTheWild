@@ -41,28 +41,7 @@ function MuralContainer(props){
     }    
   }
 
-  // searchMurals = async (search, event) => {
-  //   event.preventDefault()
-  //   try{
-  //     const foundMurals = await 
-  //     fetch(`${process.env.REACT_APP_BACKEND_URL}/murals/${search.searchProperty}/${search.searchTerm}`, {
-  //       credentials: 'include',
-  //       method: 'GET'
-  //     })
-  //     if(foundMurals.status !== 200){
-  //       throw Error(foundMurals.statusText)
-  //     }
-  //     const muralsParsed = await foundMurals.json()
-  //     this.setState({
-  //       murals: muralsParsed.murals,
-  //       showSearch: true
-  //     })
-  //   }
-  //   catch(error){
-  //     console.log(error);
-  //     return error
-  //   }
-  // }
+
 
   // deleteUser = async (id, event) => {
   //   console.log('hitting deleteUser');

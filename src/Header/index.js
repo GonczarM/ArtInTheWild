@@ -26,7 +26,7 @@ function Header({isLoggedIn, setIsLoggedIn, user}){
 	return(
 		<header className="nav">
 			<ul>
-				<li><Link to='/home'>Home</Link></li>
+				<li><Link to='/search'>Search</Link></li>
 				<li><Link to='/createMural'>Create Mural</Link></li>
 				{isLoggedIn ?
 				<>

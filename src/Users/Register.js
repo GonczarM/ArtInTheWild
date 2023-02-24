@@ -28,11 +28,10 @@ function Register({setIsLoggedIn, setUser}){
 				}
 			})
 			const parsedResponse = await registerResponse.json();
-			console.log(parsedResponse)
 			if(parsedResponse.session.loggedIn){
 				setIsLoggedIn(true)
 				setUser(parsedResponse.user)
-				navigate('/home')
+				navigate('/')
 			}
 		}
 		catch(error){

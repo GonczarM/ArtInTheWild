@@ -1,44 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-class MuralSearch extends React.Component {
-	constructor(props){
-		super(props);
-		this.state = {
-			searchProperty: '',
-			searchTerm: ''
+function MuralSearch({ setMural }){
+	const [search, setSearch] = useState('')
+
+	const navigate = useNavigate()
+
+	const updateSearch =(event) => {
+		setSearch(event.target.value)
+	}
+
+	const searchMurals = async (event) => {
+		event.preventDefault()
+		try{
+			const foundMurals = await 
+			fetch(`${process.env.REACT_APP_BACKEND_URL}/murals/${search}`, {
+				credentials: 'include',
+				method: 'GET'
+			})
+			if(foundMurals.status !== 200){
+				throw Error(foundMurals.statusText)
+			}
+			const muralsParsed = await foundMurals.json()
+			setMural(muralsParsed.mural)
+			navigate('/mural')
+
 		}
-	}
+		catch(error){
+			console.log(error);
+			return error
+		}
+  	}
 
-	updateSearch =(event) => {
-		this.setState({
-			[event.target.name]: event.target.value
-		})
-	}
 
-	render(){
-		return(
-			<div>
-				<form className="search" onSubmit={this.props.searchMurals.bind(null, this.state)}>
-					<label>
-						<select name="searchProperty" onChange={this.updateSearch}>
-							<option>Filter Search</option>
-							<option>Artist</option>
-							<option>Affiliation</option>
-							<option>Zipcode</option>
-						</select>
-					</label>
-					<label>
-						<input
-							type="text"
-							name="searchTerm"
-							onChange={this.updateSearch}
-						/>
-					</label>
-					<button>Search</button>
-				</form>
-			</div>
-		)
-	}
+	return(
+		<div>
+			<form className="search" onSubmit={searchMurals}>
+				<label>
+					<input
+						type="text"
+						name="search"
+						onChange={updateSearch}
+					/>
+				</label>
+				<button>Search</button>
+			</form>
+		</div>
+	)
 }
 
 export default MuralSearch

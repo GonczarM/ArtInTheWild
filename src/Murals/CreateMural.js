@@ -37,7 +37,7 @@ function CreateMural(props){
       }
 	  else{
      	const parsedResponse = await createdMural.json()
-      	navigate('/home');
+      	navigate('/');
 	  }
     }
     catch(error){
