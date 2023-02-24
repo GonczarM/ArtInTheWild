@@ -1,6 +1,5 @@
 import React from 'react'
-import EditMural from './EditMural'
-import Logo from '../Logo/artInTheWild.jpg'
+// import EditMural from './EditMural'
 
 function ShowMural({ mural }){
 
@@ -24,36 +23,6 @@ function ShowMural({ mural }){
 //     }
 //   }
 
-//   showUserModal = async (id, event) => {
-//   	event.preventDefault()
-//   	try{
-//   	  const showResponse = await
-//   	  fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/' + id, {
-//   	    credentials: 'include',
-//   	    method: 'GET'
-//   	  })
-//   	  if(showResponse.status !==200){
-//   	    throw Error(showResponse.statusText)
-//   	  }
-//   	  const userParsed = await showResponse.json()
-//   	  this.setState({
-//   	    showUser: true,
-//   	    userObj: userParsed
-//   	  })
-//   	}
-//   	catch(error){
-//   	  console.log(error);
-//   	  return error
-//   	}
-//   }
-
-//   showEditModal = (id, event) => {
-//   	this.setState({
-//   		showEdit: true,
-//   		muralId: id,
-//   		mural: this.props.muralObj
-//   	})
-//   }
 
 //   updateMural = (event) => {
 //   	this.setState({
@@ -116,13 +85,6 @@ function ShowMural({ mural }){
 			<span>{mural.street_address}</span><br/>
 		</div>
 	)
-	// 	let edit;
-	// 	if(this.state.showEdit){
-    //   edit = <EditMural 
-    //       editMural={this.editMural} 
-    //       updateMural={this.updateMural} 
-    //       mural={this.state.mural}
-    //     />
 }
 
 export default ShowMural;

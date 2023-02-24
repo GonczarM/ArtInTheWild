@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 const initialUser = {
 	username: '',
 	password: ''
 }
+
 function Login({setIsLoggedIn, setUser}){
 	const [form, setForm] = useState(initialUser)
 
