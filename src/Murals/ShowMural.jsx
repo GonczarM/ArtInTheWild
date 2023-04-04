@@ -7,7 +7,7 @@ function ShowMural({ mural }){
   const handleDelete = async (event) => {
     try{
       const deleteMural = await 
-      fetch(process.env.REACT_APP_BACKEND_URL + '/murals/mural/' + mural._id, {
+      fetch(import.meta.env.VITE_BACKEND_URL + '/murals/mural/' + mural._id, {
         credentials: 'include',
         method: 'DELETE'
       })

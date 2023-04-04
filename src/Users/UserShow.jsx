@@ -5,7 +5,7 @@ const User = ({user, updateMural, logoutUser}) => {
 	const handleDelete = async (event) => {
     try{
       const deleteUser = await
-      fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/' + user._id, {
+      fetch(import.meta.env.VITE_BACKEND_URL + '/users/user/' + user._id, {
         credentials: 'include',
         method: 'DELETE'
       })

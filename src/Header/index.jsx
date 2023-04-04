@@ -7,7 +7,7 @@ function Header({isLoggedIn, logoutUser, user}){
 
 	const handleLogout = async () => {
 		const logoutResponse = await fetch(
-			process.env.REACT_APP_BACKEND_URL + '/users/logout', 
+			import.meta.env.VITE_BACKEND_URL + '/users/logout', 
 			{
 				method: "GET",
 			}

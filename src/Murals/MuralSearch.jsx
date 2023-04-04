@@ -13,7 +13,7 @@ function MuralSearch({updateMural}){
 		event.preventDefault()
 		try{
 			const foundMurals = await 
-			fetch(`${process.env.REACT_APP_BACKEND_URL}/murals/${search}`, {
+			fetch(`${import.meta.env.VITE_BACKEND_URL}/murals/${search}`, {
 				credentials: 'include',
 				method: 'GET'
 			})

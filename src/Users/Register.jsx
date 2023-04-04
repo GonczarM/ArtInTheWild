@@ -16,7 +16,7 @@ function Register({loginUser}){
 		event.preventDefault()
 		try{
 			const registerResponse = await 
-			fetch(process.env.REACT_APP_BACKEND_URL + '/users/register', {
+			fetch(import.meta.env.VITE_BACKEND_URL + '/users/register', {
 				method: 'POST',
 				credentials: 'include',
 				body: JSON.stringify(form),

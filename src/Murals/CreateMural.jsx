@@ -21,7 +21,7 @@ function CreateMural({ updateMural }){
     event.preventDefault()
     try{
       const createdMural = await 
-      fetch(process.env.REACT_APP_BACKEND_URL + '/murals', {
+      fetch(import.meta.env.VITE_BACKEND_URL + '/murals', {
         credentials: 'include',
         method: 'POST',
         body: JSON.stringify(mural),

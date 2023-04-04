@@ -12,7 +12,7 @@ const EditMural = ({mural, updateMural}) => {
     event.preventDefault()
     try{
       const editResponse = await 
-      fetch(process.env.REACT_APP_BACKEND_URL + '/murals/mural/' + mural._id, {
+      fetch(import.meta.env.VITE_BACKEND_URL + '/murals/mural/' + mural._id, {
         credentials: 'include',
         method: 'PUT',
         body: JSON.stringify(editedMural),

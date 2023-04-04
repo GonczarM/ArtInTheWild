@@ -16,7 +16,7 @@ function Login({loginUser}){
 		event.preventDefault()
 		try{
 			const loginResponse = await 
-			fetch(process.env.REACT_APP_BACKEND_URL + '/users/login', {
+			fetch(import.meta.env.VITE_BACKEND_URL + '/users/login', {
 				method: 'POST',
 				credentials: 'include',
 				body: JSON.stringify(form),
