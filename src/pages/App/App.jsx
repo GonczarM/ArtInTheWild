@@ -1,15 +1,16 @@
-import Home from './Murals/Home';
-import Login from './Users/Login';
-import Header from './Header'
-import CreateMural from './Murals/CreateMural'
-import Register from './Users/Register'
-import ShowMural from './Murals/ShowMural'
-import UserShow from './Users/UserShow'
-import MuralSearch from './Murals/MuralSearch';
-import EditMural from './Murals/EditMural'
-import { Route, Routes, useNavigate} from 'react-router-dom'
+import Home from '../Home/Home';
+import Login from '../Login/Login';
+import Header from '../../components/Header/Header';
+import CreateMural from '../CreateMural/CreateMural';
+import Register from '../Register/Register';
+import ShowMural from '../ShowMural/ShowMural';
+import UserShow from '../UserShow/UserShow';
+import MuralSearch from '../MuralSearch/MuralSearch';
+import EditMural from '../EditMural/EditMural';
+import { Route, Routes, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
-import { Container } from 'react-bootstrap'
+import { Container } from 'react-bootstrap';
+import './App.css'
 
 function App(){
 
@@ -25,8 +26,8 @@ function App(){
 	}
 
   const loginUser = (user) => {
-    setIsLoggedIn(true)
     setUser(user)
+    setIsLoggedIn(true)
     navigate('/');
   }
 
@@ -44,22 +45,34 @@ function App(){
       />
       <Routes>
         {/* home */}
-        <Route path="/" element={<Home updateMural={updateMural} />} />
+        <Route path="/" element={<Home 
+          updateMural={updateMural} 
+        />} />
         {/* mural search */}
-        <Route path='/search' element={<MuralSearch updateMural={updateMural} /> } />
+        <Route path='/search' element={<MuralSearch 
+          updateMural={updateMural} 
+        /> } />
         {/* mural show */}
-        <Route path="/mural" element={<ShowMural mural={mural} /> } />
+        <Route path="/mural" element={<ShowMural 
+          mural={mural} 
+        /> } />
         {/* mural create */}
-        <Route path="/createMural" element={<CreateMural updateMural={updateMural} /> } />
+        <Route path="/createMural" element={<CreateMural 
+          updateMural={updateMural} 
+        /> } />
         {/* mural edit */}
         <Route path="/editMural" element={<EditMural 
           mural={mural} 
           updateMural={updateMural}
         /> } />
         {/* user login */}
-        <Route path="/login" element={<Login loginUser={loginUser}/> } />
+        <Route path="/login" element={<Login 
+          loginUser={loginUser} 
+        /> } />
         {/* user register */}
-        <Route path="/register" element={<Register loginUser={loginUser}/> } />
+        <Route path="/register" element={<Register 
+          loginUser={loginUser} 
+        /> } />
         {/* user show */}
         <Route path="/:username" element={<UserShow 
           user={user} 

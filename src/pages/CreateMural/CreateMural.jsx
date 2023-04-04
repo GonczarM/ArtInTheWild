@@ -17,7 +17,7 @@ function CreateMural({ updateMural }){
 		setMural({ ...mural, [event.target.name]: event.target.value})
 	}
 
-	const handleSubmit = async (mural, event) => {
+	const handleSubmit = async (event) => {
     event.preventDefault()
     try{
       const createdMural = await 
@@ -46,7 +46,7 @@ function CreateMural({ updateMural }){
 	return(
 		<div>
 			<h4>Create Mural</h4>
-			<form className="form" onSubmit={(e) => handleSubmit(mural, e)}>
+			<form className="form" onSubmit={handleSubmit}>
 				<label>
 					Title:
 					<input 

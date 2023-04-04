@@ -1,6 +1,6 @@
-import Logo from '../assets/artInTheWild.jpg'
+import Logo from '../../assets/artInTheWild.jpg'
 import React, { useEffect, useState } from 'react';
-import MuralList from './MuralList'
+import MuralList from '../../components/MuralList/MuralList'
 
 function Home({updateMural}){
 

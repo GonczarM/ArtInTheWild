@@ -1,8 +1,8 @@
-import MuralList from '../Murals/MuralList'
+import MuralList from '../../components/MuralList/MuralList'
 
 const User = ({user, updateMural, logoutUser}) => {
 
-	const handleDelete = async (event) => {
+	const handleDelete = async () => {
     try{
       const deleteUser = await
       fetch(import.meta.env.VITE_BACKEND_URL + '/users/user/' + user._id, {

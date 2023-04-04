@@ -4,7 +4,7 @@ function ShowMural({ mural }){
 
 	const navigate = useNavigate()
 
-  const handleDelete = async (event) => {
+  const handleDelete = async () => {
     try{
       const deleteMural = await 
       fetch(import.meta.env.VITE_BACKEND_URL + '/murals/mural/' + mural._id, {

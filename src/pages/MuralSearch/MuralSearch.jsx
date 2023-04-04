@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MuralList from './MuralList'
+import MuralList from '../../components/MuralList/MuralList'
 
 function MuralSearch({updateMural}){
 	const [search, setSearch] = useState('')
