@@ -6,11 +6,6 @@ const User = ({user, setMural, setIsLoggedIn}) => {
 
 	const navigate = useNavigate()
 
-	const handleClick = (mural) => {
-		setMural(mural)
-		navigate('/mural')
-	}
-
 	const handleDelete = async (event) => {
     try{
       const deleteUser = await
