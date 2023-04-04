@@ -7,7 +7,7 @@ import ShowMural from './Murals/ShowMural.js'
 import UserShow from './Users/UserShow'
 import MuralSearch from './Murals/MuralSearch';
 import EditMural from './Murals/EditMural'
-import { Route, Routes} from 'react-router-dom'
+import { Route, Routes, useNavigate} from 'react-router-dom'
 import { useState } from 'react';
 import { Container } from 'react-bootstrap'
 
@@ -17,29 +17,58 @@ function App(){
 	const [user, setUser] = useState({})
   const [mural, setMural] = useState({})
 
-    return (
-      <Container>
-        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} />
-        <Routes>
-          {/* home */}
-          <Route path="/" element={ <Home setMural={setMural} />} />
-          {/* mural search */}
-          <Route path='/search' element={ <MuralSearch setMural={setMural} /> } />
-          {/* mural show */}
-          <Route path="/mural" element={ <ShowMural mural={mural} /> } />
-          {/* mural create */}
-          <Route path="/createMural" element={ <CreateMural setMural={setMural} /> } />
-          {/* mural edit */}
-          <Route path="/editMural" element={ <EditMural mural={mural} setMural={setMural} /> } />
-          {/* user login */}
-          <Route path="/login" element={ <Login setIsLoggedIn={setIsLoggedIn} setUser={setUser}/> } />
-          {/* user register */}
-          <Route path="/register" element={ <Register setIsLoggedIn={setIsLoggedIn} setUser={setUser}/> } />
-          {/* user show */}
-          <Route path="/:username"  element={ <UserShow user={user} setMural={setMural} setIsLoggedIn={setIsLoggedIn} />} />
-        </Routes>
-      </Container>
-    );
+  const navigate = useNavigate()
+
+  const updateMural = (mural) => {
+		setMural(mural)
+		navigate('/mural')
+	}
+
+  const loginUser = (user) => {
+    setIsLoggedIn(true)
+    setUser(user)
+    navigate('/');
+  }
+
+  const logoutUser = () => {
+    setIsLoggedIn(false)
+    navigate('/')
+  }
+
+  return (
+    <Container>
+      <Header 
+        isLoggedIn={isLoggedIn} 
+        logoutUser={logoutUser} 
+        user={user} 
+      />
+      <Routes>
+        {/* home */}
+        <Route path="/" element={<Home updateMural={updateMural} />} />
+        {/* mural search */}
+        <Route path='/search' element={<MuralSearch updateMural={updateMural} /> } />
+        {/* mural show */}
+        <Route path="/mural" element={<ShowMural mural={mural} /> } />
+        {/* mural create */}
+        <Route path="/createMural" element={<CreateMural updateMural={updateMural} /> } />
+        {/* mural edit */}
+        <Route path="/editMural" element={<EditMural 
+          mural={mural} 
+          updateMural={updateMural}
+        /> } />
+        {/* user login */}
+        <Route path="/login" element={<Login loginUser={loginUser}/> } />
+        {/* user register */}
+        <Route path="/register" element={<Register loginUser={loginUser}/> } />
+        {/* user show */}
+        <Route path="/:username" element={<UserShow 
+          user={user} 
+          updateMural={updateMural} 
+          logoutUser={logoutUser} 
+        />} />
+      </Routes>
+    </Container>
+  );
 }
 
 export default App;

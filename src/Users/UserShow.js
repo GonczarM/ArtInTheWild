@@ -1,10 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import MuralList from '../Murals/MuralList'
 
-const User = ({user, setMural, setIsLoggedIn}) => {
-
-	const navigate = useNavigate()
+const User = ({user, updateMural, logoutUser}) => {
 
 	const handleDelete = async (event) => {
     try{
@@ -16,8 +13,7 @@ const User = ({user, setMural, setIsLoggedIn}) => {
       if(deleteUser.status !== 200){
         throw Error(deleteUser.statusText)
       }else{
-        setIsLoggedIn(false)
-        navigate('/')
+        logoutUser()
       }
     }
     catch(error){
@@ -30,7 +26,7 @@ const User = ({user, setMural, setIsLoggedIn}) => {
 		<div>
 			Username: <span>{user.username}</span>
       <button onClick={handleDelete}>Delete {user.username}</button>
-			<MuralList murals={user.murals} setMural={setMural} />
+			<MuralList murals={user.murals} updateMural={updateMural} />
 		</div>
 	)
 }

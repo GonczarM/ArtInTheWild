@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 const initialUser = {
 	username: '',
 	password: ''
 }
 
-function Register({setIsLoggedIn, setUser}){
+function Register({loginUser}){
 	const [ form, setForm] = useState(initialUser)
-
-	const navigate = useNavigate()
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})
@@ -29,9 +26,7 @@ function Register({setIsLoggedIn, setUser}){
 			})
 			const parsedResponse = await registerResponse.json();
 			if(parsedResponse.session.loggedIn){
-				setIsLoggedIn(true)
-				setUser(parsedResponse.user)
-				navigate('/')
+				loginUser(parsedResponse.user)
 			}
 		}
 		catch(error){

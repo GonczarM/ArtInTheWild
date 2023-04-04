@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const initialMural = {
 	title: '',
@@ -11,16 +10,14 @@ const initialMural = {
 	lng: ''
 }
 
-function CreateMural(props){
+function CreateMural({ updateMural }){
 	const [mural, setMural] = useState(initialMural)
 
-	const navigate = useNavigate()
-
-	const updateMural = (event) => {
+	const handleChange = (event) => {
 		setMural({ ...mural, [event.target.name]: event.target.value})
 	}
 
-	const addMural = async (mural, event) => {
+	const handleSubmit = async (mural, event) => {
     event.preventDefault()
     try{
       const createdMural = await 
@@ -37,8 +34,7 @@ function CreateMural(props){
       }
 	  	else{
      		const parsedResponse = await createdMural.json()
-				props.setMural(parsedResponse.mural)
-      	navigate('/mural');
+				updateMural(parsedResponse.mural)
 	  	}
     }
     catch(error){
@@ -50,13 +46,13 @@ function CreateMural(props){
 	return(
 		<div>
 			<h4>Create Mural</h4>
-			<form className="form" onSubmit={(e) => addMural(mural, e)}>
+			<form className="form" onSubmit={(e) => handleSubmit(mural, e)}>
 				<label>
 					Title:
 					<input 
 						type="text" 
 						name="title"
-						onChange={updateMural}
+						onChange={handleChange}
 					/>
 				</label>
 				<br/>
@@ -65,7 +61,7 @@ function CreateMural(props){
 					<input
 						type="text"
 						name="artist"
-						onChange={updateMural}
+						onChange={handleChange}
 					/>
 				</label>
 				<br/>
@@ -74,7 +70,7 @@ function CreateMural(props){
 					<input
 						type="text"
 						name="description"
-						onChange={updateMural}
+						onChange={handleChange}
 					/>
 				</label>
 				<br/>
@@ -83,7 +79,7 @@ function CreateMural(props){
 					<input
 						type="number"
 						name="year"
-						onChange={updateMural}
+						onChange={handleChange}
 					/>
 				</label>
 				<br/>

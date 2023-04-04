@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 
-function Header({isLoggedIn, setIsLoggedIn, user}){
+function Header({isLoggedIn, logoutUser, user}){
 
 	const handleLogout = async () => {
 		const logoutResponse = await fetch(
@@ -15,7 +15,7 @@ function Header({isLoggedIn, setIsLoggedIn, user}){
 		if(logoutResponse.status !== 200){
 			throw Error(logoutResponse.statusText)
 		}else{
-			setIsLoggedIn(false)
+			logoutUser()
 		}
 	}
 

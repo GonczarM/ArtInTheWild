@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MuralList from './MuralList'
 
-function MuralSearch({setMural}){
+function MuralSearch({updateMural}){
 	const [search, setSearch] = useState('')
 	const [murals, setMurals] = useState([])
 
@@ -42,7 +42,7 @@ function MuralSearch({setMural}){
 				</label>
 				<button>Search</button>
 			</form>
-			<MuralList murals={murals} setMural={setMural} />
+			<MuralList murals={murals} updateMural={updateMural} />
 		</div>
 	)
 }

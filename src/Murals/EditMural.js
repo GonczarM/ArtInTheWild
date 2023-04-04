@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-const EditMural = ({mural, setMural}) => {
+const EditMural = ({mural, updateMural}) => {
 
-	const [ editedMural, setEditedMural] = useState(mural)
+	const [editedMural, setEditedMural] = useState(mural)
 
-	const navigate = useNavigate()
-
-	const updateMural = (event) => {
+	const handleChange = (event) => {
 		setEditedMural({...editedMural, [event.target.name]: event.target.value})
 	}
 
-	const editMural = async (event) => {
+	const handleSubmit = async (event) => {
     event.preventDefault()
     try{
       const editResponse = await 
@@ -27,8 +24,7 @@ const EditMural = ({mural, setMural}) => {
         throw Error(editResponse.statusText)
       }
       const parsedResponse = await editResponse.json()
-			setMural(parsedResponse.mural)
-			navigate('/mural')
+			updateMural(parsedResponse.mural)
     }
     catch(error){
       console.log(error);
@@ -39,13 +35,13 @@ const EditMural = ({mural, setMural}) => {
 	return(
 		<div>
 			<h4>Edit Mural</h4>
-			<form className="form" onSubmit={editMural}>
+			<form className="form" onSubmit={handleSubmit}>
 				<label>
 					Title:
 					<input 
 						type="text" 
 						name="title"
-						onChange={updateMural}
+						onChange={handleChange}
 						value={editedMural.title}
 					/>
 				</label>
@@ -55,7 +51,7 @@ const EditMural = ({mural, setMural}) => {
 					<input
 						type="text"
 						name="artist"
-						onChange={updateMural}
+						onChange={handleChange}
 						value={editedMural.artist}
 					/>
 				</label>
@@ -65,7 +61,7 @@ const EditMural = ({mural, setMural}) => {
 					<input
 						type="text"
 						name="description"
-						onChange={updateMural}
+						onChange={handleChange}
 						value={editedMural.description}
 					/>
 				</label>
@@ -75,7 +71,7 @@ const EditMural = ({mural, setMural}) => {
 					<input
 						type="number"
 						name="year"
-						onChange={updateMural}
+						onChange={handleChange}
 						value={editedMural.year}
 					/>
 				</label>

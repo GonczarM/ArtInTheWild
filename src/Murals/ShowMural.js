@@ -1,6 +1,5 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-// import EditMural from './EditMural'
 
 function ShowMural({ mural }){
 
@@ -23,7 +22,6 @@ function ShowMural({ mural }){
       return error
     }
   }
-
 
   const handleEdit = () => {
 		navigate('/editMural')
