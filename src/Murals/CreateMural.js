@@ -35,11 +35,11 @@ function CreateMural(props){
       if(createdMural.status !== 200){
         throw Error(createdMural.statusText)
       }
-	  else{
-     	const parsedResponse = await createdMural.json()
-		props.setMural(parsedResponse.mural)
+	  	else{
+     		const parsedResponse = await createdMural.json()
+				props.setMural(parsedResponse.mural)
       	navigate('/mural');
-	  }
+	  	}
     }
     catch(error){
       console.log(error);
@@ -47,50 +47,50 @@ function CreateMural(props){
     }
   }
 
-		return(
-			<div>
-				<h4>Create Mural</h4>
-				<form className="form" onSubmit={(e) => addMural(mural, e)}>
-					<label>
-						Title:
-						<input 
-							type="text" 
-							name="title"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Artist:
-						<input
-							type="text"
-							name="artist"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Description:
-						<input
-							type="text"
-							name="description"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<label>
-						Year Installed:
-						<input
-							type="number"
-							name="year"
-							onChange={updateMural}
-						/>
-					</label>
-					<br/>
-					<button>Create Mural</button>
-				</form>
-			</div>
-		)
+	return(
+		<div>
+			<h4>Create Mural</h4>
+			<form className="form" onSubmit={(e) => addMural(mural, e)}>
+				<label>
+					Title:
+					<input 
+						type="text" 
+						name="title"
+						onChange={updateMural}
+					/>
+				</label>
+				<br/>
+				<label>
+					Artist:
+					<input
+						type="text"
+						name="artist"
+						onChange={updateMural}
+					/>
+				</label>
+				<br/>
+				<label>
+					Description:
+					<input
+						type="text"
+						name="description"
+						onChange={updateMural}
+					/>
+				</label>
+				<br/>
+				<label>
+					Year Installed:
+					<input
+						type="number"
+						name="year"
+						onChange={updateMural}
+					/>
+				</label>
+				<br/>
+				<button>Create Mural</button>
+			</form>
+		</div>
+	)
 }
 
 export default CreateMural;

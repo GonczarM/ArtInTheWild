@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import MuralList from './MuralList'
 
-function MuralSearch({ setMural }){
+function MuralSearch({setMural}){
 	const [search, setSearch] = useState('')
-
-	const navigate = useNavigate()
+	const [murals, setMurals] = useState([])
 
 	const updateSearch =(event) => {
 		setSearch(event.target.value)
@@ -22,9 +21,7 @@ function MuralSearch({ setMural }){
 				throw Error(foundMurals.statusText)
 			}
 			const muralsParsed = await foundMurals.json()
-			setMural(muralsParsed.mural)
-			navigate('/mural')
-
+			setMurals(muralsParsed.murals)
 		}
 		catch(error){
 			console.log(error);
@@ -45,6 +42,7 @@ function MuralSearch({ setMural }){
 				</label>
 				<button>Search</button>
 			</form>
+			<MuralList murals={murals} setMural={setMural} />
 		</div>
 	)
 }

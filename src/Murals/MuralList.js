@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Murals = ({murals, setMural}) => {
@@ -12,7 +11,7 @@ const Murals = ({murals, setMural}) => {
 
 	const muralsList = murals.map((mural, i) => 
 		<li key={i}>
-			<button onClick={() => handleClick(mural)}>{mural.artwork_title}</button><br/>
+			<button onClick={() => handleClick(mural)}>{mural.title || mural.artwork_title}</button><br/>
 		</li>
 	);
 

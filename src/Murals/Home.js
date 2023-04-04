@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import MuralList from './MuralList'
 import Logo from '../Logo/artInTheWild.jpg'
+import React, { useEffect, useState } from 'react';
+import MuralList from './MuralList'
 
-function MuralContainer(props){
+function Home({setMural}){
+
   const [murals, setMurals] = useState([])
 
   useEffect(() => {
@@ -29,8 +30,8 @@ function MuralContainer(props){
   return(
     <div className="home">
       <img src={Logo} alt="logo"/>
-      <MuralList murals={murals} setMural={props.setMural} />
+      <MuralList murals={murals} setMural={setMural} />
     </div>
   )
 }
-export default MuralContainer;
+export default Home;

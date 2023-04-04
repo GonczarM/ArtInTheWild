@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import MuralList from '../Murals/MuralList'
 
-const User = ({user, setMural}) => {
+const User = ({user, setMural, setIsLoggedIn}) => {
 
 	const navigate = useNavigate()
 
@@ -10,36 +11,31 @@ const User = ({user, setMural}) => {
 		navigate('/mural')
 	}
 
-	  // deleteUser = async (id, event) => {
-  //   console.log('hitting deleteUser');
-  //   event.preventDefault()
-  //   try{
-  //     const deleteUser = await
-  //     fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/' + id, {
-  //       credentials: 'include',
-  //       method: 'DELETE'
-  //     })
-  //     if(deleteUser.status !== 200){
-  //       throw Error(deleteUser.statusText)
-  //     }
-  //     const parsedResponse = await deleteUser.json()
-  //     console.log(parsedResponse);
-  //   }
-  //   catch(error){
-  //     console.log(error);
-  //     return error
-  //   }
-  // }
+	const handleDelete = async (event) => {
+    try{
+      const deleteUser = await
+      fetch(process.env.REACT_APP_BACKEND_URL + '/users/user/' + user._id, {
+        credentials: 'include',
+        method: 'DELETE'
+      })
+      if(deleteUser.status !== 200){
+        throw Error(deleteUser.statusText)
+      }else{
+        setIsLoggedIn(false)
+        navigate('/')
+      }
+    }
+    catch(error){
+      console.log(error);
+      return error
+    }
+  }
 
-	const userMurals = user.murals.map((mural) => 
-		<li key={mural._id}>
-			Title: <button onClick={() => handleClick(mural)}>{mural.title}</button><br/>
-		</li>
-	)
 	return(
 		<div>
 			Username: <span>{user.username}</span>
-			<ul>{userMurals}</ul>
+      <button onClick={handleDelete}>Delete {user.username}</button>
+			<MuralList murals={user.murals} setMural={setMural} />
 		</div>
 	)
 }
