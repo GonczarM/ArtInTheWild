@@ -28,7 +28,7 @@ function Home({updateMural}){
 
   return(
     <div className="home">
-      <img src={Logo} alt="logo"/>
+      {/* <img src={Logo} alt="logo"/> */}
       <MuralList murals={murals} updateMural={updateMural} />
     </div>
   )
