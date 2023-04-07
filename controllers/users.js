@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user')
 const Mural = require('../models/mural')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const ensureLoggedIn = require('../config/ensureLoggedIn');
 
 // user create
@@ -50,16 +51,14 @@ router.get('/:id', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
 	try{
 		const foundUser = await User.findOne({'username': req.body.username})
-		if(foundUser){
-			const token = createJWT(foundUser);
-			res.json(token)
-		}else{
-			res.json({
-				status: 401,
-			})
-		}
+		if (!foundUser) throw new Error();
+		const match = await bcrypt.compare(req.body.password, foundUser.password);
+		if (!match) throw new Error();
+		const token = createJWT(foundUser);
+		res.json(token)
 	}
 	catch(error){
+		console.log(error)
 		res.status(400).json({
 			error: next(error)
 		})
