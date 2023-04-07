@@ -10,13 +10,13 @@ import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import { Container } from 'react-bootstrap';
+import * as userService from '../../utils/users-service';
 import './App.css'
 
 function App(){
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-	const [user, setUser] = useState({})
-  const [mural, setMural] = useState({})
+	const [user, setUser] = useState(userService.getUser())
+  const [mural, setMural] = useState(null)
 
   const navigate = useNavigate()
 
@@ -27,19 +27,18 @@ function App(){
 
   const loginUser = (user) => {
     setUser(user)
-    setIsLoggedIn(true)
     navigate('/');
   }
 
   const logoutUser = () => {
-    setIsLoggedIn(false)
+    userService.logOut()
+    setUser(null)
     navigate('/')
   }
 
   return (
     <Container>
       <Header 
-        isLoggedIn={isLoggedIn} 
         logoutUser={logoutUser} 
         user={user} 
       />
@@ -77,7 +76,6 @@ function App(){
         <Route path="/:username" element={<UserShow 
           user={user} 
           updateMural={updateMural} 
-          logoutUser={logoutUser} 
         />} />
       </Routes>
     </Container>

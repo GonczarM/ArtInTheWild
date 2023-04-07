@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import * as muralsAPI from '../../utils/murals-api'
 
-const initialMural = {
+const initialForm = {
 	title: '',
 	artist: '',
 	description: '',
@@ -11,36 +12,16 @@ const initialMural = {
 }
 
 function CreateMural({ updateMural }){
-	const [mural, setMural] = useState(initialMural)
+	const [form, setForm] = useState(initialForm)
 
 	const handleChange = (event) => {
-		setMural({ ...mural, [event.target.name]: event.target.value})
+		setForm({ ...form, [event.target.name]: event.target.value})
 	}
 
 	const handleSubmit = async (event) => {
     event.preventDefault()
-    try{
-      const createdMural = await 
-      fetch(import.meta.env.VITE_BACKEND_URL + '/murals', {
-        credentials: 'include',
-        method: 'POST',
-        body: JSON.stringify(mural),
-        headers:{
-          'Content-Type': 'application/json'
-        }
-      })
-      if(createdMural.status !== 200){
-        throw Error(createdMural.statusText)
-      }
-	  	else{
-     		const parsedResponse = await createdMural.json()
-				updateMural(parsedResponse.mural)
-	  	}
-    }
-    catch(error){
-      console.log(error);
-      return error
-    }
+		const createdMural = await muralsAPI.createMural(form)
+		updateMural(createdMural.mural)
   }
 
 	return(
@@ -52,6 +33,7 @@ function CreateMural({ updateMural }){
 					<input 
 						type="text" 
 						name="title"
+						value={form.title}
 						onChange={handleChange}
 					/>
 				</label>
@@ -61,6 +43,7 @@ function CreateMural({ updateMural }){
 					<input
 						type="text"
 						name="artist"
+						value={form.artist}
 						onChange={handleChange}
 					/>
 				</label>
@@ -70,6 +53,7 @@ function CreateMural({ updateMural }){
 					<input
 						type="text"
 						name="description"
+						value={form.description}
 						onChange={handleChange}
 					/>
 				</label>
@@ -79,6 +63,7 @@ function CreateMural({ updateMural }){
 					<input
 						type="number"
 						name="year"
+						value={form.year}
 						onChange={handleChange}
 					/>
 				</label>

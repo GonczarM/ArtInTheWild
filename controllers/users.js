@@ -2,14 +2,11 @@ const express = require('express')
 const router = express.Router();
 const User = require('../models/user')
 const Mural = require('../models/mural')
-const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const ensureLoggedIn = require('../config/ensureLoggedIn');
 
+// user create
 router.post('/register', async (req, res, next) => {
-	const password = req.body.password
-	const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
-	const userDbEntry = {}
-	userDbEntry.username = req.body.username
-	userDbEntry.password = passwordHash
 	try{
 		const foundUsername = await User.findOne({'username': req.body.username})
 		if(foundUsername){
@@ -19,15 +16,9 @@ router.post('/register', async (req, res, next) => {
 			})
 		}
 		else{
-			const createdUser = await User.create(userDbEntry)
-			req.session.loggedIn = true
-			req.session.UserId = createdUser._id
-			req.session.username = req.body.username
-			res.json({
-				status: 200,
-				session: req.session,
-				user: createdUser
-			})
+			const createdUser = await User.create(req.body)
+			const token = createJWT(createdUser);
+			res.json(token)
 		}
 	}
 	catch(error){
@@ -38,18 +29,16 @@ router.post('/register', async (req, res, next) => {
 	}
 })
 
-router.get('/user/:id', async (req, res, next) => {
+// user murals
+router.get('/:id', async (req, res, next) => {
 		try{
-			const foundUser = await User.findOne({'murals': req.params.id})
-			.populate('murals');
-			console.log(foundUser);
+			const foundMurals = await Mural.find({'user': req.params.id})
 			res.json({
 				stauts: 200,
-				user: foundUser
+				murals: foundMurals
 			})
 		}
 		catch(error){
-			console.log(error);
 			res.status(400).json({
 				status: 400,
 				error: error
@@ -57,89 +46,35 @@ router.get('/user/:id', async (req, res, next) => {
 	  }
 })
 
-// not needed just for testing
-// router.get('/', async (req, res, next) => {
-// 	try{
-// 		const allUsers = await User.find({})
-// 		res.json({
-// 			status: 200,
-// 			users: allUsers
-// 		})
-// 	}
-// 	catch(error){
-// 		res.status(400).json({
-// 			status: 400,
-// 			error: error
-// 		})
-// 	}
-// })
-
-router.get('/logout', (req, res, next) => {
-	req.session.destroy((err) => {
-		if(err){
-			res.status(400).json({
-				status: 400,
-				error: error
-			})
-		}
-		else{
-			res.json({
-				status: 200
-			})
-		}
-	})
-})
-
+// user login
 router.post('/login', async (req, res, next) => {
 	try{
 		const foundUser = await User.findOne({'username': req.body.username})
-		.populate('murals')
 		if(foundUser){
-			if(bcrypt.compareSync(req.body.password, foundUser.password) === true){
-				req.session.loggedIn = true;
-				req.session.userId = foundUser._id;
-				req.session.username = req.body.username;
-				res.json({
-					status: 200,
-					session: req.session,
-					user: foundUser
-				})
-			}
-			else{
-				res.json({
-					status: 401,
-					pass: req.body.password
-				})
-			}
-		}
-		else{
+			const token = createJWT(foundUser);
+			res.json(token)
+		}else{
 			res.json({
-				status: 402,
-				user: req.body.username
+				status: 401,
 			})
 		}
 	}
 	catch(error){
 		res.status(400).json({
-			status: 400,
 			error: next(error)
 		})
 	}		
 })
 
-router.delete('/user/:id', async (req, res, next) => {
+// user delete
+router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 	try{
 		const deletedUser = await User.findByIdAndDelete(req.params.id)
-		const deletedUsersMurals = await Mural.deleteMany({
-			_id: {
-				$in: deletedUser.murals
-			}
-		})
-		req.session.destroy()
+		const deletedUsersMurals = await Mural.deleteMany({'user': req.params.id})
+		deletedUser.murals = deletedUsersMurals
 		res.json({
 			status: 200,
-			user: deletedUser,
-			murals: deletedUsersMurals
+			user: deletedUser
 		}) 
 	}
 	catch(error){
@@ -149,5 +84,15 @@ router.delete('/user/:id', async (req, res, next) => {
 		})
 	}
 })
+
+// jwt token create
+function createJWT(user) {
+  return jwt.sign(
+    // data payload
+    { user },
+    process.env.SECRET,
+    { expiresIn: '24h' }
+  );
+}
 
 module.exports = router;

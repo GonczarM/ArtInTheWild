@@ -1,35 +1,18 @@
 import React, { useState } from 'react';
+import * as muralsAPI from '../../utils/murals-api'
 
 const EditMural = ({mural, updateMural}) => {
 
-	const [editedMural, setEditedMural] = useState(mural)
+	const [form, setForm] = useState(mural)
 
 	const handleChange = (event) => {
-		setEditedMural({...editedMural, [event.target.name]: event.target.value})
+		setForm({...form, [event.target.name]: event.target.value})
 	}
 
 	const handleSubmit = async (event) => {
     event.preventDefault()
-    try{
-      const editResponse = await 
-      fetch(import.meta.env.VITE_BACKEND_URL + '/murals/mural/' + mural._id, {
-        credentials: 'include',
-        method: 'PUT',
-        body: JSON.stringify(editedMural),
-        headers:{
-          'Content-Type': 'application/json'
-        }
-      })
-      if(editResponse.status !== 200){
-        throw Error(editResponse.statusText)
-      }
-      const parsedResponse = await editResponse.json()
-			updateMural(parsedResponse.mural)
-    }
-    catch(error){
-      console.log(error);
-      return error
-    }
+		const updatedMural = await muralsAPI.editMural(form, mural._id)
+		updateMural(updatedMural.mural)
   }
 
 	return(
@@ -42,7 +25,7 @@ const EditMural = ({mural, updateMural}) => {
 						type="text" 
 						name="title"
 						onChange={handleChange}
-						value={editedMural.title}
+						value={form.title}
 					/>
 				</label>
 				<br/>
@@ -52,7 +35,7 @@ const EditMural = ({mural, updateMural}) => {
 						type="text"
 						name="artist"
 						onChange={handleChange}
-						value={editedMural.artist}
+						value={form.artist}
 					/>
 				</label>
 				<br/>
@@ -62,7 +45,7 @@ const EditMural = ({mural, updateMural}) => {
 						type="text"
 						name="description"
 						onChange={handleChange}
-						value={editedMural.description}
+						value={form.description}
 					/>
 				</label>
 				<br/>
@@ -72,7 +55,7 @@ const EditMural = ({mural, updateMural}) => {
 						type="number"
 						name="year"
 						onChange={handleChange}
-						value={editedMural.year}
+						value={form.year}
 					/>
 				</label>
 				<br/>

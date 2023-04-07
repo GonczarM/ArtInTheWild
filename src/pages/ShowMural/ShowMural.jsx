@@ -1,32 +1,19 @@
 import { useNavigate } from 'react-router-dom'
+import * as muralsAPI from '../../utils/murals-api'
 
 function ShowMural({ mural }){
 
 	const navigate = useNavigate()
 
   const handleDelete = async () => {
-    try{
-      const deleteMural = await 
-      fetch(import.meta.env.VITE_BACKEND_URL + '/murals/mural/' + mural._id, {
-        credentials: 'include',
-        method: 'DELETE'
-      })
-      if(deleteMural.status !== 200){
-        throw Error(deleteMural.statusText)
-      }
-      navigate('/')
-    }
-    catch(error){
-      console.log(error);
-      return error
-    }
+    muralsAPI.deleteMural(mural._id)
+    navigate('/')
   }
 
   const handleEdit = () => {
 		navigate('/editMural')
   }
-
-	console.log(mural)
+  
 	return(
 		<div>
 			<h2>Title: {mural.title || mural.artwork_title}</h2><br/>

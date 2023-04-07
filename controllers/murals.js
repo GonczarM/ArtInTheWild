@@ -2,47 +2,28 @@ const express = require('express')
 const router = express.Router();
 const Mural = require('../models/mural')
 const User = require('../models/user')
+const ensureLoggedIn = require('../config/ensureLoggedIn');
 
-
-// router.post('/image-upload', (req, res) => {
-// 	console.log(req.files);
-// 	const values = Object.values(req.files)
-// 	console.log(values);
-//   const promises = values.map(image => cloudinary.uploader.upload(image.path))
-//   console.log(promises);
-//   Promise
-//     .all(promises)
-//     .then(results => res.json(results))
-// })
-
-// const path = Object.values(Object.values(req.files)[0])[0].path
-//   cloudinary.uploader.upload(path)
-//     .then(image => res.json([image]))
-
-router.post('/', async (req, res, next) => {
+// create mural
+router.post('/', ensureLoggedIn, async (req, res, next) => {
 	try{
-		console.log(req.session)
-		const foundUser = await User.findById(req.session.userId)
-		console.log(foundUser)
 		const createdMural = await Mural.create(req.body)
-		console.log(createdMural)
-		foundUser.murals.push(createdMural)
-		foundUser.save()
+		createdMural.user = req.user._id
+		createdMural.save()
 		res.json({
-      		status: 200,
-      		mural: createdMural,
-      		user: foundUser
-    	});
-  	} 
+      status: 200,
+      mural: createdMural
+    });
+  } 
 	catch(error){
 		res.json({
-      		status: 400,
-      		error: next(error)
-    	})
-  	}	
+      status: 400,
+      error: next(error)
+    })
+  }	
 })
 
-
+// search mural by artist
 router.get('/:search', async (req, res, next) => {
 	try{
 		const searchedMurals = await Mural.find({'artist': req.params.search})
@@ -60,29 +41,21 @@ router.get('/:search', async (req, res, next) => {
 	}
 })
 
-router.get('/home', async (req, res, next) => {
+// edit mural
+router.put('/:id', ensureLoggedIn, async (req, res, next) => {
 	try{
-		const allMurals = await Mural.find()
-		res.json({
-			status: 200,
-			murals: allMurals
-		})
-	}
-	catch(error){
-		res.status(400).json({
-			status: 400,
-			error: next(error)
-		})
-	}
-})
-
-router.put('/mural/:id', async (req, res, next) => {
-	try{
-		const updatedMural = await Mural.findByIdAndUpdate(req.params.id, req.body, {new: true});
-		res.json({
-			status: 200,
-			mural: updatedMural
-		})
+		const foundMural = await Mural.findById(req.params.id)
+		if(req.user._id === foundMural.user.toString()){
+			const updatedMural = await Mural.findByIdAndUpdate(req.params.id, req.body, {new: true});
+			res.json({
+				status: 200,
+				mural: updatedMural
+			})
+		}else{
+			res.json({
+				status: 401
+			})
+		}
 	}
 	catch(error){
 	res.status(400).json({
@@ -92,13 +65,21 @@ router.put('/mural/:id', async (req, res, next) => {
   }			
 })
 
-router.delete('/mural/:id', async (req, res, next) => {
+// delete mural
+router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 	try{
-		const deletedMural = await Mural.findByIdAndDelete(req.params.id)
-		res.json({
-			status: 200,
-			mural: deletedMural
-		})
+		const foundMural = await Mural.findById(req.params.id)
+		if(req.user._id === foundMural.user.toString()){
+			const deletedMural = await Mural.findByIdAndDelete(req.params.id)
+			res.json({
+				status: 200,
+				mural: deletedMural
+			})
+		}else{
+			res.json({
+				status: 401
+			})
+		}
 	}
 	catch(error){
 		res.status(400).json({

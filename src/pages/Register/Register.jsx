@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { signUp } from '../../utils/users-service'
 
 const initialUser = {
 	username: '',
@@ -15,22 +16,10 @@ function Register({loginUser}){
 	const handleRegister = async (event) => {
 		event.preventDefault()
 		try{
-			const registerResponse = await 
-			fetch(import.meta.env.VITE_BACKEND_URL + '/users/register', {
-				method: 'POST',
-				credentials: 'include',
-				body: JSON.stringify(form),
-				headers:{
-					'Content-Type': 'application/json'
-				}
-			})
-			const parsedResponse = await registerResponse.json();
-			if(parsedResponse.session.loggedIn){
-				loginUser(parsedResponse.user)
-			}
+			const user = await signUp(form)
+			loginUser(user)
 		}
 		catch(error){
-			console.log(error);
 			return error
 		}
 	}

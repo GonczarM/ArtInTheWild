@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import MuralList from '../../components/MuralList/MuralList'
+import * as muralsAPI from '../../utils/murals-api'
 
 function MuralSearch({updateMural}){
 	const [search, setSearch] = useState('')
-	const [murals, setMurals] = useState([])
+	const [murals, setMurals] = useState(null)
 
 	const updateSearch =(event) => {
 		setSearch(event.target.value)
@@ -11,23 +12,9 @@ function MuralSearch({updateMural}){
 
 	const searchMurals = async (event) => {
 		event.preventDefault()
-		try{
-			const foundMurals = await 
-			fetch(`${import.meta.env.VITE_BACKEND_URL}/murals/${search}`, {
-				credentials: 'include',
-				method: 'GET'
-			})
-			if(foundMurals.status !== 200){
-				throw Error(foundMurals.statusText)
-			}
-			const muralsParsed = await foundMurals.json()
-			setMurals(muralsParsed.murals)
-		}
-		catch(error){
-			console.log(error);
-			return error
-		}
-  	}
+		const foundMurals = await muralsAPI.searchMurals(search)
+		setMurals(foundMurals.murals)
+  }
 
 
 	return(
@@ -42,7 +29,7 @@ function MuralSearch({updateMural}){
 				</label>
 				<button>Search</button>
 			</form>
-			<MuralList murals={murals} updateMural={updateMural} />
+			{murals && <MuralList murals={murals} updateMural={updateMural} />}
 		</div>
 	)
 }

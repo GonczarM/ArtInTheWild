@@ -3,32 +3,18 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 
-function Header({isLoggedIn, logoutUser, user}){
-
-	const handleLogout = async () => {
-		const logoutResponse = await fetch(
-			import.meta.env.VITE_BACKEND_URL + '/users/logout', 
-			{
-				method: "GET",
-			}
-		)
-		if(logoutResponse.status !== 200){
-			throw Error(logoutResponse.statusText)
-		}else{
-			logoutUser()
-		}
-	}
+function Header({logoutUser, user}){
 
 	return (
 		<Navbar>
 			<Navbar.Brand as={Link} to="/">Art in the Wild</Navbar.Brand>
-			{isLoggedIn ? 
+			{user ? 
 			<Nav className="me-auto">
 				<Nav.Link as={Link} to="/">Home</Nav.Link>
 				<Nav.Link as={Link} to="search">Search</Nav.Link>
 				<Nav.Link as={Link} to="createMural">Create Mural</Nav.Link>
 				<Nav.Link as={Link} to={user.username}>{user.username}</Nav.Link>
-				<Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+				<Nav.Link onClick={logoutUser}>Logout</Nav.Link>
 			</Nav>
 			:
 			<Nav className="me-auto">

@@ -1,31 +1,24 @@
+import { useEffect, useState } from 'react';
 import MuralList from '../../components/MuralList/MuralList'
+import * as userAPI from '../../utils/users-api'
 
-const User = ({user, updateMural, logoutUser}) => {
+const User = ({user, updateMural}) => {
 
-	const handleDelete = async () => {
-    try{
-      const deleteUser = await
-      fetch(import.meta.env.VITE_BACKEND_URL + '/users/user/' + user._id, {
-        credentials: 'include',
-        method: 'DELETE'
-      })
-      if(deleteUser.status !== 200){
-        throw Error(deleteUser.statusText)
-      }else{
-        logoutUser()
-      }
+  const [murals, setMurals] = useState(null)
+
+  useEffect(() => {
+    async function fetchData(){
+      const userMurals = await userAPI.getUserMurals(user._id)
+      setMurals(userMurals.murals)
     }
-    catch(error){
-      console.log(error);
-      return error
-    }
-  }
+    fetchData()
+  }, [])
 
 	return(
 		<div>
 			Username: <span>{user.username}</span>
-      <button onClick={handleDelete}>Delete {user.username}</button>
-			<MuralList murals={user.murals} updateMural={updateMural} />
+      {/* <button onClick={logoutUser}>Delete {user.username}</button> */}
+			{murals && <MuralList murals={murals} updateMural={updateMural} />}
 		</div>
 	)
 }
