@@ -26,6 +26,7 @@ const EditMural = ({mural, updateMural}) => {
 						name="title"
 						onChange={handleChange}
 						value={form.title}
+						required
 					/>
 				</label>
 				<br/>
@@ -36,6 +37,7 @@ const EditMural = ({mural, updateMural}) => {
 						name="artist"
 						onChange={handleChange}
 						value={form.artist}
+						required
 					/>
 				</label>
 				<br/>
@@ -46,6 +48,7 @@ const EditMural = ({mural, updateMural}) => {
 						name="description"
 						onChange={handleChange}
 						value={form.description}
+						required
 					/>
 				</label>
 				<br/>
@@ -56,6 +59,7 @@ const EditMural = ({mural, updateMural}) => {
 						name="year"
 						onChange={handleChange}
 						value={form.year}
+						required
 					/>
 				</label>
 				<br/>

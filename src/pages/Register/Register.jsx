@@ -7,7 +7,7 @@ const initialUser = {
 }
 
 function Register({loginUser}){
-	const [ form, setForm] = useState(initialUser)
+	const [form, setForm] = useState(initialUser)
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})
@@ -31,6 +31,7 @@ function Register({loginUser}){
 					<input 
 						type="text" 
 						name="username"
+						value={form.username}
 						onChange={handleChange}
 					/>
 				</label>
@@ -39,6 +40,7 @@ function Register({loginUser}){
 					<input 
 						type="password" 
 						name="password"
+						value={form.password}
 						onChange={handleChange}
 					/>
 				</label>

@@ -35,6 +35,7 @@ function CreateMural({ updateMural }){
 						name="title"
 						value={form.title}
 						onChange={handleChange}
+						required
 					/>
 				</label>
 				<br/>
@@ -45,6 +46,7 @@ function CreateMural({ updateMural }){
 						name="artist"
 						value={form.artist}
 						onChange={handleChange}
+						required
 					/>
 				</label>
 				<br/>
@@ -55,6 +57,7 @@ function CreateMural({ updateMural }){
 						name="description"
 						value={form.description}
 						onChange={handleChange}
+						required
 					/>
 				</label>
 				<br/>
@@ -65,6 +68,7 @@ function CreateMural({ updateMural }){
 						name="year"
 						value={form.year}
 						onChange={handleChange}
+						required
 					/>
 				</label>
 				<br/>

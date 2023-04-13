@@ -31,7 +31,9 @@ function Login({loginUser}){
 				<input 
 					type="text" 
 					name="username"
+					value={form.username}
 					onChange={handleChange}
+					required
 				/>
 			</label>
 			<label>
@@ -39,7 +41,9 @@ function Login({loginUser}){
 				<input 
 					type="password" 
 					name="password"
+					value={form.password}
 					onChange={handleChange}
+					required
 				/>
 			</label>
 			<button>Login</button>

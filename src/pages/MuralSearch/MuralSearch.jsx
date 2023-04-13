@@ -24,7 +24,9 @@ function MuralSearch({updateMural}){
 					<input
 						type="text"
 						name="search"
+						value={search}
 						onChange={updateSearch}
+						required
 					/>
 				</label>
 				<button>Search</button>

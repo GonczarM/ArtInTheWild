@@ -2,37 +2,23 @@ const mongoose = require('mongoose');
 
 const muralSchema = new mongoose.Schema({
 	title: {
-		type: String
+		type: String,
+		required: true
 	},
 	artist: {
-		type: String
-	},
-	image: {
-		Type: String
+		type: String,
+		required: true
 	},
 	description: {
-		type: String
-	},
-	locationDescription: {
-		type: String
+		type: String,
+		required: true
 	},
 	year: {
-		type: Number
+		type: Number,
+		required: true
 	},
 	affiliation: {
 		type: String
-	},
-	address: {
-		type: String
-	},
-	zipcode: {
-		type: Number
-	},
-	lat: {
-		type: Number
-	},
-	lng: {
-		type: Number
 	},
 	user:{
 		type: mongoose.Schema.Types.ObjectId,
