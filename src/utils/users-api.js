@@ -13,3 +13,6 @@ export function getUserMurals(userId) {
   return sendRequest(`${BASE_URL}/${userId}`);
 }
 
+export function deleteUser(userId){
+  return sendRequest(`${BASE_URL}/${userId}`, 'DELETE')
+}

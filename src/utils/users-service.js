@@ -31,4 +31,3 @@ export async function signUp(userData){
   localStorage.setItem('token', token)
   return getUser()
 }
-

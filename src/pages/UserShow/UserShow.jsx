@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import MuralList from '../../components/MuralList/MuralList'
 import * as userAPI from '../../utils/users-api'
 
-const User = ({user, updateMural}) => {
+const User = ({user, updateMural, logoutUser}) => {
 
   const [murals, setMurals] = useState(null)
 
@@ -14,10 +14,15 @@ const User = ({user, updateMural}) => {
     fetchData()
   }, [])
 
+  const handleDelete = async () => {
+    const deleteRes = await userAPI.deleteUser(user._id)
+    logoutUser()
+  }
+
 	return(
 		<div>
 			Username: <span>{user.username}</span>
-      {/* <button onClick={logoutUser}>Delete {user.username}</button> */}
+      <button onClick={handleDelete}>Delete {user.username}</button>
 			{murals && <MuralList murals={murals} updateMural={updateMural} />}
 		</div>
 	)

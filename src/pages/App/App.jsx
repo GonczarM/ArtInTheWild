@@ -75,7 +75,8 @@ function App(){
         {/* user show */}
         <Route path="/:username" element={<UserShow 
           user={user} 
-          updateMural={updateMural} 
+          updateMural={updateMural}
+          logoutUser={logoutUser} 
         />} />
       </Routes>
     </Container>
