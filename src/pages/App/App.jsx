@@ -37,7 +37,7 @@ function App(){
   }
 
   return (
-    <Container>
+    <>
       <Header 
         logoutUser={logoutUser} 
         user={user} 
@@ -53,7 +53,8 @@ function App(){
         /> } />
         {/* mural show */}
         <Route path="/mural" element={<ShowMural 
-          mural={mural} 
+          mural={mural}
+          user={user} 
         /> } />
         {/* mural create */}
         <Route path="/createMural" element={<CreateMural 
@@ -79,7 +80,7 @@ function App(){
           logoutUser={logoutUser} 
         />} />
       </Routes>
-    </Container>
+    </>
   );
 }
 

@@ -7,12 +7,13 @@ const User = ({user, updateMural, logoutUser}) => {
   const [murals, setMurals] = useState(null)
 
   useEffect(() => {
-    async function fetchData(){
-      const userMurals = await userAPI.getUserMurals(user._id)
-      setMurals(userMurals.murals)
-    }
-    fetchData()
+    getMurals()
   }, [])
+
+  const getMurals = async () => {
+    const userMurals = await userAPI.getUserMurals(user._id)
+    setMurals(userMurals.murals)
+  }
 
   const handleDelete = async () => {
     const deleteRes = await userAPI.deleteUser(user._id)

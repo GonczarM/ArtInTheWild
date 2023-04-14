@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import * as muralsAPI from '../../utils/murals-api'
 
-function ShowMural({ mural }){
+function ShowMural({ mural, user }){
 
 	const navigate = useNavigate()
 
@@ -10,9 +10,6 @@ function ShowMural({ mural }){
     navigate('/')
   }
 
-  const handleEdit = () => {
-		navigate('/editMural')
-  }
   
 	return(
 		<div>
@@ -22,8 +19,15 @@ function ShowMural({ mural }){
 			<span>Year Installed: {mural.year || mural.year_installed}</span><br/>
 			<span>Affiliation: {mural.affiliated_or_commissioning}</span><br/>
 			<span>Address: {mural.street_address}</span><br/>
-			<button onClick={handleEdit}>Edit Mural</button>
+			{mural.user === user._id 
+			? 
+			<>
+			<button onClick={() => navigate('/editMural')}>Edit Mural</button>
 			<button onClick={handleDelete}>Delete Mural</button>
+			</>
+			:
+			null
+			}
 		</div>
 	)
 }
