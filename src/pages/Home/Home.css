@@ -1,3 +1,11 @@
 .card{
   margin: 1rem 0rem;
 }
+
+@media (min-width: 992px) {
+  .img-fluid {
+    width: 75vw;
+    display: block;
+    margin: auto;
+  }
+}
