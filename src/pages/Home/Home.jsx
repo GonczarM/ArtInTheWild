@@ -53,10 +53,12 @@ function Home({updateMural}){
   )
 
   return(
-    <Container>
+    <>
       <Image fluid rounded src={Logo} alt="logo"/>
-      {cards}
-    </Container>
+      <Container>
+        {cards}
+      </Container>
+    </>
   )
 }
 export default Home;

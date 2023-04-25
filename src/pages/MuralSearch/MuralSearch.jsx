@@ -6,6 +6,8 @@ import * as muralsAPI from '../../utils/murals-api'
 function MuralSearch({updateMural}){
 	const [search, setSearch] = useState('')
 	const [murals, setMurals] = useState(null)
+	const [noMurals, setNoMurals] = useState(false)
+	const [muralArtist, setMuralArtist] = useState(null)
 
 	const updateSearch =(event) => {
 		setSearch(event.target.value)
@@ -14,7 +16,14 @@ function MuralSearch({updateMural}){
 	const searchMurals = async (event) => {
 		event.preventDefault()
 		const foundMurals = await muralsAPI.searchMurals(search)
-		setMurals(foundMurals.murals)
+		if(foundMurals.murals.length){
+			setMurals(foundMurals.murals)
+			setNoMurals(false)
+			setMuralArtist(search)
+		} else{
+			setMurals(null)
+			setNoMurals(true)
+		}
   }
 
 	return(
@@ -33,7 +42,8 @@ function MuralSearch({updateMural}){
 				</Form.Group>
 				<Button type='submit'>Search</Button>
 			</Form>
-			{murals && <MuralList murals={murals} updateMural={updateMural} listHeader={search} />}
+			{murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={muralArtist} />}
+			{noMurals && <h2>No Murals Found for That Artist</h2>}
 		</Container>
 	)
 }

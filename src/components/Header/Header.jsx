@@ -5,7 +5,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 function Header({logoutUser, user}){
 
 	return (
-		<Navbar collapseOnSelect expand="sm" bg="primary" variant="dark">
+		<Navbar collapseOnSelect expand="sm" bg="primary" variant="dark" sticky="top">
 			<Container>
 				<Navbar.Brand as={Link} to="/" href='/'>Art in the Wild</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
