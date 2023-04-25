@@ -1,4 +1,4 @@
-import { Button, Card } from 'react-bootstrap'
+import { Button, Card, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -13,7 +13,7 @@ function ShowMural({ mural, user }){
 
   
 	return(
-		<>
+		<Container>
 			<Card className='text-center'>
 				<Card.Body>
 					<Card.Title >{mural.title || mural.artwork_title}</Card.Title>
@@ -39,7 +39,7 @@ function ShowMural({ mural, user }){
 					}
 				</Card.Body>
 			</Card>
-		</>
+		</Container>
 	)
 }
 

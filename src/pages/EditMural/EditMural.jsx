@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 
 const EditMural = ({mural, updateMural}) => {
@@ -17,8 +17,8 @@ const EditMural = ({mural, updateMural}) => {
   }
 
 	return(
-		<div>
-			<h4>Edit Mural</h4>
+		<Container>
+			<h1 className='text-center'>Edit Mural</h1>
 			<Form onSubmit={handleSubmit}>
 				<Form.Group controlId='title'>
 					<Form.Label>Title</Form.Label>
@@ -67,7 +67,7 @@ const EditMural = ({mural, updateMural}) => {
 				</Form.Group>
 				<Button type='submit'>Edit Mural</Button>
 			</Form>
-		</div>
+		</Container>
 	)
 }
 

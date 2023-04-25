@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Container } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as userAPI from '../../utils/users-api'
 
@@ -13,7 +13,7 @@ const User = ({user, updateMural, logoutUser}) => {
 
   const getMurals = async () => {
     const userMurals = await userAPI.getUserMurals(user._id)
-    setMurals(userMurals.murals)
+    if(userMurals.murals.length) setMurals(userMurals.murals)
   }
 
   const handleDelete = async () => {
@@ -22,7 +22,7 @@ const User = ({user, updateMural, logoutUser}) => {
   }
 
 	return(
-		<>
+		<Container>
       <Card className='text-center'>
         <Card.Body>
           <Card.Title>{user.username}</Card.Title>
@@ -30,7 +30,7 @@ const User = ({user, updateMural, logoutUser}) => {
         </Card.Body>
       </Card>
       {murals && <MuralList murals={murals} updateMural={updateMural} listHeader={user.username} />}
-		</>
+		</Container>
 	)
 }
 

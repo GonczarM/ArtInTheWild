@@ -2,7 +2,7 @@ import Logo from '../../assets/artInTheWild.jpg'
 import MuralList from '../../components/MuralList/MuralList'
 import React, { useEffect, useState } from 'react';
 import * as muralsAPI from '../../utils/murals-api'
-import { Card, Image} from 'react-bootstrap';
+import { Card, Container, Image} from 'react-bootstrap';
 import './Home.css'
 
 function Home({updateMural}){
@@ -53,10 +53,10 @@ function Home({updateMural}){
   )
 
   return(
-    <div className="home">
+    <Container>
       <Image fluid rounded src={Logo} alt="logo"/>
       {cards}
-    </div>
+    </Container>
   )
 }
 export default Home;
