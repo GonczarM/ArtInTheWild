@@ -34,21 +34,26 @@ function Home({updateMural}){
   }
 
   const cards = murals.map((mural, i) => 
-    <Card onClick={() => updateMural(mural)} key={i} bg={'secondary'} text={'white'} className='text-center'>
+    <Card 
+      onClick={() => updateMural(mural)} 
+      key={i} bg='secondary' 
+      text='white' 
+      className='text-center'
+    >
       <Card.Body>
         <Card.Title>{mural.artwork_title}</Card.Title>
         <Card.Subtitle>Created By {mural.artist_credit}</Card.Subtitle>
         <Card.Text>
-          {mural.description_of_artwork.length > 300 ? mural.description_of_artwork.substring(0, 300).concat('...') : mural.description_of_artwork}
+          {mural.description_of_artwork.length > 300 
+          ? mural.description_of_artwork.substring(0, 300).concat('...') 
+          : mural.description_of_artwork}
         </Card.Text>
       </Card.Body>
     </Card>
-
   )
 
   return(
     <div className="home">
-
       <Image fluid rounded src={Logo} alt="logo"/>
       {cards}
     </div>

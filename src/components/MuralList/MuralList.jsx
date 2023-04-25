@@ -1,15 +1,23 @@
-const Murals = ({murals, updateMural}) => {
+import { ListGroup } from "react-bootstrap";
+
+const Murals = ({murals, updateMural, listHeader}) => {
 
 	const muralsList = murals.map((mural, i) => 
-		<li key={i}>
-			<button onClick={() => updateMural(mural)}>{mural.title || mural.artwork_title}</button><br/>
-		</li>
+		<ListGroup.Item 
+			key={i} 
+			onClick={() => updateMural(mural)}
+		>
+			{mural.title || mural.artwork_title}
+		</ListGroup.Item>
 	);
 
 	return(
-		<ul>
-			{muralsList}
-		</ul>
+		<>
+			<h1 className='text-center'>{listHeader}'s murals</h1>
+			<ListGroup>
+				{muralsList}
+			</ListGroup>
+		</>
 	);
 };
 

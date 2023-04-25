@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button, Form } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 
 const initialForm = {
@@ -25,56 +26,57 @@ function CreateMural({ updateMural }){
   }
 
 	return(
-		<div>
-			<h4>Create Mural</h4>
-			<form className="form" onSubmit={handleSubmit}>
-				<label>
-					Title:
-					<input 
+		<>
+			<h1>Create Mural</h1>
+			<Form onSubmit={handleSubmit}>
+				<Form.Group controlId='title'>
+					<Form.Label>Title</Form.Label>
+					<Form.Control
+						placeholder='Mural Title'
 						type="text" 
 						name="title"
 						value={form.title}
 						onChange={handleChange}
 						required
 					/>
-				</label>
-				<br/>
-				<label>
-					Artist:
-					<input
+				</Form.Group>
+				<Form.Group controlId='artist'>
+					<Form.Label>Artist</Form.Label>
+					<Form.Control
+						placeholder='Mural Artist'
 						type="text"
 						name="artist"
 						value={form.artist}
 						onChange={handleChange}
 						required
 					/>
-				</label>
-				<br/>
-				<label>
-					Description:
-					<input
-						type="text"
-						name="description"
-						value={form.description}
-						onChange={handleChange}
-						required
-					/>
-				</label>
-				<br/>
-				<label>
-					Year Installed:
-					<input
+				</Form.Group>
+				<Form.Group controlId='year'>
+					<Form.Label>Year Installed</Form.Label>
+					<Form.Control
+						placeholder='Year Mural was Installed'
 						type="number"
 						name="year"
 						value={form.year}
 						onChange={handleChange}
 						required
 					/>
-				</label>
-				<br/>
-				<button>Create Mural</button>
-			</form>
-		</div>
+				</Form.Group>
+				<Form.Group controlId='description'>
+					<Form.Label>Description</Form.Label>
+					<Form.Control
+						placeholder='Mural Description'
+						as="textarea"
+						name="description"
+						value={form.description}
+						onChange={handleChange}
+						style={{ height: '7rem' }}
+						required
+					/>
+				</Form.Group>
+				<Button type='submit'>Create Mural</Button>
+			</Form>
+		</>
 	)
 }
 

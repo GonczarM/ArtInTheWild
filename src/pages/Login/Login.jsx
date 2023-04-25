@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button, Container, Form } from 'react-bootstrap'
 import { login } from '../../utils/users-service'
 
 const initialUser = {
@@ -25,29 +26,34 @@ function Login({loginUser}){
 	}
 
 	return(
-		<form className="form" onSubmit={handleLogin}>
-			<label>
-				Username:
-				<input 
-					type="text" 
-					name="username"
-					value={form.username}
-					onChange={handleChange}
-					required
-				/>
-			</label>
-			<label>
-				Password:
-				<input 
-					type="password" 
-					name="password"
-					value={form.password}
-					onChange={handleChange}
-					required
-				/>
-			</label>
-			<button>Login</button>
-		</form>
+		<Container >
+			<h1 className='text-center'>Login</h1>
+			<Form onSubmit={handleLogin}>
+				<Form.Group controlId='username'>
+					<Form.Label>Username</Form.Label>
+					<Form.Control 
+						placeholder='username'
+						type="text" 
+						name="username"
+						value={form.username}
+						onChange={handleChange}
+						required
+					/>
+				</Form.Group>
+				<Form.Group controlId='password'>
+					<Form.Label>Password</Form.Label>
+					<Form.Control
+						placeholder='password'
+						type="password" 
+						name="password"
+						value={form.password}
+						onChange={handleChange}
+						required
+					/>
+				</Form.Group>
+				<Button type='submit'>Login</Button>
+			</Form>
+		</Container>
 	)
 }
 

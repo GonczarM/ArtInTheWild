@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Button, Card } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as userAPI from '../../utils/users-api'
 
@@ -21,11 +22,15 @@ const User = ({user, updateMural, logoutUser}) => {
   }
 
 	return(
-		<div>
-			Username: <span>{user.username}</span>
-      <button onClick={handleDelete}>Delete {user.username}</button>
-			{murals && <MuralList murals={murals} updateMural={updateMural} />}
-		</div>
+		<>
+      <Card className='text-center'>
+        <Card.Body>
+          <Card.Title>{user.username}</Card.Title>
+          <Button onClick={handleDelete}>Delete {user.username}</Button>
+        </Card.Body>
+      </Card>
+      {murals && <MuralList murals={murals} updateMural={updateMural} listHeader={user.username} />}
+		</>
 	)
 }
 

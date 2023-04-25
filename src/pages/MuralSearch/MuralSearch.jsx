@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button, Container, Form } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -16,23 +17,24 @@ function MuralSearch({updateMural}){
 		setMurals(foundMurals.murals)
   }
 
-
 	return(
-		<div>
-			<form className="search" onSubmit={searchMurals}>
-				<label>
-					<input
+		<Container className='text-center'>
+			<h1>Search Murals by Artist</h1>
+			<Form onSubmit={searchMurals}>
+				<Form.Group controlId='search'>
+					<Form.Control
+						placeholder='search a mural'
 						type="text"
 						name="search"
 						value={search}
 						onChange={updateSearch}
 						required
 					/>
-				</label>
-				<button>Search</button>
-			</form>
-			{murals && <MuralList murals={murals} updateMural={updateMural} />}
-		</div>
+				</Form.Group>
+				<Button type='submit'>Search</Button>
+			</Form>
+			{murals && <MuralList murals={murals} updateMural={updateMural} listHeader={search} />}
+		</Container>
 	)
 }
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 
 const EditMural = ({mural, updateMural}) => {
@@ -18,53 +19,54 @@ const EditMural = ({mural, updateMural}) => {
 	return(
 		<div>
 			<h4>Edit Mural</h4>
-			<form className="form" onSubmit={handleSubmit}>
-				<label>
-					Title:
-					<input 
+			<Form onSubmit={handleSubmit}>
+				<Form.Group controlId='title'>
+					<Form.Label>Title</Form.Label>
+					<Form.Control
+						placeholder='Mural Title'
 						type="text" 
 						name="title"
-						onChange={handleChange}
 						value={form.title}
+						onChange={handleChange}
 						required
 					/>
-				</label>
-				<br/>
-				<label>
-					Artist:
-					<input
+				</Form.Group>
+				<Form.Group controlId='artist'>
+					<Form.Label>Artist</Form.Label>
+					<Form.Control
+						placeholder='Mural Artist'
 						type="text"
 						name="artist"
-						onChange={handleChange}
 						value={form.artist}
-						required
-					/>
-				</label>
-				<br/>
-				<label>
-					Description:
-					<input
-						type="text"
-						name="description"
 						onChange={handleChange}
-						value={form.description}
 						required
 					/>
-				</label>
-				<br/>
-				<label>
-					Year Installed:
-					<input
+				</Form.Group>
+				<Form.Group controlId='year'>
+					<Form.Label>Year Installed</Form.Label>
+					<Form.Control
+						placeholder='Year Mural was Installed'
 						type="number"
 						name="year"
-						onChange={handleChange}
 						value={form.year}
+						onChange={handleChange}
 						required
 					/>
-				</label>
-				<br/>
-				<button>Update Mural</button>
-			</form>
+				</Form.Group>
+				<Form.Group controlId='description'>
+					<Form.Label>Description</Form.Label>
+					<Form.Control
+						placeholder='Mural Description'
+						as="textarea"
+						name="description"
+						value={form.description}
+						onChange={handleChange}
+						style={{ height: '7rem' }}
+						required
+					/>
+				</Form.Group>
+				<Button type='submit'>Edit Mural</Button>
+			</Form>
 		</div>
 	)
 }

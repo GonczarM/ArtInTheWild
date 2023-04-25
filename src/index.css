@@ -1,5 +1,9 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 body{
-  background-color: rgb(100, 143, 202);
+  background-color: rgb(79, 107, 146);
+}
+
+button{
+  margin: 1rem 0rem;
 }
