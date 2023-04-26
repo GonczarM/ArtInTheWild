@@ -7,11 +7,11 @@ function Header({logoutUser, user}){
 	return (
 		<Navbar collapseOnSelect expand="sm" bg="primary" variant="dark" sticky="top">
 			<Container>
-				<Navbar.Brand as={Link} to="/" href='/'>Art in the Wild</Navbar.Brand>
+				<Navbar.Brand as={Link} to="/home" href='/home'>Art in the Wild</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
 					<Nav className="me-auto">
-						<Nav.Link as={Link} to="/" href='/'>Home</Nav.Link>
+						<Nav.Link as={Link} to="/home" href='/home'>Home</Nav.Link>
 						<Nav.Link as={Link} to="/search" href='/search'>Search</Nav.Link>
 					{user ?
 					<>

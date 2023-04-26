@@ -36,7 +36,7 @@ function Home({updateMural}){
   return(
     <>
       <Image fluid rounded src={Logo} alt="logo"/>
-      {murals && <MuralList murals={murals} updateMural={updateMural}/>}
+      {murals && <MuralList murals={murals} updateMural={updateMural} updatedBy={'home'}/>}
     </>
   )
 }

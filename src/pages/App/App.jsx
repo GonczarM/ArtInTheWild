@@ -9,7 +9,6 @@ import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
-import { Container } from 'react-bootstrap';
 import * as userService from '../../utils/users-service';
 import './App.css'
 
@@ -17,11 +16,13 @@ function App(){
 
 	const [user, setUser] = useState(userService.getUser())
   const [mural, setMural] = useState(null)
+  const [updatedBy, setUpdatedBy] = useState(null)
 
   const navigate = useNavigate()
 
-  const updateMural = (mural) => {
+  const updateMural = (mural, updatedBy) => {
 		setMural(mural)
+    setUpdatedBy(updatedBy)
 		navigate(`/mural/${mural._id || mural.mural_registration_id}`)
 	}
 
@@ -44,7 +45,7 @@ function App(){
       />
       <Routes>
         {/* home */}
-        <Route path="/" element={<Home 
+        <Route path="/Home" element={<Home 
           updateMural={updateMural} 
         />} />
         {/* mural search */}
@@ -54,16 +55,20 @@ function App(){
         {/* mural show */}
         <Route path="/mural/:muralId" element={<ShowMural 
           mural={mural}
-          user={user} 
+          user={user}
+          updatedBy={updatedBy}
         /> } />
         {/* mural create */}
         <Route path="/createMural" element={<CreateMural 
           updateMural={updateMural} 
+          user={user}
         /> } />
         {/* mural edit */}
-        <Route path="/editMural" element={<EditMural 
+        <Route path="/mural/edit/:id" element={<EditMural 
           mural={mural} 
           updateMural={updateMural}
+          user={user}
+          updatedBy={updatedBy}
         /> } />
         {/* user login */}
         <Route path="/login" element={<Login 
@@ -78,6 +83,9 @@ function App(){
           user={user} 
           updateMural={updateMural}
           logoutUser={logoutUser} 
+        />} />
+        <Route path="/*" element={<Home 
+          updateMural={updateMural} 
         />} />
       </Routes>
     </>

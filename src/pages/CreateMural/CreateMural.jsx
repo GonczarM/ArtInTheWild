@@ -12,7 +12,7 @@ const initialForm = {
 	lng: ''
 }
 
-function CreateMural({ updateMural }){
+function CreateMural({ updateMural, user }){
 	const [form, setForm] = useState(initialForm)
 
 	const handleChange = (event) => {
@@ -23,7 +23,7 @@ function CreateMural({ updateMural }){
     event.preventDefault()
 		const createdMural = await muralsAPI.createMural(form)
 		setForm(initialForm)
-		updateMural(createdMural.mural)
+		updateMural(createdMural.mural, 'createMural')
   }
 
 	return(

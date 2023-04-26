@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, Container } from 'react-bootstrap'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import * as muralsAPI from '../../utils/murals-api'
 
 function ShowMural(props){
@@ -26,7 +26,7 @@ function ShowMural(props){
 		}
 	}
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
     navigate('/')
   }
@@ -35,6 +35,16 @@ function ShowMural(props){
 	return(
 		<>
 		{mural && <Container>
+			<Breadcrumb>
+				<Breadcrumb.Item 
+					as={Link} 
+					to={`/${props.updatedBy}`} 
+					href={`/${props.updatedBy}`}
+				>
+					{props.updatedBy}
+				</Breadcrumb.Item>
+				<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
+			</Breadcrumb>
 			<Card className='text-center'>
 				<Card.Body>
 					<Card.Title >{mural.title || mural.artwork_title}</Card.Title>
@@ -59,7 +69,7 @@ function ShowMural(props){
 					</>}
 					{props.user && mural.user === props.user._id &&
 					<>
-					<Button onClick={() => navigate('/editMural')}>Edit Mural</Button><br></br>
+					<Button onClick={() => navigate(`/mural/edit/${mural._id || mural.mural_registration_id}`)}>Edit Mural</Button><br></br>
 					<Button onClick={handleDelete}>Delete Mural</Button>
 					</>
 					}

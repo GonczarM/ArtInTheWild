@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Form, Button, Container } from 'react-bootstrap';
+import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import * as muralsAPI from '../../utils/murals-api'
 
-const EditMural = ({mural, updateMural}) => {
+const EditMural = ({mural, updateMural, updatedBy, user}) => {
 
 	const [form, setForm] = useState(mural)
 
@@ -14,11 +15,28 @@ const EditMural = ({mural, updateMural}) => {
     event.preventDefault()
 		const updatedMural = await muralsAPI.editMural(form, mural._id)
 		setForm(updatedMural.mural)
-		updateMural(updatedMural.mural)
+		updateMural(updatedMural.mural, user.username)
   }
 
 	return(
 		<Container>
+			<Breadcrumb>
+				<Breadcrumb.Item 
+					as={Link} 
+					to={`/${updatedBy}`} 
+					href={`/${updatedBy}`}
+				>
+					{updatedBy}
+				</Breadcrumb.Item>
+				<Breadcrumb.Item 
+					as={Link} 
+					to={`/mural/${mural._id || mural.mural_registration_id}`} 
+					href={`/mural/${mural._id || mural.mural_registration_id}`}
+				>
+					{mural.title || mural.artwork_title}
+				</Breadcrumb.Item>
+				<Breadcrumb.Item active>Edit</Breadcrumb.Item>
+			</Breadcrumb>
 			<h1 className='text-center'>Edit Mural</h1>
 			<Form onSubmit={handleSubmit}>
 				<Form.Group controlId='title'>

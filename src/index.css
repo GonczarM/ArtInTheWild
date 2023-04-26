@@ -7,3 +7,11 @@ body{
 button{
   margin: 1rem 0rem;
 }
+
+a, .breadcrumb-item+.breadcrumb-item::before{
+  color: white
+}
+
+.breadcrumb-item.active{
+  color: rgb(0, 6, 73);
+}

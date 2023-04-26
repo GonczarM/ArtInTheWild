@@ -29,7 +29,7 @@ const UserShow = ({user, updateMural, logoutUser}) => {
           <Button onClick={handleDelete}>Delete {user.username}</Button>
         </Card.Body>
       </Card>
-      {murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={user.username} />}
+      {murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={user.username} updatedBy={user.username}/>}
 		</Container>
 	)
 }

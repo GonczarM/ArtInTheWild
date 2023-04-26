@@ -43,7 +43,7 @@ function MuralSearch({updateMural}){
 				</Form.Group>
 				<Button type='submit'>Search</Button>
 			</Form>
-			{murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={muralArtist} />}
+			{murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={muralArtist} updatedBy={'search'} />}
 			{noMurals && <h2>No Murals Found for That Artist</h2>}
 		</Container>
 	)
