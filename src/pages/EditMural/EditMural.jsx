@@ -13,6 +13,7 @@ const EditMural = ({mural, updateMural}) => {
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		const updatedMural = await muralsAPI.editMural(form, mural._id)
+		setForm(updatedMural.mural)
 		updateMural(updatedMural.mural)
   }
 

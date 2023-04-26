@@ -22,6 +22,7 @@ function CreateMural({ updateMural }){
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		const createdMural = await muralsAPI.createMural(form)
+		setForm(initialForm)
 		updateMural(createdMural.mural)
   }
 

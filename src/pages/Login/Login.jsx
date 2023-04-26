@@ -18,6 +18,7 @@ function Login({loginUser}){
 		event.preventDefault()
 		try{
 			const user = await login(form)
+			setForm(initialUser)
 			loginUser(user)
 		}
 		catch(error){

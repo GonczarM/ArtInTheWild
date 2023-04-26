@@ -3,7 +3,7 @@ import { Button, Card, Container } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as userAPI from '../../utils/users-api'
 
-const User = ({user, updateMural, logoutUser}) => {
+const UserShow = ({user, updateMural, logoutUser}) => {
 
   const [murals, setMurals] = useState(null)
 
@@ -34,4 +34,4 @@ const User = ({user, updateMural, logoutUser}) => {
 	)
 }
 
-export default User;
+export default UserShow;

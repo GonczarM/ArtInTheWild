@@ -1,25 +1,18 @@
-import { useEffect, useState } from "react";
-import { ListGroup } from "react-bootstrap";
+import { Container, Row} from "react-bootstrap";
+import MuralListItem from "../MuralListItem/MuralListItem";
 
-const Murals = ({murals, updateMural, muralArtist}) => {
-
-	const muralsList = murals.map((mural, i) => 
-		<ListGroup.Item 
-			key={i} 
-			onClick={() => updateMural(mural)}
-		>
-			{mural.title}
-		</ListGroup.Item>
-	);
+const MuralsList = ({murals, updateMural, muralArtist}) => {
 
 	return(
-		<>
-			<h1 className='text-center'>{muralArtist}'s murals</h1>
-			<ListGroup>
-				{muralsList}
-			</ListGroup>
-		</>
-	);
+		<Container>
+      {muralArtist && <h1 className='text-center'>{muralArtist}'s murals</h1>}
+			<Row xs={1} lg={2}>
+				{murals && murals.map((mural, i) => (
+					<MuralListItem key={i} mural={mural} updateMural={updateMural}/>
+				))}
+			</Row>
+		</Container>
+  )
 };
 
-export default Murals;
+export default MuralsList;

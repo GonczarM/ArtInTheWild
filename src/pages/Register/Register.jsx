@@ -18,6 +18,7 @@ function Register({loginUser}){
 		event.preventDefault()
 		try{
 			const user = await signUp(form)
+			setForm(initialUser)
 			loginUser(user)
 		}
 		catch(error){

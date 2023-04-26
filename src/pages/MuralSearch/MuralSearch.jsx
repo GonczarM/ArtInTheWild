@@ -20,6 +20,7 @@ function MuralSearch({updateMural}){
 			setMurals(foundMurals.murals)
 			setNoMurals(false)
 			setMuralArtist(search)
+			setSearch('')
 		} else{
 			setMurals(null)
 			setNoMurals(true)
