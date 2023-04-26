@@ -1,10 +1,30 @@
+import { useEffect, useState } from 'react'
 import { Button, Card, Container } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import * as muralsAPI from '../../utils/murals-api'
 
-function ShowMural({ mural, user }){
+function ShowMural(props){
 
+	const [mural, setMural] = useState(props.mural)
+
+	const { muralId } = useParams()
 	const navigate = useNavigate()
+
+	useEffect(() => {
+		if(!mural){
+			getMural()
+		}
+	}, [])
+
+	const getMural = async () => {
+		if(muralId.length === 24){
+			const APIMural = await muralsAPI.getMural(muralId)
+			setMural(APIMural.mural)
+		} else {
+			const APIMural = await muralsAPI.getMuralAPI(muralId)
+			setMural(APIMural[0])
+		}
+	}
 
   const handleDelete = async () => {
     muralsAPI.deleteMural(mural._id)
@@ -13,7 +33,8 @@ function ShowMural({ mural, user }){
 
   
 	return(
-		<Container>
+		<>
+		{mural && <Container>
 			<Card className='text-center'>
 				<Card.Body>
 					<Card.Title >{mural.title || mural.artwork_title}</Card.Title>
@@ -31,7 +52,12 @@ function ShowMural({ mural, user }){
 						<Card.Subtitle>Address</Card.Subtitle>
 						<Card.Text>{mural.street_address}</Card.Text>
 					</>}
-					{user && mural.user === user._id &&
+					{mural.zip && 
+					<>
+						<Card.Subtitle>ZIP Code</Card.Subtitle>
+						<Card.Text>{mural.zip}</Card.Text>
+					</>}
+					{props.user && mural.user === props.user._id &&
 					<>
 					<Button onClick={() => navigate('/editMural')}>Edit Mural</Button><br></br>
 					<Button onClick={handleDelete}>Delete Mural</Button>
@@ -39,7 +65,8 @@ function ShowMural({ mural, user }){
 					}
 				</Card.Body>
 			</Card>
-		</Container>
+		</Container>}
+		</>
 	)
 }
 

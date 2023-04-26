@@ -14,7 +14,7 @@ function Home({updateMural}){
   }, [])
 
   const getMurals = async () => {
-    const APIMurals = await muralsAPI.getMuralAPI()
+    const APIMurals = await muralsAPI.getMuralsAPI()
     const randomMurals = []
     for (let i = 0; i < 6; i++) {
       const randomMural = getRandomMural(APIMurals)

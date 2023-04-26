@@ -22,7 +22,7 @@ function App(){
 
   const updateMural = (mural) => {
 		setMural(mural)
-		navigate('/mural')
+		navigate(`/mural/${mural._id || mural.mural_registration_id}`)
 	}
 
   const loginUser = (user) => {
@@ -52,7 +52,7 @@ function App(){
           updateMural={updateMural} 
         /> } />
         {/* mural show */}
-        <Route path="/mural" element={<ShowMural 
+        <Route path="/mural/:muralId" element={<ShowMural 
           mural={mural}
           user={user} 
         /> } />

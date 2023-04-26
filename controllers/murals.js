@@ -24,7 +24,7 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
 })
 
 // search mural by artist
-router.get('/:search', async (req, res, next) => {
+router.get('/search/:search', async (req, res, next) => {
 	try{
 		const searchedMurals = await Mural.find({'artist': req.params.search})
 		res.json({
@@ -87,6 +87,21 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 			error: next(error)
 		})
 	}		
+})
+
+router.get('/:id', async (req, res, next) => {
+	try {
+		const foundMural = await Mural.findById(req.params.id)
+		res.json({
+			status: 200,
+			mural: foundMural
+		})
+	} catch (error) {
+		res.status(400).json({
+			status: 400,
+			error: next(error)
+		})
+	}
 })
 
 module.exports = router;
