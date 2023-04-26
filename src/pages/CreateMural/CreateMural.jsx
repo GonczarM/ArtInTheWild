@@ -23,7 +23,7 @@ function CreateMural({ updateMural, user }){
     event.preventDefault()
 		const createdMural = await muralsAPI.createMural(form)
 		setForm(initialForm)
-		updateMural(createdMural.mural, 'createMural')
+		updateMural(createdMural.mural, 'mural/create')
   }
 
 	return(

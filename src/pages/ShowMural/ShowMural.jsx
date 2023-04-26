@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
 
 function ShowMural(props){
@@ -36,13 +37,9 @@ function ShowMural(props){
 		<>
 		{mural && <Container>
 			<Breadcrumb>
-				<Breadcrumb.Item 
-					as={Link} 
-					to={`/${props.updatedBy}`} 
-					href={`/${props.updatedBy}`}
-				>
-					{props.updatedBy}
-				</Breadcrumb.Item>
+				<LinkContainer to={props.updatedBy}>
+					<Breadcrumb.Item >{props.updatedBy}</Breadcrumb.Item>
+				</LinkContainer>
 				<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
 			</Breadcrumb>
 			<Card className='text-center'>

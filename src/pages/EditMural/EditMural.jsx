@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
+
 import * as muralsAPI from '../../utils/murals-api'
 
 const EditMural = ({mural, updateMural, updatedBy, user}) => {
@@ -17,24 +18,18 @@ const EditMural = ({mural, updateMural, updatedBy, user}) => {
 		setForm(updatedMural.mural)
 		updateMural(updatedMural.mural, user.username)
   }
-
+	<LinkContainer to={`/mural/${mural._id || mural.mural_registration_id}`}>
+	<Breadcrumb.Item >{mural.title || mural.artwork_title}</Breadcrumb.Item>
+</LinkContainer>
 	return(
 		<Container>
 			<Breadcrumb>
-				<Breadcrumb.Item 
-					as={Link} 
-					to={`/${updatedBy}`} 
-					href={`/${updatedBy}`}
-				>
-					{updatedBy}
-				</Breadcrumb.Item>
-				<Breadcrumb.Item 
-					as={Link} 
-					to={`/mural/${mural._id || mural.mural_registration_id}`} 
-					href={`/mural/${mural._id || mural.mural_registration_id}`}
-				>
-					{mural.title || mural.artwork_title}
-				</Breadcrumb.Item>
+				<LinkContainer to={`/${updatedBy}`}>
+						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
+				</LinkContainer>
+				<LinkContainer to={`/mural/${mural._id || mural.mural_registration_id}`}>
+					<Breadcrumb.Item >{mural.title || mural.artwork_title}</Breadcrumb.Item>
+				</LinkContainer>
 				<Breadcrumb.Item active>Edit</Breadcrumb.Item>
 			</Breadcrumb>
 			<h1 className='text-center'>Edit Mural</h1>

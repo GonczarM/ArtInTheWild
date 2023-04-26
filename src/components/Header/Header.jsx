@@ -1,28 +1,27 @@
-import { Link } from 'react-router-dom'
 import { Container, Nav, Navbar } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 
 function Header({logoutUser, user}){
 
 	return (
-		<Navbar collapseOnSelect expand="sm" bg="primary" variant="dark" sticky="top">
+		<Navbar collapseOnSelect expand="sm" bg="primary" variant="dark" sticky="top" >
 			<Container>
-				<Navbar.Brand as={Link} to="/home" href='/home'>Art in the Wild</Navbar.Brand>
+			<LinkContainer to='/home'><Navbar.Brand>Art in the Wild</Navbar.Brand></LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-					<Nav className="me-auto">
-						<Nav.Link as={Link} to="/home" href='/home'>Home</Nav.Link>
-						<Nav.Link as={Link} to="/search" href='/search'>Search</Nav.Link>
+					<Nav>
+						<LinkContainer to='/home'><Nav.Link>Home</Nav.Link></LinkContainer>
+						<LinkContainer to='/search'><Nav.Link>Search</Nav.Link></LinkContainer>
 					{user ?
 					<>
-						<Nav.Link as={Link} to="/createMural" href='/createMural'>Create Mural</Nav.Link>
-						<Nav.Link as={Link} to={user.username} href='/:username'>{user.username}</Nav.Link>
+						<LinkContainer to={`/${user.username}`}><Nav.Link>{user.username}</Nav.Link></LinkContainer>
 						<Nav.Link onClick={logoutUser} href='/'>Logout</Nav.Link>
 					</>
 					:
 					<>
-						<Nav.Link as={Link} to="/register" href='/register'>Register</Nav.Link>
-						<Nav.Link as={Link} to="/login" href='/login'>Login</Nav.Link>
+						<LinkContainer to='/register'><Nav.Link>Register</Nav.Link></LinkContainer>
+						<LinkContainer to='/login'><Nav.Link>Login</Nav.Link></LinkContainer>
 					</>
 					}
 					</Nav>
