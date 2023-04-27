@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -9,14 +9,7 @@ function ShowMural(props){
 	const [mural, setMural] = useState(props.mural)
 	const [updatedBy, setUpdatedBy] = useState(props.updatedBy)
 
-	const { muralId } = useParams()
 	const navigate = useNavigate()
-
-	useEffect(() => {
-		if(!mural){
-			getMural()
-		}
-	}, [])
 
 	useEffect(() => {
 		if(props.updatedBy){
@@ -24,17 +17,12 @@ function ShowMural(props){
 		}else{
 			setUpdatedBy(sessionStorage.getItem('updatedBy'))
 		}
-	}, [props.updatedBy])
-
-	const getMural = async () => {
-		if(muralId.length === 24){
-			const APIMural = await muralsAPI.getMural(muralId)
-			setMural(APIMural.mural)
-		} else {
-			const APIMural = await muralsAPI.getMuralAPI(muralId)
-			setMural(APIMural[0])
+		if(mural){
+			sessionStorage.setItem('mural', JSON.stringify(mural))
+		}else{
+			setMural(JSON.parse(sessionStorage.getItem('mural')))
 		}
-	}
+	}, [])
 
   const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
