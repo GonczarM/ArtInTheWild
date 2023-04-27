@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import MuralList from '../../components/MuralList/MuralList'
 import * as userAPI from '../../utils/users-api'
+import './UserShow.css'
 
 const UserShow = ({user, updateMural, logoutUser}) => {
 
   const [murals, setMurals] = useState(null)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getMurals()
@@ -29,7 +33,19 @@ const UserShow = ({user, updateMural, logoutUser}) => {
           <Button onClick={handleDelete}>Delete {user.username}</Button>
         </Card.Body>
       </Card>
-      {murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={user.username} updatedBy={user.username}/>}
+      {murals ? 
+      <MuralList 
+        murals={murals} 
+        updateMural={updateMural} 
+        muralArtist={user.username} 
+        updatedBy={user.username}
+      />
+      :
+      <>
+        <h2 className='text-center'>Looks Like you Don't Have any Murals</h2>
+        <Button className='create' onClick={() => navigate('/mural/create')}>Create Mural</Button>
+      </>
+      }
 		</Container>
 	)
 }

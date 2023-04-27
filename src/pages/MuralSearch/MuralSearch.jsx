@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as muralsAPI from '../../utils/murals-api'
 
 function MuralSearch({updateMural}){
+
 	const [search, setSearch] = useState('')
 	const [murals, setMurals] = useState(null)
 	const [noMurals, setNoMurals] = useState(false)
@@ -43,7 +44,12 @@ function MuralSearch({updateMural}){
 				</Form.Group>
 				<Button type='submit'>Search</Button>
 			</Form>
-			{murals && <MuralList murals={murals} updateMural={updateMural} muralArtist={muralArtist} updatedBy={'search'} />}
+			{murals && <MuralList 
+				murals={murals} 
+				updateMural={updateMural} 
+				muralArtist={muralArtist} 
+				updatedBy={'search'} 
+			/>}
 			{noMurals && <h2>No Murals Found for That Artist</h2>}
 		</Container>
 	)

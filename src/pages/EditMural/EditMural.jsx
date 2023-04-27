@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-
 import * as muralsAPI from '../../utils/murals-api'
 
 const EditMural = ({mural, updateMural, updatedBy, user}) => {
@@ -18,9 +17,7 @@ const EditMural = ({mural, updateMural, updatedBy, user}) => {
 		setForm(updatedMural.mural)
 		updateMural(updatedMural.mural, user.username)
   }
-	<LinkContainer to={`/mural/${mural._id || mural.mural_registration_id}`}>
-	<Breadcrumb.Item >{mural.title || mural.artwork_title}</Breadcrumb.Item>
-</LinkContainer>
+
 	return(
 		<Container>
 			<Breadcrumb>

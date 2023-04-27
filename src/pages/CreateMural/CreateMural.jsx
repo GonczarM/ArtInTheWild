@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -12,7 +12,8 @@ const initialForm = {
 	lng: ''
 }
 
-function CreateMural({ updateMural, user }){
+function CreateMural({ updateMural }){
+
 	const [form, setForm] = useState(initialForm)
 
 	const handleChange = (event) => {

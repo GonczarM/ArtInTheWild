@@ -1,8 +1,8 @@
 import Logo from '../../assets/artInTheWild.jpg'
 import MuralList from '../../components/MuralList/MuralList'
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Image } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
-import {Image} from 'react-bootstrap';
 import './Home.css'
 
 function Home({updateMural, updateAPIMurals, APIMurals}){
@@ -29,7 +29,11 @@ function Home({updateMural, updateAPIMurals, APIMurals}){
   const getRandomMural = (arr) => {
     const ranNum = Math.floor(Math.random()* arr.length)
     const randomMural = arr[ranNum]
-    if(!randomMural.artwork_title || !randomMural.artist_credit || !randomMural.description_of_artwork || randomMural.description_of_artwork.length < 100){
+    if(!randomMural.artwork_title || 
+      !randomMural.artist_credit || 
+      !randomMural.description_of_artwork || 
+      randomMural.description_of_artwork.length < 100
+    ){
       return getRandomMural(arr)
     }else{
       return randomMural
@@ -39,7 +43,11 @@ function Home({updateMural, updateAPIMurals, APIMurals}){
   return(
     <>
       <Image fluid rounded src={Logo} alt="logo"/>
-      {murals && <MuralList murals={murals} updateMural={updateMural} updatedBy={'home'}/>}
+      {murals && <MuralList 
+        murals={murals} 
+        updateMural={updateMural} 
+        updatedBy={'home'}
+      />}
     </>
   )
 }

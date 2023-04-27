@@ -10,7 +10,6 @@ import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import * as userService from '../../utils/users-service';
-import './App.css'
 
 function App(){
 
@@ -67,8 +66,7 @@ function App(){
         /> } />
         {/* mural create */}
         <Route path="/mural/create" element={<CreateMural 
-          updateMural={updateMural} 
-          user={user}
+          updateMural={updateMural}
         /> } />
         {/* mural edit */}
         <Route path="/mural/edit/:id" element={<EditMural 
@@ -91,6 +89,7 @@ function App(){
           updateMural={updateMural}
           logoutUser={logoutUser} 
         />} />
+        {/* catch all */}
         <Route path="/*" element={<Home 
           updateMural={updateMural} 
           updateAPIMurals={updateAPIMurals}
