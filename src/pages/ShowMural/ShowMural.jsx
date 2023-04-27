@@ -29,7 +29,7 @@ function ShowMural(props){
 
   const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
-    navigate('/')
+    navigate(`/${props.user.username}`)
   }
 
   

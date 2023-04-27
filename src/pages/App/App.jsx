@@ -29,13 +29,13 @@ function App(){
 
   const loginUser = (user) => {
     setUser(user)
-    navigate('/');
+    navigate(`/${user.username}`);
   }
 
   const logoutUser = () => {
     userService.logOut()
     setUser(null)
-    navigate('/')
+    navigate('/home')
   }
 
   const updateAPIMurals = (murals) => {
