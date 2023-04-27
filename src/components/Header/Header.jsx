@@ -12,11 +12,11 @@ function Header({logoutUser, user}){
 			sticky="top" 
 		>
 			<Container>
-				<LinkContainer to='/home'><Navbar.Brand>Art in the Wild</Navbar.Brand></LinkContainer>
+				<LinkContainer to='/'><Navbar.Brand>Art in the Wild</Navbar.Brand></LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
 					<Nav>
-						<LinkContainer to='/home'><Nav.Link>Home</Nav.Link></LinkContainer>
+						<LinkContainer to='/'><Nav.Link>Home</Nav.Link></LinkContainer>
 						<LinkContainer to='/search'><Nav.Link>Search</Nav.Link></LinkContainer>
 						{user ?
 						<>

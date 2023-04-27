@@ -34,7 +34,7 @@ function App(){
   const logoutUser = () => {
     userService.logOut()
     setUser(null)
-    navigate('/home')
+    navigate('/')
   }
 
   const updateAPIMurals = (murals) => {
@@ -49,7 +49,7 @@ function App(){
       />
       <Routes>
         {/* home */}
-        <Route path="/home" element={<Home 
+        <Route path="/" element={<Home 
           updateMural={updateMural}
           updateAPIMurals={updateAPIMurals}
           APIMurals={APIMurals} 
@@ -88,12 +88,6 @@ function App(){
           user={user} 
           updateMural={updateMural}
           logoutUser={logoutUser} 
-        />} />
-        {/* catch all */}
-        <Route path="/*" element={<Home 
-          updateMural={updateMural} 
-          updateAPIMurals={updateAPIMurals}
-          APIMurals={APIMurals} 
         />} />
       </Routes>
     </>

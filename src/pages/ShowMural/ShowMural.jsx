@@ -7,15 +7,29 @@ import * as muralsAPI from '../../utils/murals-api'
 function ShowMural(props){
 
 	const [mural, setMural] = useState(props.mural)
-	const [updatedBy, setUpdatedBy] = useState(props.updatedBy)
+	const [updatedBy, setUpdatedBy] = useState(null)
+	const [updatedByURL, setUpdatedByURL] = useState(null)
 
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		if(props.updatedBy){
 			sessionStorage.setItem('updatedBy', props.updatedBy)
-		}else{
+			setUpdatedByURL(props.updatedBy)
+			setUpdatedBy(props.updatedBy)
+			if(props.updatedBy === 'mural/create'){
+				setUpdatedBy('Mural Create')
+			}else if(props.updatedBy === 'home'){
+				setUpdatedByURL('')
+			}
+		}else if(sessionStorage.getItem('updatedBy')){
+			setUpdatedByURL(sessionStorage.getItem('updatedBy'))
 			setUpdatedBy(sessionStorage.getItem('updatedBy'))
+			if(sessionStorage.getItem('updatedBy') === 'mural/create'){
+				setUpdatedBy('Mural Create')
+			}else if(sessionStorage.getItem('updatedBy') === 'home'){
+				setUpdatedByURL('')
+			}
 		}
 		if(mural){
 			sessionStorage.setItem('mural', JSON.stringify(mural))
@@ -33,7 +47,7 @@ function ShowMural(props){
 		<>
 			{mural && <Container>
 				<Breadcrumb>
-					<LinkContainer to={`/${updatedBy}`}>
+					<LinkContainer to={`/${updatedByURL}`}>
 						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
 					<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
