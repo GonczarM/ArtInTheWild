@@ -5,12 +5,14 @@ import * as muralsAPI from '../../utils/murals-api'
 import {Image} from 'react-bootstrap';
 import './Home.css'
 
-function Home({updateMural}){
+function Home({updateMural, updateAPIMurals, APIMurals}){
 
-  const [murals, setMurals] = useState(null)
+  const [murals, setMurals] = useState(APIMurals)
 
   useEffect(() => {
-    getMurals()
+    if(!APIMurals){
+      getMurals()
+    }
   }, [])
 
   const getMurals = async () => {
@@ -20,6 +22,7 @@ function Home({updateMural}){
       const randomMural = getRandomMural(APIMurals)
       randomMurals.push(randomMural)
     }
+    updateAPIMurals(randomMurals)
     setMurals(randomMurals)
   }
 

@@ -17,6 +17,7 @@ function App(){
 	const [user, setUser] = useState(userService.getUser())
   const [mural, setMural] = useState(null)
   const [updatedBy, setUpdatedBy] = useState(null)
+  const [APIMurals, setAPIMurals] = useState(null)
 
   const navigate = useNavigate()
 
@@ -37,6 +38,10 @@ function App(){
     navigate('/')
   }
 
+  const updateAPIMurals = (murals) => {
+    setAPIMurals(murals)
+  }
+
   return (
     <>
       <Header 
@@ -45,8 +50,10 @@ function App(){
       />
       <Routes>
         {/* home */}
-        <Route path="/Home" element={<Home 
-          updateMural={updateMural} 
+        <Route path="/home" element={<Home 
+          updateMural={updateMural}
+          updateAPIMurals={updateAPIMurals}
+          APIMurals={APIMurals} 
         />} />
         {/* mural search */}
         <Route path='/search' element={<MuralSearch 
@@ -86,6 +93,8 @@ function App(){
         />} />
         <Route path="/*" element={<Home 
           updateMural={updateMural} 
+          updateAPIMurals={updateAPIMurals}
+          APIMurals={APIMurals} 
         />} />
       </Routes>
     </>

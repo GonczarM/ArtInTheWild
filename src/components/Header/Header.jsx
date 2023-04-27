@@ -16,7 +16,7 @@ function Header({logoutUser, user}){
 					{user ?
 					<>
 						<LinkContainer to={`/${user.username}`}><Nav.Link>{user.username}</Nav.Link></LinkContainer>
-						<Nav.Link onClick={logoutUser} href='/'>Logout</Nav.Link>
+						<Nav.Link onClick={logoutUser}>Logout</Nav.Link>
 					</>
 					:
 					<>
