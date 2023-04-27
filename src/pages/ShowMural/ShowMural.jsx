@@ -7,6 +7,7 @@ import * as muralsAPI from '../../utils/murals-api'
 function ShowMural(props){
 
 	const [mural, setMural] = useState(props.mural)
+	const [updatedBy, setUpdatedBy] = useState(props.updatedBy)
 
 	const { muralId } = useParams()
 	const navigate = useNavigate()
@@ -16,6 +17,14 @@ function ShowMural(props){
 			getMural()
 		}
 	}, [])
+
+	useEffect(() => {
+		if(props.updatedBy){
+			sessionStorage.setItem('updatedBy', props.updatedBy)
+		}else{
+			setUpdatedBy(sessionStorage.getItem('updatedBy'))
+		}
+	}, [props.updatedBy])
 
 	const getMural = async () => {
 		if(muralId.length === 24){
@@ -36,8 +45,8 @@ function ShowMural(props){
 		<>
 			{mural && <Container>
 				<Breadcrumb>
-					<LinkContainer to={props.updatedBy}>
-						<Breadcrumb.Item >{props.updatedBy}</Breadcrumb.Item>
+					<LinkContainer to={`/${updatedBy}`}>
+						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
 					<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
 				</Breadcrumb>
