@@ -21,6 +21,10 @@ export function getMural(muralId){
   return sendRequest(`${BASE_URL}/${muralId}`)
 }
 
+export function addPhoto(photoData, muralId){
+  return sendRequest(`${BASE_URL}/photo/${muralId}`, 'PUT', photoData)
+}
+
 // Chicago Mural API
 // https://dev.socrata.com/foundry/data.cityofchicago.org/we8h-apcf
 const API_URL = 'https://data.cityofchicago.org/resource/we8h-apcf.json'

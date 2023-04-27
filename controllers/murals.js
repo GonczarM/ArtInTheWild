@@ -1,8 +1,19 @@
 const express = require('express')
 const router = express.Router();
 const Mural = require('../models/mural')
-const User = require('../models/user')
 const ensureLoggedIn = require('../config/ensureLoggedIn');
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+	destination: function(req, file, cb){
+		cb(null, './public/muralPhotos')
+	},
+	filename: function(req, file, cb){
+		cb(null, file.originalname)
+	}
+})
+const upload = multer({ storage: storage })
+
 
 // create mural
 router.post('/', ensureLoggedIn, async (req, res, next) => {
@@ -89,12 +100,32 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 	}		
 })
 
+//show a mural
 router.get('/:id', async (req, res, next) => {
 	try {
 		const foundMural = await Mural.findById(req.params.id)
 		res.json({
 			status: 200,
 			mural: foundMural
+		})
+	} catch (error) {
+		res.status(400).json({
+			status: 400,
+			error: next(error)
+		})
+	}
+})
+
+// add photo to mural
+router.put('/photo/:id', upload.single('photo'), async (req, res, next) => {
+	try {
+		console.log(req.file)
+		const updatedMural = await Mural.findById(req.params.id)
+		updatedMural.photos.push(req.file.originalname)
+		updatedMural.save()
+		res.json({
+			status: 200,
+			mural: updatedMural
 		})
 	} catch (error) {
 		res.status(400).json({

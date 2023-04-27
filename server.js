@@ -14,6 +14,7 @@ app.use(logger('dev'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static('public'))
 app.use(require('./config/checkToken'));
 
 //controllers

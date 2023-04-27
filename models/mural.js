@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 const muralSchema = new mongoose.Schema({
 	title: {
 		type: String,
@@ -23,7 +24,10 @@ const muralSchema = new mongoose.Schema({
 	user:{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
-	}
+	},
+	photos: [{
+		type: String
+	}]
 })
 
 const Mural = mongoose.model('Mural', muralSchema);

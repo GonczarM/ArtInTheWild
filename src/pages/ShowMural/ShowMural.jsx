@@ -3,14 +3,20 @@ import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
+import AddPhoto from '../../components/AddPhoto/AddPhoto'
 
 function ShowMural(props){
 
 	const [mural, setMural] = useState(props.mural)
 	const [updatedBy, setUpdatedBy] = useState(null)
 	const [updatedByURL, setUpdatedByURL] = useState(null)
+	const [show, setShow] = useState(false);
 
 	const navigate = useNavigate()
+
+	const updateMural = (mural) => {
+		setMural(mural)
+	}
 
 	useEffect(() => {
 		if(props.updatedBy){
@@ -53,6 +59,7 @@ function ShowMural(props){
 					<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>
+					{mural.photos && mural.photos.length > 0 && <Card.Img src={`/muralPhotos/${mural.photos[0]}`} />}
 					<Card.Body>
 						<Card.Title >{mural.title || mural.artwork_title}</Card.Title>
 						<Card.Subtitle>by {mural.artist || mural.artist_credit}</Card.Subtitle>
@@ -81,11 +88,17 @@ function ShowMural(props){
 							>
 								Edit Mural
 							</Button><br></br>
-							<Button onClick={handleDelete}>Delete Mural</Button>
-						</>
-						}
+							<Button onClick={handleDelete}>Delete Mural</Button><br></br>
+						</>}
+						{props.user && <Button onClick={() => setShow(true)}>Add Photo</Button>}
 					</Card.Body>
 				</Card>
+				{show && <AddPhoto 
+					handleClose={() => setShow(false)} 
+					show={show} 
+					mural={mural} 
+					updateMural={updateMural} 
+				/>}
 			</Container>}
 		</>
 	)
