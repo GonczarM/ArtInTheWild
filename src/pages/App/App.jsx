@@ -63,7 +63,6 @@ function App(){
           mural={mural}
           user={user}
           updatedBy={updatedBy}
-          updateMural={updateMural}
         /> } />
         {/* mural create */}
         <Route path="/mural/create" element={<CreateMural 

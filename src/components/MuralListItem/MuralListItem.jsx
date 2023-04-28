@@ -1,13 +1,11 @@
-import { Col, Card } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
-function MuralListItem({mural, updateMural, updatedBy}) {
+function MuralListItem({ mural }) {
 
   const muralDescription = mural.description || mural.description_of_artwork
 
   return (
-    <Col>
       <Card 
-        onClick={() => updateMural(mural, updatedBy)} 
         bg='secondary' 
         text='white' 
         className='text-center'
@@ -24,7 +22,6 @@ function MuralListItem({mural, updateMural, updatedBy}) {
           </Card.Text>
         </Card.Body>
       </Card>
-    </Col>
   );
 }
 
