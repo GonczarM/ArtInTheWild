@@ -23,17 +23,13 @@ function ShowMural(props){
 			sessionStorage.setItem('updatedBy', props.updatedBy)
 			setUpdatedByURL(props.updatedBy)
 			setUpdatedBy(props.updatedBy)
-			if(props.updatedBy === 'mural/create'){
-				setUpdatedBy('Mural Create')
-			}else if(props.updatedBy === 'home'){
+			if(props.updatedBy === 'home'){
 				setUpdatedByURL('')
 			}
 		}else if(sessionStorage.getItem('updatedBy')){
 			setUpdatedByURL(sessionStorage.getItem('updatedBy'))
 			setUpdatedBy(sessionStorage.getItem('updatedBy'))
-			if(sessionStorage.getItem('updatedBy') === 'mural/create'){
-				setUpdatedBy('Mural Create')
-			}else if(sessionStorage.getItem('updatedBy') === 'home'){
+			if(sessionStorage.getItem('updatedBy') === 'home'){
 				setUpdatedByURL('')
 			}
 		}

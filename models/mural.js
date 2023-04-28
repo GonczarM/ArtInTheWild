@@ -28,6 +28,8 @@ const muralSchema = new mongoose.Schema({
 	photos: [{
 		type: String
 	}]
+}, {
+	timestamps: true
 })
 
 const Mural = mongoose.model('Mural', muralSchema);

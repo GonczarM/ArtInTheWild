@@ -67,6 +67,7 @@ function App(){
         {/* mural create */}
         <Route path="/mural/create" element={<CreateMural 
           updateMural={updateMural}
+          user={user}
         /> } />
         {/* mural edit */}
         <Route path="/mural/edit/:id" element={<EditMural 
