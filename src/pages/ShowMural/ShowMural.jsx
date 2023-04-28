@@ -59,7 +59,7 @@ function ShowMural(props){
 					<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>
-					{mural.photos && mural.photos.length > 0 && <Card.Img src={`/muralPhotos/${mural.photos[0]}`} />}
+					{mural.photos && mural.photos.length > 0 && <Card.Img src={mural.photos[0]} />}
 					<Card.Body>
 						<Card.Title >{mural.title || mural.artwork_title}</Card.Title>
 						<Card.Subtitle>by {mural.artist || mural.artist_credit}</Card.Subtitle>

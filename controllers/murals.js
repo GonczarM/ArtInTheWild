@@ -2,17 +2,23 @@ const express = require('express')
 const router = express.Router();
 const Mural = require('../models/mural')
 const ensureLoggedIn = require('../config/ensureLoggedIn');
+const { S3Client } = require('@aws-sdk/client-s3')
+const multerS3 = require('multer-s3')
 const multer  = require('multer')
+const s3 = new S3Client({ region: "us-west-2" })
 
-const storage = multer.diskStorage({
-	destination: function(req, file, cb){
-		cb(null, './public/muralPhotos')
-	},
-	filename: function(req, file, cb){
-		cb(null, file.originalname)
-	}
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.S3_BUCKET,
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
+    }
+  })
 })
-const upload = multer({ storage: storage })
 
 
 // create mural
@@ -121,7 +127,7 @@ router.put('/photo/:id', upload.single('photo'), async (req, res, next) => {
 	try {
 		console.log(req.file)
 		const updatedMural = await Mural.findById(req.params.id)
-		updatedMural.photos.push(req.file.originalname)
+		updatedMural.photos.push(req.file.location)
 		updatedMural.save()
 		res.json({
 			status: 200,
