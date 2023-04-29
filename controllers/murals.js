@@ -57,7 +57,8 @@ router.get('/seed', async (req, res, next) => {
 		const murals = []
 		for(const APIMural of APIMurals){
 			if(
-				APIMural.artwork_title && 
+				APIMural.artwork_title &&
+				!APIMural.artwork_title === 'untitled' &&
 				APIMural.artist_credit && 
 				APIMural.description_of_artwork && 
 				APIMural.year_installed
@@ -91,28 +92,6 @@ router.get('/seed', async (req, res, next) => {
     })
   }	
 })
-
-// create mural from API
-// router.post('/:id', ensureLoggedIn, upload.single('photo'), async (req, res, next) => {
-// 	try{
-// 		req.body.photos = []
-// 		req.body.photos.push(req.file.location)
-// 		console.log(req.body)
-// 		// const createdMural = await Mural.create(req.body)
-// 		// // createdMural.user = req.user._id
-// 		// // createdMural.save()
-// 		// res.json({
-//     //   status: 200,
-//     //   mural: createdMural
-//     // });
-//   } 
-// 	catch(error){
-// 		res.json({
-//       status: 400,
-//       error: next(error)
-//     })
-//   }	
-// })
 
 router.get('/', async (req, res, next) => {
 	try{

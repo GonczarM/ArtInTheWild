@@ -5,10 +5,6 @@ export function createMural(muralData) {
   return sendRequest(BASE_URL, 'POST', muralData);
 }
 
-export function addAPIMural(photoData, muralId){
-  return sendRequest(`${BASE_URL}/${muralId}`, 'POST', photoData)
-}
-
 export function getMurals(){
   return sendRequest(BASE_URL)
 }

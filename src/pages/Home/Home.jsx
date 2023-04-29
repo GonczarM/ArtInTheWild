@@ -1,6 +1,6 @@
 import Logo from '../../assets/artInTheWild.jpg'
 import MuralList from '../../components/MuralList/MuralList'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 import './Home.css'
