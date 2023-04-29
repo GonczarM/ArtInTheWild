@@ -25,18 +25,6 @@ export function addPhoto(photoData, muralId){
   return sendRequest(`${BASE_URL}/photo/${muralId}`, 'PUT', photoData)
 }
 
-// Chicago Mural API
-// https://dev.socrata.com/foundry/data.cityofchicago.org/we8h-apcf
-const API_URL = 'https://data.cityofchicago.org/resource/we8h-apcf.json'
-
-export async function getMuralsAPI(){
-  const res = await fetch(API_URL);
-  if (res.ok) return res.json();
-  throw new Error('Bad Request');
-}
-
-export async function getMuralAPI(muralId){
-  const res = await fetch(`${API_URL}?mural_registration_id=${muralId}`)
-  if (res.ok) return res.json();
-  throw new Error('Bad Request');
+export function addAPIMural(photoData, muralId){
+  return sendRequest(`${BASE_URL}/${muralId}`, 'POST', photoData)
 }

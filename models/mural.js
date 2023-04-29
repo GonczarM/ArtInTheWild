@@ -21,7 +21,19 @@ const muralSchema = new mongoose.Schema({
 	affiliation: {
 		type: String
 	},
-	user:{
+	address: {
+		type: String
+	},
+	zipcode: {
+		type: String
+	},
+	latitude: {
+		type: Number
+	},
+	longitude: {
+		type: Number
+	},
+	user: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},

@@ -10,7 +10,19 @@ function AddPhoto({ handleClose, show, mural, updateMural}) {
     event.preventDefault()
     const data = new FormData()
     data.append('photo', file)
-    const updatedMural = await muralsAPI.addPhoto(data, mural._id)
+    let updatedMural
+    if(mural._id){
+      updatedMural = await muralsAPI.addPhoto(data, mural._id)
+    } else if(mural.mural_registration_id){
+      data.append(title, mural[title])
+      data.append(title, mural[title])
+      data.append(title, mural[title])
+      data.append(title, mural[title])
+      data.append(title, mural[title])
+      data.append(title, mural[title])
+      data.append(title, mural[title])
+      updatedMural = await muralsAPI.addAPIMural(data, mural.mural_registration_id)
+    }
     updateMural(updatedMural.mural)
     handleClose()
   }
