@@ -17,7 +17,6 @@ function App(){
   const [mural, setMural] = useState(null)
   const [updatedBy, setUpdatedBy] = useState(null)
   const [APIMurals, setAPIMurals] = useState(null)
-  const [searchMurals, setSearchMurals] = useState(null)
 
   const navigate = useNavigate()
 
@@ -42,10 +41,6 @@ function App(){
     setAPIMurals(murals)
   }
 
-  const updateSearchMurals = (murals) => {
-    setSearchMurals(murals)
-  }
-
   return (
     <>
       <Header 
@@ -61,9 +56,7 @@ function App(){
         />} />
         {/* mural search */}
         <Route path='/search' element={<MuralSearch 
-          updateMural={updateMural}
-          updateSearchMurals={updateSearchMurals}
-          searchMurals={searchMurals} 
+          updateMural={updateMural} 
         /> } />
         {/* mural show */}
         <Route path="/mural/:muralId" element={<ShowMural 

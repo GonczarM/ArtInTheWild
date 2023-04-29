@@ -7,6 +7,8 @@ import './Home.css'
 
 function Home({updateMural, updateAPIMurals, APIMurals}){
 
+  const [murals, setMurals] = useState(APIMurals)
+
   useEffect(() => {
     if(!APIMurals){
       getMurals()
@@ -21,6 +23,7 @@ function Home({updateMural, updateAPIMurals, APIMurals}){
       randomMurals.push(randomMural)
     }
     updateAPIMurals(randomMurals)
+    setMurals(randomMurals)
   }
 
   const getRandomMural = (arr) => {
@@ -40,8 +43,8 @@ function Home({updateMural, updateAPIMurals, APIMurals}){
   return(
     <>
       <Image fluid rounded src={Logo} alt="logo"/>
-      {APIMurals && <MuralList 
-        murals={APIMurals} 
+      {murals && <MuralList 
+        murals={murals} 
         updateMural={updateMural} 
         updatedBy={'home'}
       />}
