@@ -22,15 +22,18 @@ const upload = multer({
 
 
 // create mural
-router.post('/', ensureLoggedIn, async (req, res, next) => {
+router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) => {
 	try{
-		const createdMural = await Mural.create(req.body)
-		createdMural.user = req.user._id
-		createdMural.save()
-		res.json({
-      status: 200,
-      mural: createdMural
-    });
+		console.log('hello')
+		console.log(req.file)
+		console.log(req.body)
+		// const createdMural = await Mural.create(req.body)
+		// createdMural.user = req.user._id
+		// createdMural.save()
+		// res.json({
+    //   status: 200,
+    //   mural: createdMural
+    // });
   } 
 	catch(error){
 		res.json({
@@ -125,7 +128,6 @@ router.get('/:id', async (req, res, next) => {
 // add photo to mural
 router.put('/photo/:id', upload.single('photo'), async (req, res, next) => {
 	try {
-		console.log(req.file)
 		const updatedMural = await Mural.findById(req.params.id)
 		updatedMural.photos.push(req.file.location)
 		updatedMural.save()

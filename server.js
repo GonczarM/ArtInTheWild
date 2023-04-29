@@ -7,7 +7,7 @@ require('dotenv').config()
 require('./config/db')
 const usersController = require('./controllers/users')
 const muralsController = require('./controllers/murals')
-const PORT = 3001
+const PORT = process.env.PORT
 
 //middleware
 app.use(logger('dev'));

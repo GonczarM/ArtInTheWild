@@ -6,10 +6,7 @@ const initialForm = {
 	title: '',
 	artist: '',
 	description: '',
-	locationDescription: '',
 	year: '',
-	lat: '',
-	lng: ''
 }
 
 function CreateMural({ updateMural, user }){
@@ -20,11 +17,19 @@ function CreateMural({ updateMural, user }){
 		setForm({ ...form, [event.target.name]: event.target.value})
 	}
 
+	const handleFile = (event) => {
+		setForm({...form, })
+	}
+
 	const handleSubmit = async (event) => {
     event.preventDefault()
-		const createdMural = await muralsAPI.createMural(form)
-		setForm(initialForm)
-		updateMural(createdMural.mural, user.username)
+		const data = new FormData()
+		for(const prop in form){
+			data.append(prop, form[prop])
+		}
+		const createdMural = await muralsAPI.createMural(data)
+		// setForm(initialForm)
+		// updateMural(createdMural.mural, user.username)
   }
 
 	return(
@@ -74,6 +79,14 @@ function CreateMural({ updateMural, user }){
 						onChange={handleChange}
 						style={{ height: '7rem' }}
 						required
+					/>
+				</Form.Group>
+				<Form.Group controlId='photo'>
+					<Form.Label>Photo</Form.Label>
+					<Form.Control
+						type="file"
+						name="photo"
+						onChange={handleFile}
 					/>
 				</Form.Group>
 				<Button type='submit'>Create Mural</Button>
