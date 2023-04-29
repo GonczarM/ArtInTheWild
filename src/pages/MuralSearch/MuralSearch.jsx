@@ -3,28 +3,25 @@ import { Button, Container, Form } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as muralsAPI from '../../utils/murals-api'
 
-function MuralSearch({updateMural}){
+function MuralSearch({updateMural, searchMurals, updateSearchMurals}){
 
 	const [search, setSearch] = useState('')
-	const [murals, setMurals] = useState(null)
-	const [muralArtist, setMuralArtist] = useState(null)
 
 	const updateSearch =(event) => {
 		setSearch(event.target.value)
 	}
 
-	const searchMurals = async (event) => {
+	const searchMuralsAPI = async (event) => {
 		event.preventDefault()
 		const foundMurals = await muralsAPI.searchMurals(search)
-		setMurals(foundMurals.murals)
-		setMuralArtist(search)
+		updateSearchMurals(foundMurals.murals)
 		setSearch('')
   }
 
 	return(
 		<Container className='text-center'>
 			<h1>Search Murals by Artist</h1>
-			<Form onSubmit={searchMurals}>
+			<Form onSubmit={searchMuralsAPI}>
 				<Form.Group controlId='search'>
 					<Form.Control
 						placeholder='search a mural'
@@ -37,13 +34,13 @@ function MuralSearch({updateMural}){
 				</Form.Group>
 				<Button type='submit'>Search</Button>
 			</Form>
-			{murals && murals.length > 0 && <MuralList 
-				murals={murals} 
+			{searchMurals && searchMurals.length > 0 && <MuralList 
+				murals={searchMurals} 
 				updateMural={updateMural} 
-				muralArtist={muralArtist} 
+				muralArtist={search} 
 				updatedBy={'search'} 
 			/>}
-			{murals && !murals.length && <h2>No Murals Found for That Artist</h2>}
+			{searchMurals && !searchMurals.length && <h2>No Murals Found for That Artist</h2>}
 		</Container>
 	)
 }
