@@ -7,6 +7,7 @@ const initialForm = {
 	artist: '',
 	description: '',
 	year: '',
+	photo: ''
 }
 
 function CreateMural({ updateMural, user }){
@@ -18,7 +19,7 @@ function CreateMural({ updateMural, user }){
 	}
 
 	const handleFile = (event) => {
-		setForm({...form, })
+		setForm({...form, [event.target.name]: event.target.files[0]})
 	}
 
 	const handleSubmit = async (event) => {
@@ -28,8 +29,8 @@ function CreateMural({ updateMural, user }){
 			data.append(prop, form[prop])
 		}
 		const createdMural = await muralsAPI.createMural(data)
-		// setForm(initialForm)
-		// updateMural(createdMural.mural, user.username)
+		setForm(initialForm)
+		updateMural(createdMural.mural, user.username)
   }
 
 	return(
