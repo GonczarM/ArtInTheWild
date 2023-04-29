@@ -22,7 +22,9 @@ function App(){
 
   const updateMural = (mural, updatedBy) => {
 		setMural(mural)
-    setUpdatedBy(updatedBy)
+    if(updatedBy){
+      setUpdatedBy(updatedBy)
+    }
 		navigate(`/mural/${mural._id}`)
 	}
 
@@ -37,8 +39,17 @@ function App(){
     navigate('/')
   }
 
-  const updateMurals = (murals) => {
-    setMurals(murals)
+  const updateMurals = (newMurals) => {
+    if(newMurals.length){
+      setMurals(newMurals)
+    }else{
+      for (let i = 0; i < murals.length; i++) {
+        if(murals[i]._id === newMurals._id){
+          murals.splice(i, 1, newMurals)
+          setMurals([...murals])
+        }
+      }
+    }
   }
 
   return (
@@ -63,6 +74,8 @@ function App(){
           mural={mural}
           user={user}
           updatedBy={updatedBy}
+          updateMural={updateMural}
+          updateMurals={updateMurals}
         /> } />
         {/* mural create */}
         <Route path="/mural/create" element={<CreateMural 

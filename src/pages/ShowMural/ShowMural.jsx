@@ -14,10 +14,6 @@ function ShowMural(props){
 
 	const navigate = useNavigate()
 
-	const updateMural = (mural) => {
-		setMural(mural)
-	}
-
 	useEffect(() => {
 		if(props.updatedBy){
 			sessionStorage.setItem('updatedBy', props.updatedBy)
@@ -41,6 +37,10 @@ function ShowMural(props){
 			setMural(JSON.parse(sessionStorage.getItem('mural')))
 		}
 	}, [])
+
+	useEffect(() => {
+		setMural(props.mural)
+	}, [props.mural])
 
   const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
@@ -95,7 +95,8 @@ function ShowMural(props){
 					handleClose={() => setShow(false)} 
 					show={show} 
 					mural={mural} 
-					updateMural={updateMural} 
+					updateMural={props.updateMural}
+					updateMurals={props.updateMurals} 
 				/>}
 			</Container>}
 		</>
