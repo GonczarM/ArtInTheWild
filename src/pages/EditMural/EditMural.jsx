@@ -35,8 +35,8 @@ const EditMural = (props) => {
 					<LinkContainer to={`/${updatedBy}`}>
 							<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
-					<LinkContainer to={`/mural/${form._id || form.mural_registration_id}`}>
-						<Breadcrumb.Item >{form.title || form.artwork_title}</Breadcrumb.Item>
+					<LinkContainer to={`/mural/${form._id}`}>
+						<Breadcrumb.Item >{form.title}</Breadcrumb.Item>
 					</LinkContainer>
 					<Breadcrumb.Item active>Edit</Breadcrumb.Item>
 				</Breadcrumb>

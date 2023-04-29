@@ -54,35 +54,35 @@ function ShowMural(props){
 					<LinkContainer to={`/${updatedByURL}`}>
 						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
-					<Breadcrumb.Item active>{mural.title || mural.artwork_title}</Breadcrumb.Item>
+					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>
 					{mural.photos && mural.photos.length > 0 && <Card.Img src={mural.photos[0]} />}
 					<Card.Body>
-						<Card.Title >{mural.title || mural.artwork_title}</Card.Title>
-						<Card.Subtitle>by {mural.artist || mural.artist_credit}</Card.Subtitle>
-						<Card.Text>{mural.year || mural.year_installed}</Card.Text>
+						<Card.Title >{mural.title}</Card.Title>
+						<Card.Subtitle>by {mural.artist}</Card.Subtitle>
+						<Card.Text>{mural.year}</Card.Text>
 						<Card.Subtitle>Description</Card.Subtitle>
-						<Card.Text>{mural.description || mural.description_of_artwork}</Card.Text>
-						{mural.affiliated_or_commissioning && 
+						<Card.Text>{mural.description}</Card.Text>
+						{mural.affiliation && 
 						<>
 							<Card.Subtitle>Affiliation</Card.Subtitle>
-							<Card.Text>{mural.affiliated_or_commissioning}</Card.Text>
+							<Card.Text>{mural.affiliation}</Card.Text>
 						</>}
-						{mural.street_address && 
+						{mural.address && 
 						<>
 							<Card.Subtitle>Address</Card.Subtitle>
-							<Card.Text>{mural.street_address}</Card.Text>
+							<Card.Text>{mural.address}</Card.Text>
 						</>}
-						{mural.zip && 
+						{mural.zipcode && 
 						<>
 							<Card.Subtitle>ZIP Code</Card.Subtitle>
-							<Card.Text>{mural.zip}</Card.Text>
+							<Card.Text>{mural.zipcode}</Card.Text>
 						</>}
 						{props.user && mural.user === props.user._id &&
 						<>
 							<Button 
-								onClick={() => navigate(`/mural/edit/${mural._id || mural.mural_registration_id}`)}
+								onClick={() => navigate(`/mural/edit/${mural._id}`)}
 							>
 								Edit Mural
 							</Button><br></br>

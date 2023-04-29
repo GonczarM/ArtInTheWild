@@ -5,34 +5,28 @@ import { Image } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 import './Home.css'
 
-function Home({updateMural, updateAPIMurals, APIMurals}){
-
-  const [murals, setMurals] = useState(APIMurals)
+function Home({updateMural, updateMurals, murals}){
 
   useEffect(() => {
-    if(!APIMurals){
+    if(!murals){
       getMurals()
     }
   }, [])
 
   const getMurals = async () => {
-    const APIMurals = await muralsAPI.getMuralsAPI()
+    const APIMurals = await muralsAPI.getMurals()
     const randomMurals = []
     for (let i = 0; i < 6; i++) {
-      const randomMural = getRandomMural(APIMurals)
+      const randomMural = getRandomMural(APIMurals.murals)
       randomMurals.push(randomMural)
     }
-    updateAPIMurals(randomMurals)
-    setMurals(randomMurals)
+    updateMurals(randomMurals)
   }
 
   const getRandomMural = (arr) => {
     const ranNum = Math.floor(Math.random()* arr.length)
     const randomMural = arr[ranNum]
-    if(!randomMural.artwork_title || 
-      !randomMural.artist_credit || 
-      !randomMural.description_of_artwork || 
-      randomMural.description_of_artwork.length < 100
+    if(randomMural.description.length < 100
     ){
       return getRandomMural(arr)
     }else{

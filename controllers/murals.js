@@ -114,6 +114,23 @@ router.get('/seed', async (req, res, next) => {
 //   }	
 // })
 
+router.get('/', async (req, res, next) => {
+	try{
+		const murals = await Mural.find({})
+		res.json({
+			status: 200,
+			murals: murals
+		})
+	}
+	catch(error){
+		next(error)
+		res.status(400).json({
+			status: 400,	
+			error: error
+		})
+	}
+})
+
 // search mural by artist
 router.get('/search/:search', async (req, res, next) => {
 	try{

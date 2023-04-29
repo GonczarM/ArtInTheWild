@@ -16,14 +16,14 @@ function App(){
 	const [user, setUser] = useState(userService.getUser())
   const [mural, setMural] = useState(null)
   const [updatedBy, setUpdatedBy] = useState(null)
-  const [APIMurals, setAPIMurals] = useState(null)
+  const [murals, setMurals] = useState(null)
 
   const navigate = useNavigate()
 
   const updateMural = (mural, updatedBy) => {
 		setMural(mural)
     setUpdatedBy(updatedBy)
-		navigate(`/mural/${mural._id || mural.mural_registration_id}`)
+		navigate(`/mural/${mural._id}`)
 	}
 
   const loginUser = (user) => {
@@ -37,8 +37,8 @@ function App(){
     navigate('/')
   }
 
-  const updateAPIMurals = (murals) => {
-    setAPIMurals(murals)
+  const updateMurals = (murals) => {
+    setMurals(murals)
   }
 
   return (
@@ -51,8 +51,8 @@ function App(){
         {/* home */}
         <Route path="/" element={<Home 
           updateMural={updateMural}
-          updateAPIMurals={updateAPIMurals}
-          APIMurals={APIMurals} 
+          updateMurals={updateMurals}
+          murals={murals} 
         />} />
         {/* mural search */}
         <Route path='/search' element={<MuralSearch 
