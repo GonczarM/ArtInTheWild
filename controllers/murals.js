@@ -58,7 +58,6 @@ router.get('/seed', async (req, res, next) => {
 		for(const APIMural of APIMurals){
 			if(
 				APIMural.artwork_title &&
-				!APIMural.artwork_title === 'untitled' &&
 				APIMural.artist_credit && 
 				APIMural.description_of_artwork && 
 				APIMural.year_installed
