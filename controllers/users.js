@@ -23,7 +23,6 @@ router.post('/register', async (req, res, next) => {
 		}
 	}
 	catch(error){
-		console.log(error)
 		res.status(400).json({
 			status: 400,
 			error: error
@@ -59,7 +58,6 @@ router.post('/login', async (req, res, next) => {
 		res.json(token)
 	}
 	catch(error){
-		console.log(error)
 		res.status(400).json({
 			error: next(error)
 		})

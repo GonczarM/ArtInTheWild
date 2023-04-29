@@ -37,7 +37,6 @@ router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) 
     });
   } 
 	catch(error){
-		console.log(error)
 		res.json({
       status: 400,
       error: next(error)
