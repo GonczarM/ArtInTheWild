@@ -1,50 +1,37 @@
 import { useEffect, useState } from 'react'
 import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 
-function ShowMural(props){
+function ShowMural({ mural, user, updateMural, updateMurals }){
 
-	const [mural, setMural] = useState(props.mural)
-	const [updatedBy, setUpdatedBy] = useState(null)
 	const [updatedByURL, setUpdatedByURL] = useState(null)
 	const [show, setShow] = useState(false);
 
 	const navigate = useNavigate()
+	const { muralId, updatedBy } = useParams()
 
 	useEffect(() => {
-		if(props.updatedBy){
-			sessionStorage.setItem('updatedBy', props.updatedBy)
-			setUpdatedBy(props.updatedBy)
-			if(props.updatedBy === 'home'){
-				setUpdatedByURL('')
-			}else{
-				setUpdatedByURL(props.updatedBy)
-			}
-		}else if(sessionStorage.getItem('updatedBy')){
-			setUpdatedBy(sessionStorage.getItem('updatedBy'))
-			if(sessionStorage.getItem('updatedBy') === 'home'){
-				setUpdatedByURL('')
-			}else{
-				setUpdatedByURL(sessionStorage.getItem('updatedBy'))
-			}
-		}
-		if(mural){
-			sessionStorage.setItem('mural', JSON.stringify(mural))
+		if(updatedBy === 'home'){
+			setUpdatedByURL('')
 		}else{
-			setMural(JSON.parse(sessionStorage.getItem('mural')))
+			setUpdatedByURL(updatedBy)
+		}
+		if(!mural){
+			getMural()
 		}
 	}, [])
 
-	useEffect(() => {
-		setMural(props.mural)
-	}, [props.mural])
+	const getMural = async () => {
+		const mural = await muralsAPI.getMural(muralId)
+		updateMural(mural.mural, updatedBy)
+	}
 
   const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
-    navigate(`/${props.user.username}`)
+    navigate(`/${user.username}`)
   }
 
 	return(
@@ -79,24 +66,24 @@ function ShowMural(props){
 							<Card.Subtitle>ZIP Code</Card.Subtitle>
 							<Card.Text>{mural.zipcode}</Card.Text>
 						</>}
-						{props.user && mural.user === props.user._id &&
+						{user && mural.user === user._id &&
 						<>
 							<Button 
-								onClick={() => navigate(`/mural/edit/${mural._id}`)}
+								onClick={() => navigate(`/mural/edit/${updatedBy}/${mural._id}`)}
 							>
 								Edit Mural
 							</Button><br></br>
 							<Button onClick={handleDelete}>Delete Mural</Button><br></br>
 						</>}
-						{props.user && <Button onClick={() => setShow(true)}>Add Photo</Button>}
+						{user && <Button onClick={() => setShow(true)}>Add Photo</Button>}
 					</Card.Body>
 				</Card>
 				{show && <AddPhoto 
 					handleClose={() => setShow(false)} 
 					show={show} 
 					mural={mural} 
-					updateMural={props.updateMural}
-					updateMurals={props.updateMurals} 
+					updateMural={updateMural}
+					updateMurals={updateMurals} 
 				/>}
 			</Container>}
 		</>

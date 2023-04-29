@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as muralsAPI from '../../utils/murals-api'
 
-const EditMural = (props) => {
+const EditMural = ({ mural, updateMural, user }) => {
 
-	const [form, setForm] = useState(props.mural)
-	const [updatedBy, setUpdatedBy] = useState(props.updatedBy)
+	const [form, setForm] = useState(mural)
+
+	const navigate = useNavigate()
+	const { updatedBy, muralId } = useParams()
+	console.log(updatedBy)
 
 	useEffect(() => {
-		if(!props.mural){
-			setForm(JSON.parse(sessionStorage.getItem('mural')))
-		}
-		if(!props.updatedBy){
-			setUpdatedBy(sessionStorage.getItem('updatedBy'))
+		if(!mural){
+			navigate(`/mural/${updatedBy}/${muralId}`)
 		}
 	}, [])
 
@@ -23,9 +24,9 @@ const EditMural = (props) => {
 
 	const handleSubmit = async (event) => {
     event.preventDefault()
-		const updatedMural = await muralsAPI.editMural(form, mural._id)
+		const updatedMural = await muralsAPI.editMural(form, muralId)
 		setForm(updatedMural.mural)
-		props.updateMural(updatedMural.mural, props.user.username)
+		updateMural(updatedMural.mural, user.username)
   }
 
 	return(
@@ -35,8 +36,8 @@ const EditMural = (props) => {
 					<LinkContainer to={`/${updatedBy}`}>
 							<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
-					<LinkContainer to={`/mural/${form._id}`}>
-						<Breadcrumb.Item >{form.title}</Breadcrumb.Item>
+					<LinkContainer to={`/mural/${updatedBy}/${mural._id}`}>
+						<Breadcrumb.Item >{mural.title}</Breadcrumb.Item>
 					</LinkContainer>
 					<Breadcrumb.Item active>Edit</Breadcrumb.Item>
 				</Breadcrumb>

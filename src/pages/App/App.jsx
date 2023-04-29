@@ -8,8 +8,9 @@ import UserShow from '../UserShow/UserShow';
 import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as userService from '../../utils/users-service';
+import * as muralsAPI from '../../utils/murals-api'
 
 function App(){
 
@@ -20,12 +21,37 @@ function App(){
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if(!murals){
+      getMurals()
+    }
+  }, [])
+
+  const getMurals = async () => {
+    const APIMurals = await muralsAPI.getMurals()
+    const randomMurals = []
+    for (let i = 0; i < 6; i++) {
+      const randomMural = getRandomMural(APIMurals.murals)
+      randomMurals.push(randomMural)
+    }
+    setMurals(randomMurals)
+  }
+
+  const getRandomMural = (arr) => {
+    const ranNum = Math.floor(Math.random()* arr.length)
+    const randomMural = arr[ranNum]
+    if(randomMural.description.length < 100
+    ){
+      return getRandomMural(arr)
+    }else{
+      return randomMural
+    }
+  }
+
   const updateMural = (mural, updatedBy) => {
 		setMural(mural)
-    if(updatedBy){
-      setUpdatedBy(updatedBy)
-    }
-		navigate(`/mural/${mural._id}`)
+    setUpdatedBy(updatedBy)
+		navigate(`/mural/${updatedBy}/${mural._id}`)
 	}
 
   const loginUser = (user) => {
@@ -40,14 +66,10 @@ function App(){
   }
 
   const updateMurals = (newMurals) => {
-    if(newMurals.length){
-      setMurals(newMurals)
-    }else{
-      for (let i = 0; i < murals.length; i++) {
-        if(murals[i]._id === newMurals._id){
-          murals.splice(i, 1, newMurals)
-          setMurals([...murals])
-        }
+    for (let i = 0; i < murals.length; i++) {
+      if(murals[i]._id === newMurals._id){
+        murals.splice(i, 1, newMurals)
+        setMurals([...murals])
       }
     }
   }
@@ -62,7 +84,6 @@ function App(){
         {/* home */}
         <Route path="/" element={<Home 
           updateMural={updateMural}
-          updateMurals={updateMurals}
           murals={murals} 
         />} />
         {/* mural search */}
@@ -70,10 +91,9 @@ function App(){
           updateMural={updateMural} 
         /> } />
         {/* mural show */}
-        <Route path="/mural/:muralId" element={<ShowMural 
+        <Route path="/mural/:updatedBy/:muralId" element={<ShowMural 
           mural={mural}
           user={user}
-          updatedBy={updatedBy}
           updateMural={updateMural}
           updateMurals={updateMurals}
         /> } />
@@ -83,11 +103,10 @@ function App(){
           user={user}
         /> } />
         {/* mural edit */}
-        <Route path="/mural/edit/:id" element={<EditMural 
+        <Route path="/mural/edit/:updatedBy/:muralId" element={<EditMural 
           mural={mural} 
           updateMural={updateMural}
           user={user}
-          updatedBy={updatedBy}
         /> } />
         {/* user login */}
         <Route path="/login" element={<Login 
