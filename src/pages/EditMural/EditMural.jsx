@@ -10,7 +10,6 @@ const EditMural = ({ mural, updateMural, user }) => {
 
 	const navigate = useNavigate()
 	const { updatedBy, muralId } = useParams()
-	console.log(updatedBy)
 
 	useEffect(() => {
 		if(!mural){

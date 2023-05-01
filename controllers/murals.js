@@ -77,14 +77,12 @@ router.get('/seed', async (req, res, next) => {
 			}
 		}
 		const createdMurals = await Mural.create(murals)
-		console.log(createdMurals)
 		res.json({
       status: 200,
       mural: createdMurals
     });
   } 
 	catch(error){
-		console.log(error)
 		res.json({
       status: 400,
       error: next(error)

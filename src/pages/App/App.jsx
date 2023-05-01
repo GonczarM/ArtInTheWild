@@ -48,7 +48,6 @@ function App(){
   }
 
   const updateMural = (updatedMural) => {
-    console.log(updatedMural)
 		setMural(updatedMural)
 		navigate(`/mural/${updatedMural.updatedBy}/${updatedMural._id}`)
 	}
@@ -64,11 +63,12 @@ function App(){
     navigate('/')
   }
 
-  const updateMurals = (newMurals) => {
+  const updateMurals = (newMural) => {
     for (let i = 0; i < murals.length; i++) {
-      if(murals[i]._id === newMurals._id){
-        murals.splice(i, 1, newMurals)
-        setMurals([...murals])
+      if(murals[i]._id === newMural._id){
+        const muralsCopy = [...murals]
+        muralsCopy.splice(i, 1, newMural)
+        setMurals(muralsCopy)
       }
     }
   }
