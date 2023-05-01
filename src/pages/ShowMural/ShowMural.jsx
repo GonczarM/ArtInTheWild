@@ -7,18 +7,12 @@ import AddPhoto from '../../components/AddPhoto/AddPhoto'
 
 function ShowMural({ mural, user, updateMural, updateMurals }){
 
-	const [updatedByURL, setUpdatedByURL] = useState(null)
-	const [show, setShow] = useState(false);
+	const [addPhoto, setAddPhoto] = useState(false);
 
 	const navigate = useNavigate()
 	const { muralId, updatedBy } = useParams()
 
 	useEffect(() => {
-		if(updatedBy === 'home'){
-			setUpdatedByURL('')
-		}else{
-			setUpdatedByURL(updatedBy)
-		}
 		if(!mural){
 			getMural()
 		}
@@ -26,7 +20,7 @@ function ShowMural({ mural, user, updateMural, updateMurals }){
 
 	const getMural = async () => {
 		const mural = await muralsAPI.getMural(muralId)
-		updateMural(mural.mural, updatedBy)
+		updateMural({...mural.mural, updatedBy})
 	}
 
   const handleDelete = () => {
@@ -38,9 +32,15 @@ function ShowMural({ mural, user, updateMural, updateMurals }){
 		<>
 			{mural && <Container>
 				<Breadcrumb>
-					<LinkContainer to={`/${updatedByURL}`}>
+					{updatedBy === 'home' ? 
+					<LinkContainer to={`/`}>
 						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
+					: 
+					<LinkContainer to={`/${updatedBy}`}>
+						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
+					</LinkContainer>
+					}
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>
@@ -75,12 +75,12 @@ function ShowMural({ mural, user, updateMural, updateMurals }){
 							</Button><br></br>
 							<Button onClick={handleDelete}>Delete Mural</Button><br></br>
 						</>}
-						{user && <Button onClick={() => setShow(true)}>Add Photo</Button>}
+						{user && <Button onClick={() => setAddPhoto(true)}>Add Photo</Button>}
 					</Card.Body>
 				</Card>
-				{show && <AddPhoto 
-					handleClose={() => setShow(false)} 
-					show={show} 
+				{addPhoto && <AddPhoto 
+					handleClose={() => setAddPhoto(false)} 
+					addPhoto={addPhoto} 
 					mural={mural} 
 					updateMural={updateMural}
 					updateMurals={updateMurals} 

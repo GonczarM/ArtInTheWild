@@ -3,7 +3,7 @@ import {Button, Modal, Form} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import * as muralsAPI from '../../utils/murals-api'
 
-function AddPhoto({ handleClose, show, mural, updateMural, updateMurals}) {
+function AddPhoto({ handleClose, addPhoto, mural, updateMural, updateMurals}) {
 
   const [file, setFile] = useState('')
 
@@ -15,13 +15,13 @@ function AddPhoto({ handleClose, show, mural, updateMural, updateMurals}) {
     data.append('photo', file)
     const updatedMural = await muralsAPI.addPhoto(data, mural._id)
     updateMurals(updatedMural.mural)
-    updateMural(updatedMural.mural, updatedBy)
+    updateMural({...mural.mural, updatedBy})
     handleClose()
   }
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} centered>
+      <Modal show={addPhoto} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Add Mural Photo</Modal.Title>
         </Modal.Header>

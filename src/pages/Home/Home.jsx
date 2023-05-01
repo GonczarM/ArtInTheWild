@@ -3,7 +3,7 @@ import MuralList from '../../components/MuralList/MuralList'
 import { Image } from 'react-bootstrap';
 import './Home.css'
 
-function Home({updateMural, updateMurals, murals}){
+function Home({updateMural, murals}){
 
   return(
     <>
@@ -16,4 +16,5 @@ function Home({updateMural, updateMurals, murals}){
     </>
   )
 }
+
 export default Home;

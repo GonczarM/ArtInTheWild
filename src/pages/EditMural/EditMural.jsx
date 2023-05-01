@@ -25,8 +25,8 @@ const EditMural = ({ mural, updateMural, user }) => {
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		const updatedMural = await muralsAPI.editMural(form, muralId)
+		updateMural({...updatedMural.mural, updatedBy: user.username})
 		setForm(updatedMural.mural)
-		updateMural(updatedMural.mural, user.username)
   }
 
 	return(

@@ -29,8 +29,8 @@ function CreateMural({ updateMural, user }){
 			data.append(prop, form[prop])
 		}
 		const createdMural = await muralsAPI.createMural(data)
+		updateMural({...createdMural.mural, updatedBy: user.username})
 		setForm(initialForm)
-		updateMural(createdMural.mural, user.username)
   }
 
 	return(

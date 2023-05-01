@@ -7,7 +7,6 @@ function MuralSearch({updateMural}){
 
 	const [search, setSearch] = useState('')
 	const [murals, setMurals] = useState(null)
-	const [muralArtist, setMuralArtist] = useState(null)
 
 	const updateSearch =(event) => {
 		setSearch(event.target.value)
@@ -17,7 +16,6 @@ function MuralSearch({updateMural}){
 		event.preventDefault()
 		const foundMurals = await muralsAPI.searchMurals(search)
 		setMurals(foundMurals.murals)
-		setMuralArtist(search)
 		setSearch('')
   }
 
@@ -40,7 +38,7 @@ function MuralSearch({updateMural}){
 			{murals && murals.length > 0 && <MuralList 
 				murals={murals} 
 				updateMural={updateMural} 
-				muralArtist={muralArtist} 
+				muralArtist={murals[0].artist} 
 				updatedBy={'search'} 
 			/>}
 			{murals && !murals.length && <h2>No Murals Found for That Artist</h2>}

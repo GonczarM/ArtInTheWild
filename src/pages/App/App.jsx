@@ -16,7 +16,6 @@ function App(){
 
 	const [user, setUser] = useState(userService.getUser())
   const [mural, setMural] = useState(null)
-  const [updatedBy, setUpdatedBy] = useState(null)
   const [murals, setMurals] = useState(null)
 
   const navigate = useNavigate()
@@ -48,15 +47,15 @@ function App(){
     }
   }
 
-  const updateMural = (mural, updatedBy) => {
-		setMural(mural)
-    setUpdatedBy(updatedBy)
-		navigate(`/mural/${updatedBy}/${mural._id}`)
+  const updateMural = (updatedMural) => {
+    console.log(updatedMural)
+		setMural(updatedMural)
+		navigate(`/mural/${updatedMural.updatedBy}/${updatedMural._id}`)
 	}
 
-  const loginUser = (user) => {
-    setUser(user)
-    navigate(`/${user.username}`);
+  const loginUser = (userToLogin) => {
+    setUser(userToLogin)
+    navigate(`/${userToLogin.username}`);
   }
 
   const logoutUser = () => {

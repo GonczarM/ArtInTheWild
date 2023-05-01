@@ -8,7 +8,7 @@ const MuralsList = ({murals, updateMural, muralArtist, updatedBy}) => {
       {muralArtist && <h1 className='text-center'>{muralArtist}'s murals</h1>}
 			<Row xs={1} lg={2}>
 				{murals && murals.map((mural, i) => (
-					<Col onClick={() => updateMural(mural, updatedBy)} key={i} >
+					<Col onClick={() => updateMural({...mural, updatedBy})} key={i} >
 						<MuralListItem mural={mural} />
 					</Col>
 				))}

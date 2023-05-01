@@ -21,7 +21,7 @@ const UserShow = ({user, updateMural, logoutUser}) => {
   }
 
   const handleDelete = async () => {
-    const deleteRes = await userAPI.deleteUser(user._id)
+    await userAPI.deleteUser(user._id)
     logoutUser()
   }
 
