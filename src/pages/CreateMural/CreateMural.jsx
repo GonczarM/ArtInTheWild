@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -16,6 +17,8 @@ function CreateMural(){
 	const [form, setForm] = useState(initialForm)
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
+
+	const navigate = useNavigate()
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})
@@ -37,6 +40,7 @@ function CreateMural(){
 			mural: {...createdMural.mural, updatedBy: user.username}
 		})
 		setForm(initialForm)
+		navigate(`/mural/${user.username}/${createdMural.mural._id}`)
   }
 
 	return(

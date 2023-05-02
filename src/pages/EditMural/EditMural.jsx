@@ -33,6 +33,7 @@ const EditMural = () => {
 			mural: {...updatedMural.mural, updatedBy: user.username}
 		})
 		setForm(updatedMural.mural)
+		navigate(`/mural/${user.username}/${updatedMural.mural._id}`)
   }
 
 	return(
