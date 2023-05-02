@@ -2,13 +2,15 @@ import { useContext, useEffect, useState } from 'react';
 import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { UserContext } from '../../utils/contexts';
+import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 
-const EditMural = ({ mural, updateMural }) => {
-
+const EditMural = () => {
+	
+	const mural = useContext(MuralContext)
 	const [form, setForm] = useState(mural)
 	const user = useContext(UserContext)
+	const dispatch = useContext(MuralDispatchContext)
 	const { updatedBy, muralId } = useParams()
 
 	const navigate = useNavigate()
@@ -26,7 +28,10 @@ const EditMural = ({ mural, updateMural }) => {
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		const updatedMural = await muralsAPI.editMural(form, muralId)
-		updateMural({...updatedMural.mural, updatedBy: user.username})
+		dispatch({
+			type: 'changed',
+			mural: {...updatedMural.mural, updatedBy: user.username}
+		})
 		setForm(updatedMural.mural)
   }
 

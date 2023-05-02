@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
-import { UserContext } from '../../utils/contexts';
+import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 
 const initialForm = {
@@ -11,10 +11,11 @@ const initialForm = {
 	photo: ''
 }
 
-function CreateMural({ updateMural }){
+function CreateMural(){
 
 	const [form, setForm] = useState(initialForm)
 	const user = useContext(UserContext)
+	const dispatch = useContext(MuralDispatchContext)
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})
@@ -31,7 +32,10 @@ function CreateMural({ updateMural }){
 			data.append(prop, form[prop])
 		}
 		const createdMural = await muralsAPI.createMural(data)
-		updateMural({...createdMural.mural, updatedBy: user.username})
+		dispatch({
+			type: 'changed',
+			mural: {...createdMural.mural, updatedBy: user.username}
+		})
 		setForm(initialForm)
   }
 

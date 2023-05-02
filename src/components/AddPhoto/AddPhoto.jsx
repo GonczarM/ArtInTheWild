@@ -1,20 +1,25 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {Button, Modal, Form} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { MuralDispatchContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 
-function AddPhoto({ handleClose, addPhoto, mural, updateMural, updateMurals }) {
+function AddPhoto({ handleClose, addPhoto, updateMurals }) {
 
   const [file, setFile] = useState('')
-  const { updatedBy } = useParams()
+  const { updatedBy, muralId } = useParams()
+  const dispatch = useContext(MuralDispatchContext)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     const data = new FormData()
     data.append('photo', file)
-    const updatedMural = await muralsAPI.addPhoto(data, mural._id)
+    const updatedMural = await muralsAPI.addPhoto(data, muralId)
     updateMurals(updatedMural.mural)
-    updateMural({...updatedMural.mural, updatedBy})
+    dispatch({
+      type: 'changed',
+      mural: {...updatedMural.mural, updatedBy}
+    })
     handleClose()
   }
 

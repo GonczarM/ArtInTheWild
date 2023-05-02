@@ -9,7 +9,7 @@ import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
 import { useState, useEffect, useReducer } from 'react';
-import { UserContext } from '../../utils/contexts';
+import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as userService from '../../utils/users-service';
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -56,14 +56,6 @@ function App(){
     }
   }
 
-  const updateMural = (updatedMural) => {
-    dispatch({
-      type: 'changed',
-      mural: updatedMural
-    })
-    navigate(`/mural/${updatedMural.updatedBy}/${updatedMural._id}`)
-	}
-
   const loginUser = (userToLogin) => {
     setUser(userToLogin)
     navigate(`/user/${userToLogin.username}`);
@@ -88,34 +80,26 @@ function App(){
   return (
     <>
     <UserContext.Provider value={user}>
+    <MuralContext.Provider value={mural}>
+    <MuralDispatchContext.Provider value={dispatch}>
       <Header 
         logoutUser={logoutUser} 
       />
       <Routes>
         {/* home */}
         <Route path="/" element={<Home 
-          updateMural={updateMural}
           murals={murals} 
         />} />
         {/* mural search */}
-        <Route path='/search' element={<MuralSearch 
-          updateMural={updateMural} 
-        /> } />
+        <Route path='/search' element={<MuralSearch /> } />
         {/* mural show */}
         <Route path="/mural/:updatedBy/:muralId" element={<ShowMural 
-          mural={mural}
-          updateMural={updateMural}
           updateMurals={updateMurals}
         /> } />
         {/* mural create */}
-        <Route path="/mural/create" element={<CreateMural 
-          updateMural={updateMural}
-        /> } />
+        <Route path="/mural/create" element={<CreateMural /> } />
         {/* mural edit */}
-        <Route path="/mural/edit/:updatedBy/:muralId" element={<EditMural 
-          mural={mural} 
-          updateMural={updateMural}
-        /> } />
+        <Route path="/mural/edit/:updatedBy/:muralId" element={<EditMural /> } />
         {/* user login */}
         <Route path="/login" element={<Login 
           loginUser={loginUser} 
@@ -126,10 +110,11 @@ function App(){
         /> } />
         {/* user show */}
         <Route path="/user/:username" element={<UserShow 
-          updateMural={updateMural}
           logoutUser={logoutUser} 
         />} />
       </Routes>
+    </MuralDispatchContext.Provider>
+    </MuralContext.Provider>
     </UserContext.Provider>
     </>
   );

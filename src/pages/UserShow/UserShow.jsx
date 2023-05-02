@@ -6,7 +6,7 @@ import { UserContext } from '../../utils/contexts';
 import * as userAPI from '../../utils/users-api'
 import './UserShow.css'
 
-const UserShow = ({ updateMural, logoutUser }) => {
+const UserShow = ({ logoutUser }) => {
 
   const [murals, setMurals] = useState(null)
   const user = useContext(UserContext)
@@ -38,7 +38,6 @@ const UserShow = ({ updateMural, logoutUser }) => {
       {murals ? 
       <MuralList 
         murals={murals} 
-        updateMural={updateMural} 
         muralArtist={user.username} 
         updatedBy={user.username}
       />

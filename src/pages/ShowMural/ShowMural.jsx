@@ -4,13 +4,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
-import { UserContext } from '../../utils/contexts'
+import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
 
-function ShowMural({ mural, updateMural, updateMurals }){
+function ShowMural({ updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
+	const mural = useContext(MuralContext)
+	const dispatch = useContext(MuralDispatchContext)
 
 	const navigate = useNavigate()
 
@@ -22,7 +24,10 @@ function ShowMural({ mural, updateMural, updateMurals }){
 
 	const getMural = async () => {
 		const mural = await muralsAPI.getMural(muralId)
-		updateMural({...mural.mural, updatedBy})
+		dispatch({
+			type: 'changed',
+			mural: {...mural.mural, updatedBy}
+		})
 	}
 
   const handleDelete = () => {
@@ -86,8 +91,6 @@ function ShowMural({ mural, updateMural, updateMurals }){
 				{addPhoto && <AddPhoto 
 					handleClose={() => setAddPhoto(false)} 
 					addPhoto={addPhoto} 
-					mural={mural} 
-					updateMural={updateMural}
 					updateMurals={updateMurals} 
 				/>}
 			</Container>}

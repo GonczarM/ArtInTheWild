@@ -3,7 +3,7 @@ import { Button, Container, Form } from 'react-bootstrap';
 import MuralList from '../../components/MuralList/MuralList'
 import * as muralsAPI from '../../utils/murals-api'
 
-function MuralSearch({updateMural}){
+function MuralSearch(){
 
 	const [search, setSearch] = useState('')
 	const [murals, setMurals] = useState(null)
@@ -37,7 +37,6 @@ function MuralSearch({updateMural}){
 			</Form>
 			{murals && murals.length > 0 && <MuralList 
 				murals={murals} 
-				updateMural={updateMural} 
 				muralArtist={murals[0].artist} 
 				updatedBy={'search'} 
 			/>}
