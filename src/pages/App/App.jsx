@@ -8,15 +8,23 @@ import UserShow from '../UserShow/UserShow';
 import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { UserContext } from '../../utils/contexts';
 import * as userService from '../../utils/users-service';
 import * as muralsAPI from '../../utils/murals-api'
 
+function muralReducer(mural, action){
+  switch (action.type) {
+    case 'changed': {
+      return(action.mural)
+    }
+  }
+}
+
 function App(){
 
 	const [user, setUser] = useState(userService.getUser())
-  const [mural, setMural] = useState(null)
+  const [mural, dispatch] = useReducer(muralReducer, null);
   const [murals, setMurals] = useState(null)
 
   const navigate = useNavigate()
@@ -49,8 +57,11 @@ function App(){
   }
 
   const updateMural = (updatedMural) => {
-		setMural(updatedMural)
-		navigate(`/mural/${updatedMural.updatedBy}/${updatedMural._id}`)
+    dispatch({
+      type: 'changed',
+      mural: updatedMural
+    })
+    navigate(`/mural/${updatedMural.updatedBy}/${updatedMural._id}`)
 	}
 
   const loginUser = (userToLogin) => {

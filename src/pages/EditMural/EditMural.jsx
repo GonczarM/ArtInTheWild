@@ -9,9 +9,9 @@ const EditMural = ({ mural, updateMural }) => {
 
 	const [form, setForm] = useState(mural)
 	const user = useContext(UserContext)
+	const { updatedBy, muralId } = useParams()
 
 	const navigate = useNavigate()
-	const { updatedBy, muralId } = useParams()
 
 	useEffect(() => {
 		if(!mural){
