@@ -1,7 +1,7 @@
 import { Container, Row, Col} from "react-bootstrap";
 import MuralListItem from "../MuralListItem/MuralListItem";
 
-const MuralsList = ({murals, updateMural, muralArtist, updatedBy}) => {
+const MuralsList = ({ murals, updateMural, muralArtist, updatedBy }) => {
 
 	return(
 		<Container>

@@ -1,7 +1,11 @@
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { useContext } from 'react';
+import { UserContext } from '../../utils/contexts';
 
-function Header({logoutUser, user}){
+function Header({ logoutUser }){
+
+	const user = useContext(UserContext)
 
 	return (
 		<Navbar 
@@ -21,7 +25,7 @@ function Header({logoutUser, user}){
 						{user ?
 						<>
 							<LinkContainer to='/mural/create'><Nav.Link>Create Mural</Nav.Link></LinkContainer>
-							<LinkContainer to={`/${user.username}`}><Nav.Link>{user.username}</Nav.Link></LinkContainer>
+							<LinkContainer to={`/user/${user.username}`}><Nav.Link>{user.username}</Nav.Link></LinkContainer>
 							<Nav.Link onClick={logoutUser}>Logout</Nav.Link>
 						</>
 						:

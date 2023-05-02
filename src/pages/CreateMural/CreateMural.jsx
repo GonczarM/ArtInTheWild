@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
+import { UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 
 const initialForm = {
@@ -10,9 +11,10 @@ const initialForm = {
 	photo: ''
 }
 
-function CreateMural({ updateMural, user }){
+function CreateMural({ updateMural }){
 
 	const [form, setForm] = useState(initialForm)
+	const user = useContext(UserContext)
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})

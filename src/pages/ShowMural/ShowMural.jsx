@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
+import { UserContext } from '../../utils/contexts'
 
-function ShowMural({ mural, user, updateMural, updateMurals }){
+function ShowMural({ mural, updateMural, updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
+	const { muralId, updatedBy } = useParams()
+	const user = useContext(UserContext)
 
 	const navigate = useNavigate()
-	const { muralId, updatedBy } = useParams()
 
 	useEffect(() => {
 		if(!mural){
@@ -25,22 +27,25 @@ function ShowMural({ mural, user, updateMural, updateMurals }){
 
   const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
-    navigate(`/${user.username}`)
+    navigate(`/user/${user.username}`)
   }
+
+	let updatedByURL
+	if(updatedBy === 'home') {
+		updatedByURL = '/'
+	} else if(updatedBy === user.username){
+		updatedByURL = `/user/${user.username}`
+	} else{
+		updatedByURL = `/${updatedBy}`
+	}
 
 	return(
 		<>
 			{mural && <Container>
 				<Breadcrumb>
-					{updatedBy === 'home' ? 
-					<LinkContainer to={`/`}>
+					<LinkContainer to={updatedByURL}>
 						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
-					: 
-					<LinkContainer to={`/${updatedBy}`}>
-						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
-					</LinkContainer>
-					}
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>

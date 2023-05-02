@@ -9,6 +9,7 @@ import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
 import { Route, Routes, useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { UserContext } from '../../utils/contexts';
 import * as userService from '../../utils/users-service';
 import * as muralsAPI from '../../utils/murals-api'
 
@@ -54,7 +55,7 @@ function App(){
 
   const loginUser = (userToLogin) => {
     setUser(userToLogin)
-    navigate(`/${userToLogin.username}`);
+    navigate(`/user/${userToLogin.username}`);
   }
 
   const logoutUser = () => {
@@ -75,9 +76,9 @@ function App(){
 
   return (
     <>
+    <UserContext.Provider value={user}>
       <Header 
         logoutUser={logoutUser} 
-        user={user} 
       />
       <Routes>
         {/* home */}
@@ -92,20 +93,17 @@ function App(){
         {/* mural show */}
         <Route path="/mural/:updatedBy/:muralId" element={<ShowMural 
           mural={mural}
-          user={user}
           updateMural={updateMural}
           updateMurals={updateMurals}
         /> } />
         {/* mural create */}
         <Route path="/mural/create" element={<CreateMural 
           updateMural={updateMural}
-          user={user}
         /> } />
         {/* mural edit */}
         <Route path="/mural/edit/:updatedBy/:muralId" element={<EditMural 
           mural={mural} 
           updateMural={updateMural}
-          user={user}
         /> } />
         {/* user login */}
         <Route path="/login" element={<Login 
@@ -116,12 +114,12 @@ function App(){
           loginUser={loginUser} 
         /> } />
         {/* user show */}
-        <Route path="/:username" element={<UserShow 
-          user={user} 
+        <Route path="/user/:username" element={<UserShow 
           updateMural={updateMural}
           logoutUser={logoutUser} 
         />} />
       </Routes>
+    </UserContext.Provider>
     </>
   );
 }

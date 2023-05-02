@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button, Card, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import MuralList from '../../components/MuralList/MuralList'
+import { UserContext } from '../../utils/contexts';
 import * as userAPI from '../../utils/users-api'
 import './UserShow.css'
 
-const UserShow = ({user, updateMural, logoutUser}) => {
+const UserShow = ({ updateMural, logoutUser }) => {
 
   const [murals, setMurals] = useState(null)
+  const user = useContext(UserContext)
 
   const navigate = useNavigate()
 

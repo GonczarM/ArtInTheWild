@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
+import { UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 
-const EditMural = ({ mural, updateMural, user }) => {
+const EditMural = ({ mural, updateMural }) => {
 
 	const [form, setForm] = useState(mural)
+	const user = useContext(UserContext)
 
 	const navigate = useNavigate()
 	const { updatedBy, muralId } = useParams()
@@ -32,7 +34,7 @@ const EditMural = ({ mural, updateMural, user }) => {
 		<>
 			{form && <Container>
 				<Breadcrumb>
-					<LinkContainer to={`/${updatedBy}`}>
+					<LinkContainer to={`/user/${updatedBy}`}>
 							<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
 					<LinkContainer to={`/mural/${updatedBy}/${mural._id}`}>
