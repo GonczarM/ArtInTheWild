@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Breadcrumb, Button, Card, Container } from 'react-bootstrap'
+import { Breadcrumb, Button, Card, Container, Spinner } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
@@ -9,6 +9,7 @@ import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/con
 function ShowMural({ updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
+	const [imgLoading, setImgLoading] = useState(true)
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
 	const mural = useContext(MuralContext)
@@ -54,7 +55,12 @@ function ShowMural({ updateMurals }){
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>
-					{mural.photos && mural.photos.length > 0 && <Card.Img src={mural.photos[0]} />}
+					{mural.photos && mural.photos.length > 0 && <Card.Img 
+						src={mural.photos[0]} 
+						onLoad={() => setImgLoading(false)}
+						style={{ display: imgLoading ? 'none' : 'block'}}
+					/>}
+					{mural.photos && mural.photos.length > 0 && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
 					<Card.Body>
 						<Card.Title >{mural.title}</Card.Title>
 						<Card.Subtitle>by {mural.artist}</Card.Subtitle>

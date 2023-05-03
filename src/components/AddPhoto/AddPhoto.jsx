@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import {Button, Modal, Form} from 'react-bootstrap';
+import {Button, Modal, Form, Spinner} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { MuralDispatchContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
@@ -7,10 +7,12 @@ import * as muralsAPI from '../../utils/murals-api'
 function AddPhoto({ handleClose, addPhoto, updateMurals }) {
 
   const [file, setFile] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const { updatedBy, muralId } = useParams()
   const dispatch = useContext(MuralDispatchContext)
 
   const handleSubmit = async (event) => {
+    setIsLoading(true)
     event.preventDefault()
     const data = new FormData()
     data.append('photo', file)
@@ -21,6 +23,7 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
       mural: {...updatedMural.mural, updatedBy}
     })
     handleClose()
+    setIsLoading(false)
   }
 
   return (
@@ -40,9 +43,8 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
                 required
               />
             </Form.Group>
-            <Button type="submit">
-              Submit
-            </Button>
+            {isLoading ? <Button disabled><Spinner size="sm"/></Button>
+            : <Button type="submit">Submit</Button>}
           </Form>
         </Modal.Body>
       </Modal>

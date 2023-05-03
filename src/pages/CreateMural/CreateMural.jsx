@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Button, Container, Form } from 'react-bootstrap';
+import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
@@ -15,6 +15,7 @@ const initialForm = {
 function CreateMural(){
 
 	const [form, setForm] = useState(initialForm)
+	const [isLoading, setIsLoading] = useState(false)
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
 
@@ -30,6 +31,7 @@ function CreateMural(){
 
 	const handleSubmit = async (event) => {
     event.preventDefault()
+		setIsLoading(true)
 		const data = new FormData()
 		for(const prop in form){
 			data.append(prop, form[prop])
@@ -40,6 +42,7 @@ function CreateMural(){
 			mural: {...createdMural.mural, updatedBy: user.username}
 		})
 		setForm(initialForm)
+		setIsLoading(false)
 		navigate(`/mural/${user.username}/${createdMural.mural._id}`)
   }
 
@@ -100,7 +103,8 @@ function CreateMural(){
 						onChange={handleFile}
 					/>
 				</Form.Group>
-				<Button type='submit'>Create Mural</Button>
+				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
+				: <Button type='submit'>Create Mural</Button>}
 			</Form>
 		</Container>
 	)
