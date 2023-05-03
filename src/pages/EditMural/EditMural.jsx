@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Form, Button, Container, Breadcrumb } from 'react-bootstrap';
+import { Form, Button, Container, Breadcrumb, Spinner } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
@@ -9,6 +9,7 @@ const EditMural = () => {
 	
 	const mural = useContext(MuralContext)
 	const [form, setForm] = useState(mural)
+	const [isLoading, setIsLoading] = useState(false)
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
 	const { updatedBy, muralId } = useParams()
@@ -27,12 +28,13 @@ const EditMural = () => {
 
 	const handleSubmit = async (event) => {
     event.preventDefault()
+		setIsLoading(true)
 		const updatedMural = await muralsAPI.editMural(form, muralId)
 		dispatch({
 			type: 'changed',
 			mural: {...updatedMural.mural, updatedBy: user.username}
 		})
-		setForm(updatedMural.mural)
+		setIsLoading(prevIsLoading => !prevIsLoading)
 		navigate(`/mural/${user.username}/${updatedMural.mural._id}`)
   }
 
@@ -95,7 +97,8 @@ const EditMural = () => {
 							required
 						/>
 					</Form.Group>
-					<Button type='submit'>Edit Mural</Button>
+					{isLoading ? <Button disabled><Spinner size="sm"/></Button>
+					: <Button type='submit'>Edit Mural</Button>}
 				</Form>
 			</Container>}
 		</>

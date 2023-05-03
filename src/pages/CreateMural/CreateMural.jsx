@@ -42,7 +42,7 @@ function CreateMural(){
 			mural: {...createdMural.mural, updatedBy: user.username}
 		})
 		setForm(initialForm)
-		setIsLoading(false)
+		setIsLoading(prevIsLoading => !prevIsLoading)
 		navigate(`/mural/${user.username}/${createdMural.mural._id}`)
   }
 
