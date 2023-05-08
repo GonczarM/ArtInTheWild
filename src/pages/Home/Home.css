@@ -1,5 +1,8 @@
 .card{
-  margin: 1rem 0rem;
+  margin-bottom: 1rem;
+}
+.img-fluid{
+  margin-bottom: 1rem;
 }
 
 @media (min-width: 992px) {

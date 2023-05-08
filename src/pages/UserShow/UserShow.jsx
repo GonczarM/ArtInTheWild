@@ -14,7 +14,11 @@ const UserShow = ({ logoutUser }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    getMurals()
+    if(!user){
+			navigate('/')
+		}else{
+      getMurals()
+    }
   }, [])
 
   const getMurals = async () => {
@@ -29,13 +33,14 @@ const UserShow = ({ logoutUser }) => {
 
 	return(
 		<Container>
-      <Card className='text-center'>
+      {user &&<Card className='text-center'>
         <Card.Body>
           <Card.Title>{user.username}</Card.Title>
           <Button onClick={handleDelete}>Delete {user.username}</Button>
         </Card.Body>
       </Card>
-      {murals ? 
+}
+      {murals && user ? 
       <MuralList 
         murals={murals} 
         muralArtist={user.username} 

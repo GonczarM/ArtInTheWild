@@ -5,6 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
+import PhotoList from '../../components/PhotoList/PhotoList'
 
 function ShowMural({ updateMurals }){
 
@@ -37,13 +38,17 @@ function ShowMural({ updateMurals }){
   }
 
 	let updatedByURL
-	if(updatedBy === 'home') {
+	if(updatedBy === 'home' || !user) {
 		updatedByURL = '/'
-	} else if(updatedBy === user.username){
+	} 
+	else if(user && updatedBy === user.username){
 		updatedByURL = `/user/${user.username}`
-	} else{
+	}
+	else{
 		updatedByURL = `/${updatedBy}`
 	}
+
+	const photos = mural ? mural.photos.slice(1, mural.photos.length) : null
 
 	return(
 		<>
@@ -99,6 +104,12 @@ function ShowMural({ updateMurals }){
 					addPhoto={addPhoto} 
 					updateMurals={updateMurals} 
 				/>}
+				{mural.photos && mural.photos.length > 1 && 
+					<>
+					<h1 className='text-center'>{mural.title} Photos</h1>
+					<PhotoList photos={photos} />
+					</>
+				}
 			</Container>}
 		</>
 	)
