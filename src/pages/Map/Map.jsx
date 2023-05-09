@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
-
+console.log(import.meta.env.VITE_MAPBOX_TOKEN)
 function Map(){
 
   const [murals, setMurals] = useState(null)
