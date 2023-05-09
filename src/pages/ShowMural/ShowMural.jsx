@@ -35,6 +35,16 @@ function ShowMural({ updateMurals }){
 			mural: {...mural.mural, updatedBy}
 		})
 	}
+	
+	const comparePhotos = () => {
+		let favPhoto = {likes: []}
+		for (let i = 0; i < mural.photos.length; i++) {
+			if(mural.photos[i].likes.length >= favPhoto.likes.length){
+				favPhoto = mural.photos[i]
+			}
+		}
+		setFavoritePhoto(favPhoto.photo)
+	}
 
   const handleDelete = () => {
     muralsAPI.deleteMural(mural._id)
@@ -51,6 +61,10 @@ function ShowMural({ updateMurals }){
 			mural: {...mural.mural, updatedBy}
 		})
 	}
+	
+	const hasUserFavorited = (favoriteUser) => {
+		return favoriteUser === user._id || favoriteUser._id === user._id
+	}
 
 	let updatedByURL
 	if(updatedBy === 'home') {
@@ -61,20 +75,6 @@ function ShowMural({ updateMurals }){
 	}
 	else{
 		updatedByURL = `/${updatedBy}`
-	}
-
-	const hasUserFavorited = (favoriteUser) => {
-		return favoriteUser === user._id || favoriteUser._id === user._id
-	}
-
-	const comparePhotos = () => {
-		let favPhoto = {likes: []}
-		for (let i = 0; i < mural.photos.length; i++) {
-			if(mural.photos[i].likes.length >= favPhoto.likes.length){
-				favPhoto = mural.photos[i]
-			}
-		}
-		setFavoritePhoto(favPhoto.photo)
 	}
 
 	return(

@@ -2,30 +2,10 @@ const express = require('express')
 const router = express.Router();
 const Mural = require('../models/mural')
 const ensureLoggedIn = require('../config/ensureLoggedIn');
-
+const upload = require('../config/S3upload')
 // Chicago Mural API
 // https://dev.socrata.com/foundry/data.cityofchicago.org/we8h-apcf
 const API_URL = 'https://data.cityofchicago.org/resource/we8h-apcf.json'
-
-// multer and AWS S3
-const { S3Client } = require('@aws-sdk/client-s3')
-const multerS3 = require('multer-s3')
-const multer  = require('multer')
-const s3 = new S3Client({ region: "us-west-2" })
-
-const upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: process.env.S3_BUCKET,
-    metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
-    },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString())
-    }
-  })
-})
-
 
 // create mural
 router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) => {
@@ -90,6 +70,7 @@ router.get('/seed', async (req, res, next) => {
   }	
 })
 
+// get all murals
 router.get('/', async (req, res, next) => {
 	try{
 		const murals = await Mural.find({})

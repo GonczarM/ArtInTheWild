@@ -11,7 +11,6 @@ function PhotoListItem({ photo }) {
   const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
   
-
   const favoritePhoto = async () => {
     const mural = await usersAPI.favoritePhoto(photo._id)
     dispatch({
