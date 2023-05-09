@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
-console.log(import.meta.env.VITE_MAPBOX_TOKEN)
+
 function Map(){
 
   const [murals, setMurals] = useState(null)
@@ -66,21 +66,23 @@ function Map(){
 
   const getMurals = async () => {
     const muralsRes = await muralsAPI.getMurals()
-    const filteredMurals = muralsRes.murals.filter(mural => mural.latitude)
-    const mapMurals = filteredMurals.map(mural => {
-      if(mural.latitude && mural.longitude && mural.title){
-        const muralObj = {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [mural.longitude, mural.latitude]
-          },
-          'properties': {
-            'title': mural.title
-          }
-        }
-        return muralObj
+    const filteredMurals = muralsRes.murals.filter(mural => {
+      if(mural.longitude && mural.latitude && mural.title){
+        return mural
       }
+    })
+    const mapMurals = filteredMurals.map(mural => {
+      const muralObj = {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [mural.longitude, mural.latitude]
+        },
+        'properties': {
+          'title': mural.title
+        }
+      }
+      return muralObj
     })
     setMurals(mapMurals)
   }

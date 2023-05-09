@@ -56,7 +56,14 @@ router.get('/seed', async (req, res, next) => {
 				murals.push(mural)
 			}
 		}
-		const createdMurals = await Mural.create(murals)
+		const outputArr = murals.reduce((acc, curr) => {
+			const isDuplicate = acc.some(mural => mural.title === curr.title);
+			if (!isDuplicate) {
+				acc.push(curr);
+			}
+			return acc;
+		}, []);
+		const createdMurals = await Mural.create(outputArr)
 		res.json({
       status: 200,
       mural: createdMurals
