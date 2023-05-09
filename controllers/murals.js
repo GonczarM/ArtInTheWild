@@ -100,7 +100,7 @@ router.get('/', async (req, res, next) => {
 	}
 	catch(error){
 		next(error)
-		res.status(400).json({
+		res.json({
 			status: 400,	
 			error: error
 		})
@@ -118,7 +118,7 @@ router.get('/search/murals/:search', async (req, res, next) => {
 	}
 	catch(error){
 		next(error)
-		res.status(400).json({
+		res.json({
 			status: 400,	
 			error: error
 		})
@@ -143,7 +143,7 @@ router.get('/search/artists/:search', async (req, res, next) => {
 		})
 	} catch (error) {
 		next(error)
-		res.status(400).json({
+		res.json({
 			status: 400,	
 			error: error
 		})
@@ -159,7 +159,7 @@ router.get('/:id', async (req, res, next) => {
 			mural: foundMural
 		})
 	} catch (error) {
-		res.status(400).json({
+		res.json({
 			status: 400,
 			error: next(error)
 		})
@@ -183,7 +183,7 @@ router.put('/:id', ensureLoggedIn, async (req, res, next) => {
 		}
 	}
 	catch(error){
-	res.status(400).json({
+	res.json({
       status: 400,
       error: next(error)
     })
@@ -191,7 +191,7 @@ router.put('/:id', ensureLoggedIn, async (req, res, next) => {
 })
 
 // add photo to mural
-router.put('/photo/:id', upload.single('photo'), async (req, res, next) => {
+router.put('/photo/:id', ensureLoggedIn, upload.single('photo'), async (req, res, next) => {
 	try {
 		const updatedMural = await Mural.findById(req.params.id)
 		updatedMural.photos.push(req.file.location)
@@ -201,7 +201,25 @@ router.put('/photo/:id', upload.single('photo'), async (req, res, next) => {
 			mural: updatedMural
 		})
 	} catch (error) {
-		res.status(400).json({
+		res.json({
+			status: 400,
+			error: next(error)
+		})
+	}
+})
+
+// favorite a mural
+router.put('/favorite/:id', ensureLoggedIn, async (req, res, next) => {
+	try {
+		const foundMural = await Mural.findById(req.params.id)
+		foundMural.favorite.push(req.user._id)
+		foundMural.save()
+		res.json({
+			status: 200,
+			mural: foundMural
+		})
+	} catch (error) {
+		res.json({
 			status: 400,
 			error: next(error)
 		})
@@ -225,7 +243,7 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 		}
 	}
 	catch(error){
-		res.status(400).json({
+		res.json({
 			status: 400,
 			error: next(error)
 		})

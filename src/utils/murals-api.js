@@ -29,6 +29,10 @@ export function addPhoto(photoData, muralId){
   return sendRequest(`${BASE_URL}/photo/${muralId}`, 'PUT', photoData)
 }
 
+export function favoriteMural(muralId){
+  return sendRequest(`${BASE_URL}/favorite/${muralId}`, 'PUT')
+}
+
 export function deleteMural(muralId){
   return sendRequest(`${BASE_URL}/${muralId}`, 'DELETE')
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, Spinner } from "react-bootstrap";
+import { Card, Spinner, Button } from "react-bootstrap";
 
 function MuralListItem({ mural }) {
 
@@ -23,6 +23,12 @@ function MuralListItem({ mural }) {
             ? mural.description.substring(0, 300).concat('...') 
             : mural.description}
           </Card.Text>
+          {mural.favorite.length > 0 &&
+          <>
+            <span>{mural.favorite.length}</span>
+            <Button variant='outline' className='bi bi-suit-heart-fill'></Button>
+          </>
+          }
         </Card.Body>
       </Card>
   );

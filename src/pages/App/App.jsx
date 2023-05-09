@@ -68,13 +68,14 @@ function App(){
   }
 
   const updateMurals = (newMural) => {
-    for (let i = 0; i < murals.length; i++) {
-      if(murals[i]._id === newMural._id){
-        const muralsCopy = [...murals]
-        muralsCopy.splice(i, 1, newMural)
-        setMurals(muralsCopy)
+    const nextMurals = murals.map(mural => {
+      if(newMural._id === mural._id){
+        return newMural
+      }else{
+        return mural
       }
-    }
+    })
+    setMurals(nextMurals)
   }
 
   return (

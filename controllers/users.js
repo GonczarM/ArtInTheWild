@@ -6,6 +6,16 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const ensureLoggedIn = require('../config/ensureLoggedIn');
 
+// jwt token create
+function createJWT(user) {
+  return jwt.sign(
+    // data payload
+    { user },
+    process.env.SECRET,
+    { expiresIn: '24h' }
+  );
+}
+
 // user create
 router.post('/register', async (req, res, next) => {
 	try{
@@ -23,7 +33,7 @@ router.post('/register', async (req, res, next) => {
 		}
 	}
 	catch(error){
-		res.status(400).json({
+		res.json({
 			status: 400,
 			error: error
 		})
@@ -35,12 +45,12 @@ router.get('/:id', async (req, res, next) => {
 		try{
 			const foundMurals = await Mural.find({'user': req.params.id})
 			res.json({
-				stauts: 200,
+				status: 200,
 				murals: foundMurals
 			})
 		}
 		catch(error){
-			res.status(400).json({
+			res.json({
 				status: 400,
 				error: error
 			})
@@ -58,8 +68,9 @@ router.post('/login', async (req, res, next) => {
 		res.json(token)
 	}
 	catch(error){
-		res.status(400).json({
-			error: next(error)
+		res.json({
+			status: 400,
+			error: error
 		})
 	}		
 })
@@ -82,15 +93,5 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 		})
 	}
 })
-
-// jwt token create
-function createJWT(user) {
-  return jwt.sign(
-    // data payload
-    { user },
-    process.env.SECRET,
-    { expiresIn: '24h' }
-  );
-}
 
 module.exports = router;

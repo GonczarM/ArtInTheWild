@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Breadcrumb, Button, Card, Container, Spinner } from 'react-bootstrap'
+import { Breadcrumb, Button, Card, Container, Image, Spinner } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
@@ -37,8 +37,19 @@ function ShowMural({ updateMurals }){
     navigate(`/user/${user.username}`)
   }
 
+	const favoriteMural = async () => {
+		const mural = await muralsAPI.favoriteMural(muralId)
+		if(updatedBy === 'home'){
+			updateMurals(mural.mural)
+		}
+		dispatch({
+			type: 'changed',
+			mural: {...mural.mural, updatedBy}
+		})
+	}
+
 	let updatedByURL
-	if(updatedBy === 'home' || !user) {
+	if(updatedBy === 'home') {
 		updatedByURL = '/'
 	} 
 	else if(user && updatedBy === user.username){
@@ -49,6 +60,10 @@ function ShowMural({ updateMurals }){
 	}
 
 	const photos = mural ? mural.photos.slice(1, mural.photos.length) : null
+
+	const hasUserFavorited = (favoriteUser) => {
+		return favoriteUser === user._id || favoriteUser._id === user._id
+	}
 
 	return(
 		<>
@@ -87,6 +102,16 @@ function ShowMural({ updateMurals }){
 							<Card.Subtitle>ZIP Code</Card.Subtitle>
 							<Card.Text>{mural.zipcode}</Card.Text>
 						</>}
+						{user && !mural.favorite.some(hasUserFavorited) && mural.user !== user._id ? 
+						<>
+							<Button onClick={favoriteMural}>Favorite Mural</Button><br></br>
+						</>
+						:
+						<>
+							<span>{mural.favorite.length}</span>
+							<Button variant='outline' className='bi bi-suit-heart-fill'></Button><br></br>
+						</>
+						}
 						{user && mural.user === user._id &&
 						<>
 							<Button 
