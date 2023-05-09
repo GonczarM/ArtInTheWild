@@ -34,7 +34,6 @@ function MuralSearch(){
 	const searchMuralByArtist = async (event, artist) => {
 		event.preventDefault()
 		setArtists(null)
-		setSearch(artist)
 		setIsLoading(true)
 		const foundMurals = await muralsAPI.searchMurals(artist)
 		setMurals(foundMurals.murals)

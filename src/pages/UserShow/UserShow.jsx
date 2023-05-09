@@ -58,7 +58,7 @@ const UserShow = ({ logoutUser }) => {
           }
         </Tab>
         <Tab eventKey="favorites" title="Favorites">
-          {murals && user ? 
+          {favorites && user ? 
           <MuralList 
             murals={favorites}
             updatedBy={user.username}
