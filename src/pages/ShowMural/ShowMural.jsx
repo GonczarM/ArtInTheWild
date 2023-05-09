@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Breadcrumb, Button, Card, Container, Image, Spinner } from 'react-bootstrap'
+import { Breadcrumb, Button, Card, Container, Spinner } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
@@ -11,6 +11,7 @@ import PhotoList from '../../components/PhotoList/PhotoList'
 function ShowMural({ updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
+	const [favoritePhoto, setFavoritePhoto] = useState(null)
 	const [imgLoading, setImgLoading] = useState(true)
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
@@ -22,8 +23,10 @@ function ShowMural({ updateMurals }){
 	useEffect(() => {
 		if(!mural){
 			getMural()
+		}else{
+			comparePhotos()
 		}
-	}, [])
+	}, [mural])
 
 	const getMural = async () => {
 		const mural = await muralsAPI.getMural(muralId)
@@ -60,10 +63,18 @@ function ShowMural({ updateMurals }){
 		updatedByURL = `/${updatedBy}`
 	}
 
-	const photos = mural ? mural.photos.slice(1, mural.photos.length) : null
-
 	const hasUserFavorited = (favoriteUser) => {
 		return favoriteUser === user._id || favoriteUser._id === user._id
+	}
+
+	const comparePhotos = () => {
+		let favPhoto = {likes: []}
+		for (let i = 0; i < mural.photos.length; i++) {
+			if(mural.photos[i].likes.length >= favPhoto.likes.length){
+				favPhoto = mural.photos[i]
+			}
+		}
+		setFavoritePhoto(favPhoto.photo)
 	}
 
 	return(
@@ -77,7 +88,7 @@ function ShowMural({ updateMurals }){
 				</Breadcrumb>
 				<Card className='text-center'>
 					{mural.photos && mural.photos.length > 0 && <Card.Img 
-						src={mural.photos[0]} 
+						src={favoritePhoto} 
 						onLoad={() => setImgLoading(false)}
 						style={{ display: imgLoading ? 'none' : 'block'}}
 					/>}
@@ -113,16 +124,17 @@ function ShowMural({ updateMurals }){
 							<Button variant='outline' className='bi bi-suit-heart-fill'></Button><br></br>
 						</>
 						}
+						{user && <><Button onClick={() => setAddPhoto(true)}>Add Photo</Button><br></br></>}
 						{user && mural.user === user._id &&
 						<>
-							<Button 
+							<Button
+								variant='secondary' 
 								onClick={() => navigate(`/mural/edit/${updatedBy}/${mural._id}`)}
 							>
 								Edit Mural
 							</Button><br></br>
-							<Button onClick={handleDelete}>Delete Mural</Button><br></br>
+							<Button variant='danger' onClick={handleDelete}>Delete Mural</Button>
 						</>}
-						{user && <Button onClick={() => setAddPhoto(true)}>Add Photo</Button>}
 					</Card.Body>
 				</Card>
 				{addPhoto && <AddPhoto 
@@ -130,10 +142,10 @@ function ShowMural({ updateMurals }){
 					addPhoto={addPhoto} 
 					updateMurals={updateMurals} 
 				/>}
-				{mural.photos && mural.photos.length > 1 && 
+				{mural.photos && mural.photos.length > 0 && 
 					<>
 					<h1 className='text-center'>{mural.title} Photos</h1>
-					<PhotoList photos={photos} />
+					<PhotoList mural={mural} />
 					</>
 				}
 			</Container>}

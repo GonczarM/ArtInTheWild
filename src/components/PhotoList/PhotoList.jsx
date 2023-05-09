@@ -1,13 +1,14 @@
 import React from 'react';
 import { Col, Container, Image, Row } from 'react-bootstrap';
+import PhotoListItem from '../PhotoListItem/PhotoListItem';
 
-function PhotoList({ photos }) {
+function PhotoList({ mural }) {
   return (
     <Container>
       <Row xs={1} lg={2}>
-        {photos.map((photo, i) => (
+        {mural.photos.map((photo, i) => (
           <Col key={i}>
-            <Image fluid rounded src={photo} />
+            <PhotoListItem photo={photo} />
           </Col>
         ))}
       </Row>

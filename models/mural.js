@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const photosSchema = new mongoose.Schema({
+	photo: String,
+	likes: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User'
+	}]
+})
 
 const muralSchema = new mongoose.Schema({
 	title: {
@@ -41,9 +48,7 @@ const muralSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
-	photos: [{
-		type: String
-	}]
+	photos: [photosSchema]
 }, {
 	timestamps: true
 })

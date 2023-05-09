@@ -32,7 +32,7 @@ router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) 
 	try{
 		if(req.file){
 			req.body.photos = []
-			req.body.photos.push(req.file.location)
+			req.body.photos.push({photo: req.file.location})
 		}
 		const createdMural = await Mural.create(req.body)
 		createdMural.user = req.user._id
@@ -194,7 +194,7 @@ router.put('/:id', ensureLoggedIn, async (req, res, next) => {
 router.put('/photo/:id', ensureLoggedIn, upload.single('photo'), async (req, res, next) => {
 	try {
 		const updatedMural = await Mural.findById(req.params.id)
-		updatedMural.photos.push(req.file.location)
+		updatedMural.photos.push({photo: req.file.location})
 		updatedMural.save()
 		res.json({
 			status: 200,

@@ -21,6 +21,10 @@ export function favoriteMural(muralId){
   return sendRequest(`${BASE_URL}/favorite/${muralId}`, 'PUT')
 }
 
+export function favoritePhoto(photoId){
+  return sendRequest(`${BASE_URL}/photo/${photoId}`, 'PUT')
+}
+
 export function deleteUser(){
   return sendRequest(`${BASE_URL}`, 'DELETE')
 }

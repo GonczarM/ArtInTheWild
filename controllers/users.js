@@ -110,6 +110,25 @@ router.put('/favorite/:id', ensureLoggedIn, async (req, res, next) => {
 	}
 })
 
+//favorite a mural photo
+router.put('/photo/:id', ensureLoggedIn, async (req, res, next) => {
+	try {
+		const foundMural = await Mural.findOne({'photos._id': req.params.id})
+		const photo = foundMural.photos.id(req.params.id)
+		photo.likes.push(req.user._id)
+		foundMural.save()
+		res.json({
+			status: 200,
+			mural: foundMural
+		})
+	} catch (error) {
+		res.json({
+			status: 400,
+			error: next(error)
+		})
+	}
+})
+
 // user delete
 router.delete('/', ensureLoggedIn, async (req, res, next) => {
 	try{

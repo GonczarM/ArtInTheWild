@@ -8,7 +8,7 @@ function MuralListItem({ mural }) {
   return (
       <Card bg='secondary' text='white' className='text-center'>
         {mural.photos && mural.photos.length > 0 && <Card.Img 
-          src={mural.photos[0]} 
+          src={mural.photos[0].photo} 
           onLoad={() => setImgLoading(false)}
           style={{ display: imgLoading ? 'none' : 'block'}}
         />}
