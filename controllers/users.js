@@ -40,23 +40,6 @@ router.post('/register', async (req, res, next) => {
 	}
 })
 
-// user murals
-router.get('/:id', async (req, res, next) => {
-		try{
-			const foundMurals = await Mural.find({'user': req.params.id})
-			res.json({
-				status: 200,
-				murals: foundMurals
-			})
-		}
-		catch(error){
-			res.json({
-				status: 400,
-				error: error
-			})
-	  }
-})
-
 // user login
 router.post('/login', async (req, res, next) => {
 	try{
@@ -75,11 +58,63 @@ router.post('/login', async (req, res, next) => {
 	}		
 })
 
+// user murals
+router.get('/murals', async (req, res, next) => {
+		try{
+			const foundMurals = await Mural.find({'user': req.user._id})
+			res.json({
+				status: 200,
+				murals: foundMurals
+			})
+		}
+		catch(error){
+			res.json({
+				status: 400,
+				error: error
+			})
+	  }
+})
+
+// user favorited murals
+router.get('/favorites', async (req, res, next) => {
+	try {
+		const foundMurals = await Mural.find({'favorite': req.user._id})
+		res.json({
+			status: 200,
+			murals: foundMurals
+		})
+	}
+	catch(error){
+		res.json({
+			status: 400,
+			error: error
+		})
+	}
+})
+
+// favorite a mural
+router.put('/favorite/:id', ensureLoggedIn, async (req, res, next) => {
+	try {
+		const foundMural = await Mural.findById(req.params.id)
+		foundMural.favorite.push(req.user._id)
+		foundMural.save()
+		res.json({
+			status: 200,
+			mural: foundMural
+		})
+	} catch (error) {
+		res.json({
+			status: 400,
+			error: next(error)
+		})
+	}
+})
+
 // user delete
-router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
+router.delete('/', ensureLoggedIn, async (req, res, next) => {
 	try{
-		const deletedUser = await User.findByIdAndDelete(req.params.id)
-		const deletedUsersMurals = await Mural.deleteMany({'user': req.params.id})
+		const deletedUser = await User.findByIdAndDelete(req.user._id)
+		const deletedUsersMurals = await Mural.deleteMany({'user': req.user._id})
 		deletedUser.murals = deletedUsersMurals
 		res.json({
 			status: 200,

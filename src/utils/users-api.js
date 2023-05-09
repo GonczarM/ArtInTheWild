@@ -9,10 +9,18 @@ export function login(credentials) {
   return sendRequest(`${BASE_URL}/login`, 'POST', credentials);
 }
 
-export function getUserMurals(userId) {
-  return sendRequest(`${BASE_URL}/${userId}`);
+export function getUserMurals() {
+  return sendRequest(`${BASE_URL}/murals`);
 }
 
-export function deleteUser(userId){
-  return sendRequest(`${BASE_URL}/${userId}`, 'DELETE')
+export function getUserFavorites(){
+  return sendRequest(`${BASE_URL}/favorites`)
+}
+
+export function favoriteMural(muralId){
+  return sendRequest(`${BASE_URL}/favorite/${muralId}`, 'PUT')
+}
+
+export function deleteUser(){
+  return sendRequest(`${BASE_URL}`, 'DELETE')
 }

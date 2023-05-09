@@ -3,6 +3,7 @@ import { Breadcrumb, Button, Card, Container, Image, Spinner } from 'react-boots
 import { useNavigate, useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import * as muralsAPI from '../../utils/murals-api'
+import * as usersAPI from '../../utils/users-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
 import PhotoList from '../../components/PhotoList/PhotoList'
@@ -38,7 +39,7 @@ function ShowMural({ updateMurals }){
   }
 
 	const favoriteMural = async () => {
-		const mural = await muralsAPI.favoriteMural(muralId)
+		const mural = await usersAPI.favoriteMural(muralId)
 		if(updatedBy === 'home'){
 			updateMurals(mural.mural)
 		}
