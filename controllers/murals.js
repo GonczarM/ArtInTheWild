@@ -107,8 +107,8 @@ router.get('/', async (req, res, next) => {
 	}
 })
 
-// search mural by artist
-router.get('/search/:search', async (req, res, next) => {
+// search murals by artist
+router.get('/search/murals/:search', async (req, res, next) => {
 	try{
 		const searchedMurals = await Mural.find({'artist': req.params.search})
 		res.json({
@@ -117,6 +117,31 @@ router.get('/search/:search', async (req, res, next) => {
 		})
 	}
 	catch(error){
+		next(error)
+		res.status(400).json({
+			status: 400,	
+			error: error
+		})
+	}
+})
+
+// show list of artists by search
+router.get('/search/artists/:search', async (req, res, next) => {
+	try {
+		const searchedMurals = await Mural.find({'artist': {$regex : ".*" + req.params.search}})
+		const artists = []
+		searchedMurals.forEach(mural => {
+			if(artists.length >= 10){
+				return
+			}else if(!artists.includes(mural.artist)){
+				artists.push(mural.artist)
+			}
+		})
+		res.json({
+			status: 200,
+			artists
+		})
+	} catch (error) {
 		next(error)
 		res.status(400).json({
 			status: 400,	

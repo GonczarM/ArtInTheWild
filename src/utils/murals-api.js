@@ -13,8 +13,12 @@ export function getMural(muralId){
   return sendRequest(`${BASE_URL}/${muralId}`)
 }
 
+export function searchArtists(searchData){
+  return sendRequest(`${BASE_URL}/search/artists/${searchData}`)
+}
+
 export function searchMurals(searchData){
-  return sendRequest(`${BASE_URL}/search/${searchData}`)
+  return sendRequest(`${BASE_URL}/search/murals/${searchData}`)
 }
 
 export function editMural(muralData, muralId){
