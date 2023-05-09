@@ -1,14 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Spinner, Button } from "react-bootstrap";
 
 function MuralListItem({ mural }) {
 
   const [imgLoading, setImgLoading] = useState(true)
+  const [favoritePhoto, setFavoritePhoto] = useState(null)
 
+  useEffect(() => {
+    comparePhotos()
+  }, [])
+
+  const comparePhotos = () => {
+    let favPhoto = {likes: []}
+    for (let i = 0; i < mural.photos.length; i++) {
+      if(mural.photos[i].likes.length >= favPhoto.likes.length){
+        favPhoto = mural.photos[i]
+      }
+    }
+    setFavoritePhoto(favPhoto.photo)
+  }
+	
   return (
       <Card bg='secondary' text='white' className='text-center'>
         {mural.photos && mural.photos.length > 0 && <Card.Img 
-          src={mural.photos[0].photo} 
+          src={favoritePhoto} 
           onLoad={() => setImgLoading(false)}
           style={{ display: imgLoading ? 'none' : 'block'}}
         />}
