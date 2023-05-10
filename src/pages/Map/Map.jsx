@@ -12,6 +12,7 @@ function Map(){
   const [lat, setLat] = useState(41.88);
   const map = useRef(null);
   const mapContainer = useRef(null);
+  const popupRef = useRef(new mapboxgl.Popup());
 
   useEffect(() => {
     getMurals()
@@ -27,6 +28,9 @@ function Map(){
       setLng(map.current.getCenter().lng.toFixed(4));
       setLat(map.current.getCenter().lat.toFixed(4));
     });
+    return () => {
+      map.current.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -62,7 +66,21 @@ function Map(){
         }
       );
     });
-  })
+    map.current.on('click', (e) => {
+      const features = map.current.queryRenderedFeatures(e.point, {
+        layers: ['points']
+      });
+      if (!features.length) {
+        return;
+      }
+      popupRef.current.setLngLat(features[0].geometry.coordinates)
+        .setHTML(
+          `<h3>${features[0].properties.title}</h3>
+          <p>${features[0].properties.artist}</p>
+          <p>${features[0].properties.description}</p>`)
+        .addTo(map.current);
+    })
+  }, [murals])
 
   const getMurals = async () => {
     const muralsRes = await muralsAPI.getMurals()
@@ -79,7 +97,10 @@ function Map(){
           'coordinates': [mural.longitude, mural.latitude]
         },
         'properties': {
-          'title': mural.title
+          'id': mural._id,
+          'title': mural.title,
+          'artist': mural.artist,
+          'description': mural.description
         }
       }
       return muralObj
