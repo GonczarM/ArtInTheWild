@@ -1,7 +1,9 @@
 import mapboxgl from 'mapbox-gl';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import * as muralsAPI from '../../utils/murals-api'
+import { MuralDispatchContext } from "../../utils/contexts";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -13,6 +15,9 @@ function Map(){
   const map = useRef(null);
   const mapContainer = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup());
+  const dispatch = useContext(MuralDispatchContext)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getMurals()
@@ -77,10 +82,17 @@ function Map(){
         .setHTML(
           `<h3>${features[0].properties.title}</h3>
           <p>${features[0].properties.artist}</p>
-          <p>${features[0].properties.description}</p>`)
+          <p>${features[0].properties.description}</p>
+          <button id=${features[0].properties.id}>Show Mural</button>`)
         .addTo(map.current);
+      const popupButton = document.getElementById(features[0].properties.id);
+      popupButton.addEventListener('click', handleClick);
     })
   }, [murals])
+
+  const handleClick = (e) => {
+    navigate(`/mural/map/${e.target.id}`)
+  }
 
   const getMurals = async () => {
     const muralsRes = await muralsAPI.getMurals()
