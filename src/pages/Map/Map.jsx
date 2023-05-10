@@ -90,7 +90,12 @@ function Map(){
     })
   }, [murals])
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
+    const mural = await muralsAPI.getMural(e.target.id)
+    dispatch({
+      type: 'changed',
+      mural: {...mural.mural, updatedBy: 'map'}
+    })
     navigate(`/mural/map/${e.target.id}`)
   }
 
