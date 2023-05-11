@@ -9,7 +9,11 @@ const initialForm = {
 	artist: '',
 	description: '',
 	year: '',
-	photo: ''
+	photo: '',
+	latitude: '',
+	longitude: '',
+	address: '',
+	zipcode: ''
 }
 
 function CreateMural(){
@@ -32,6 +36,11 @@ function CreateMural(){
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		setIsLoading(true)
+		const address = `${form.address} ${form.zipcode}`
+		const results = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`).then(res => res.json())
+		const coordinates = results.features[0].geometry.coordinates
+		form.longitude = coordinates[0]
+		form.latitude = coordinates[1]
 		const data = new FormData()
 		for(const prop in form){
 			data.append(prop, form[prop])
@@ -53,7 +62,7 @@ function CreateMural(){
 				<Form.Group controlId='title'>
 					<Form.Label>Title</Form.Label>
 					<Form.Control
-						placeholder='Mural Title'
+						placeholder='Title of Mural'
 						type="text" 
 						name="title"
 						value={form.title}
@@ -86,7 +95,7 @@ function CreateMural(){
 				<Form.Group controlId='description'>
 					<Form.Label>Description</Form.Label>
 					<Form.Control
-						placeholder='Mural Description'
+						placeholder='Description of Mural'
 						as="textarea"
 						name="description"
 						value={form.description}
@@ -95,12 +104,33 @@ function CreateMural(){
 						required
 					/>
 				</Form.Group>
+				<h2>Optional</h2>
 				<Form.Group controlId='photo'>
 					<Form.Label>Photo</Form.Label>
 					<Form.Control
 						type="file"
 						name="photo"
 						onChange={handleFile}
+					/>
+				</Form.Group>
+				<Form.Group controlId='address'>
+					<Form.Label>Address</Form.Label>
+					<Form.Control
+						placeholder='Street Address' 
+						type='text'
+						name='address'
+						value={form.address}
+						onChange={handleChange}
+					/>
+				</Form.Group>
+				<Form.Group controlId='zipcode'>
+					<Form.Label>Zipcode</Form.Label>
+					<Form.Control 
+						placeholder='Zipcode'
+						type='text'
+						name='zipcode'
+						value={form.zipcode}
+						onChange={handleChange}
 					/>
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
