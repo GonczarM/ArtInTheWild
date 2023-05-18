@@ -3,6 +3,8 @@ import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
+import { AddressAutofill } from '@mapbox/search-js-react';
+
 
 const initialForm = {
 	title: '',
@@ -26,7 +28,7 @@ function CreateMural(){
 	const navigate = useNavigate()
 
 	const handleChange = (event) => {
-		setForm({ ...form, [event.target.name]: event.target.value})
+		setForm({ ...form, [event.target.id]: event.target.value})
 	}
 
 	const handleFile = (event) => {
@@ -115,23 +117,29 @@ function CreateMural(){
 				</Form.Group>
 				<Form.Group controlId='address'>
 					<Form.Label>Address</Form.Label>
-					<Form.Control
-						placeholder='Street Address' 
-						type='text'
-						name='address'
-						value={form.address}
-						onChange={handleChange}
-					/>
+					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
+						<Form.Control
+							placeholder='Street Address' 
+							type='text'
+							name='address'
+							value={form.address}
+							onChange={handleChange}
+							autoComplete='address-line1'
+						/>
+					</AddressAutofill>
 				</Form.Group>
 				<Form.Group controlId='zipcode'>
 					<Form.Label>Zipcode</Form.Label>
-					<Form.Control 
-						placeholder='Zipcode'
-						type='text'
-						name='zipcode'
-						value={form.zipcode}
-						onChange={handleChange}
-					/>
+					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
+						<Form.Control 
+							placeholder='Zipcode'
+							type='text'
+							name='zipcode'
+							value={form.zipcode}
+							onChange={handleChange}
+							autoComplete='postal-code'
+						/>
+					</AddressAutofill>
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Create Mural</Button>}
