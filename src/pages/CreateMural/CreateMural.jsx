@@ -106,7 +106,7 @@ function CreateMural(){
 						required
 					/>
 				</Form.Group>
-				<h2>Optional</h2>
+				<h2 className='text-center'>Optional</h2>
 				<Form.Group controlId='photo'>
 					<Form.Label>Photo</Form.Label>
 					<Form.Control
@@ -119,7 +119,7 @@ function CreateMural(){
 					<Form.Label>Address</Form.Label>
 					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
 						<Form.Control
-							placeholder='Street Address' 
+							placeholder='Street Address of Mural' 
 							type='text'
 							name='address'
 							value={form.address}
@@ -132,7 +132,7 @@ function CreateMural(){
 					<Form.Label>Zipcode</Form.Label>
 					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
 						<Form.Control 
-							placeholder='Zipcode'
+							placeholder='Zipcode of Mural'
 							type='text'
 							name='zipcode'
 							value={form.zipcode}

@@ -116,7 +116,9 @@ router.get('/search/murals/:search', async (req, res, next) => {
 // show list of artists by search
 router.get('/search/artists/:search', async (req, res, next) => {
 	try {
-		const searchedMurals = await Mural.find({'artist': {$regex : ".*" + req.params.search}})
+		const searchedMurals = await Mural.find({
+			artist: { $regex: new RegExp(req.params.search, 'i') }
+		});
 		const artists = []
 		searchedMurals.forEach(mural => {
 			if(artists.length >= 10){

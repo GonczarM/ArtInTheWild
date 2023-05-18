@@ -27,7 +27,7 @@ function PhotoListItem({ photo }) {
         style={{ display: imgLoading ? 'none' : 'block'}}
       />
       {imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
-      {!photo.likes.includes(user._id) &&
+      {user && !photo.likes.includes(user._id) &&
       <Card.Body>
         <Button onClick={favoritePhoto}>Favorite Picture</Button>
       </Card.Body>

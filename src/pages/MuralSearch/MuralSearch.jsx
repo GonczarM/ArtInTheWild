@@ -20,12 +20,13 @@ function MuralSearch(){
 
 	const updateSearch = async (event) => {
 		setSearch(event.target.value)
-		setMurals(null)
 		if(event.target.value){
 			const foundArtists = await muralsAPI.searchArtists(event.target.value)
 			setArtists(foundArtists.artists)
 		}else{
+			console.log('hello')
 			setArtists(null)
+			setMurals(null)
 		}
 	}
 
@@ -74,20 +75,19 @@ function MuralSearch(){
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Search</Button>}
 			</Form>
-			{showMap 
-			? <>
-					{murals && <Button onClick={() => setShowMap(!showMap)}>View List</Button>}
-					<Map murals={murals} />
-				</>
-			: <>
-					<Button onClick={() => setShowMap(!showMap)}>View Map</Button>
-					<MuralList 
-						murals={murals} 
-						muralArtist={murals[0].artist} 
-						updatedBy={'search'} 
-					/>
-				</>}
 			{murals && !murals.length && <h2>No Murals Found for That Artist</h2>}
+			{murals && murals.length > 0 && <>
+				<h1 className='text-center'>{murals[0].artist}'s murals</h1>
+				<Button onClick={() => setShowMap(!showMap)}>
+					{showMap ? 'View List' : 'View Map'}
+				</Button>
+			</>}
+			{showMap 
+			? <Map murals={murals} />
+			: <MuralList 
+					murals={murals} 
+					updatedBy={'search'} 
+				/>}
 		</Container>
 	)
 }
