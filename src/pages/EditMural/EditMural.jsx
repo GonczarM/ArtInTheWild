@@ -4,6 +4,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
+import { AddressAutofill } from '@mapbox/search-js-react';
 
 const EditMural = () => {
 	
@@ -23,12 +24,17 @@ const EditMural = () => {
 	}, [])
 
 	const handleChange = (event) => {
-		setForm({...form, [event.target.name]: event.target.value})
+		setForm({...form, [event.target.id]: event.target.value})
 	}
 
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		setIsLoading(true)
+		const address = `${form.address} ${form.zipcode}`
+		const results = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`).then(res => res.json())
+		const coordinates = results.features[0].geometry.coordinates
+		form.longitude = coordinates[0]
+		form.latitude = coordinates[1]
 		const updatedMural = await muralsAPI.editMural(form, muralId)
 		dispatch({
 			type: 'changed',
@@ -96,6 +102,32 @@ const EditMural = () => {
 							style={{ height: '7rem' }}
 							required
 						/>
+					</Form.Group>
+					<Form.Group controlId='address'>
+						<Form.Label>Address</Form.Label>
+						<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
+							<Form.Control
+								placeholder='Street Address' 
+								type='text'
+								name='address'
+								value={form.address}
+								onChange={handleChange}
+								autoComplete='address-line1'
+							/>
+						</AddressAutofill>
+					</Form.Group>
+					<Form.Group controlId='zipcode'>
+						<Form.Label>Zipcode</Form.Label>
+						<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
+							<Form.Control 
+								placeholder='Zipcode'
+								type='text'
+								name='zipcode'
+								value={form.zipcode}
+								onChange={handleChange}
+								autoComplete='postal-code'
+							/>
+						</AddressAutofill>
 					</Form.Group>
 					{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 					: <Button type='submit'>Edit Mural</Button>}
