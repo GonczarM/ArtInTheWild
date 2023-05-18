@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 import { AddressAutofill } from '@mapbox/search-js-react';
+import * as mapboxAPI from '../../utils/mapbox-api'
 
 
 const initialForm = {
@@ -39,8 +40,7 @@ function CreateMural(){
     event.preventDefault()
 		setIsLoading(true)
 		const address = `${form.address} ${form.zipcode}`
-		const results = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`).then(res => res.json())
-		const coordinates = results.features[0].geometry.coordinates
+		const coordinates = await mapboxAPI.geocode(address)
 		form.longitude = coordinates[0]
 		form.latitude = coordinates[1]
 		const data = new FormData()
