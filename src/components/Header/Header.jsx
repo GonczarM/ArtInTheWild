@@ -24,7 +24,6 @@ function Header({ logoutUser }){
 						<LinkContainer to='/search'><Nav.Link>Search</Nav.Link></LinkContainer>
 						{user ?
 						<>
-							<LinkContainer to='/map'><Nav.Link>Map</Nav.Link></LinkContainer>
 							<LinkContainer to='/mural/create'><Nav.Link>Create Mural</Nav.Link></LinkContainer>
 							<LinkContainer to={`/user/${user.username}`}><Nav.Link>{user.username}</Nav.Link></LinkContainer>
 							<Nav.Link onClick={logoutUser}>Logout</Nav.Link>

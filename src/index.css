@@ -19,7 +19,7 @@ a, .breadcrumb-item+.breadcrumb-item::before{
 }
 
 .map-container {
-  height: 80vh;
+  height: 65vh;
 }
 
 .sidebar {

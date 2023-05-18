@@ -3,13 +3,13 @@ import { useRef, useState, useEffect, useContext } from 'react';
 import { Container } from 'react-bootstrap';
 import * as muralsAPI from '../../utils/murals-api'
 import { createRoot } from 'react-dom/client'
-import Popup from '../../components/Popup/Popup';
+import Popup from '../Popup/Popup';
 import { useNavigate } from 'react-router-dom';
 import { MuralDispatchContext } from '../../utils/contexts';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-function Map(){
+function Map(props){
 
   const [murals, setMurals] = useState(null)
   const map = useRef(null);
@@ -20,13 +20,15 @@ function Map(){
   const navigate = useNavigate()
 
   useEffect(() => {
-    getMurals()
-  }, []);
+    if(props.murals && props.murals.length){
+      setMurals(props.murals)
+    }else{
+      getMurals()
+    }
+  }, [props.murals])
 
   useEffect(() => {
     if(!murals) return
-    if (map.current) return;
-
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -101,9 +103,9 @@ function Map(){
     const mural = await muralsAPI.getMural(muralId)
     dispatch({
       type: 'changed',
-      mural: {...mural.mural, updatedBy: 'map'}
+      mural: {...mural.mural, updatedBy: 'search'}
     })
-    navigate(`/mural/map/${muralId}`)
+    navigate(`/mural/search/${muralId}`)
   }
 
   const getMurals = async () => {

@@ -12,7 +12,6 @@ import { useState, useEffect, useReducer } from 'react';
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as userService from '../../utils/users-service';
 import * as muralsAPI from '../../utils/murals-api'
-import Map from '../Map/Map';
 
 function muralReducer(mural, action){
   switch (action.type) {
@@ -92,7 +91,6 @@ function App(){
         <Route path="/" element={<Home 
           murals={murals} 
         />} />
-        <Route path='/map' element={<Map />} />
         {/* mural search */}
         <Route path='/search' element={<MuralSearch /> } />
         {/* mural show */}
