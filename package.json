@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.321.1",
+    "@aws-sdk/client-s3": "^3.332.0",
     "bcrypt": "^5.1.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.5",
@@ -16,7 +16,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mapbox-gl": "^2.14.1",
-    "mongoose": "^7.1.0",
+    "mongoose": "^7.1.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^3.0.1",
@@ -24,12 +24,12 @@
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
     "react-router-bootstrap": "^0.26.2",
-    "react-router-dom": "^6.11.0"
+    "react-router-dom": "^6.11.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.1",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
     "@vitejs/plugin-react": "^4.0.0",
-    "vite": "^4.3.3"
+    "vite": "^4.3.5"
   }
 }
