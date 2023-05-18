@@ -7,6 +7,7 @@ import * as usersAPI from '../../utils/users-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
 import PhotoList from '../../components/PhotoList/PhotoList'
+import Map2 from '../../components/Map2/Map2'
 
 function ShowMural({ updateMurals }){
 
@@ -135,6 +136,7 @@ function ShowMural({ updateMurals }){
 							</Button><br></br>
 							<Button variant='danger' onClick={handleDelete}>Delete Mural</Button>
 						</>}
+						<Map2 mural={mural} />
 					</Card.Body>
 				</Card>
 				{addPhoto && <AddPhoto 

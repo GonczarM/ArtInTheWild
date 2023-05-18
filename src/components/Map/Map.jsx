@@ -54,7 +54,6 @@ function Map(props){
                 'id': mural._id,
                 'title': mural.title,
                 'artist': mural.artist,
-                'description': mural.description,
                 'image': mural.photos.length ? mural.photos[0].photo : null
               }
             }))
