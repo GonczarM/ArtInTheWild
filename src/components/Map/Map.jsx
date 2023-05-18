@@ -22,8 +22,6 @@ function Map(props){
   useEffect(() => {
     if(props.murals && props.murals.length){
       setMurals(props.murals)
-    }else{
-      getMurals()
     }
   }, [props.murals])
 
@@ -32,8 +30,8 @@ function Map(props){
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [-87.64, 41.88],
-      zoom: 11.5
+      center: [props.geometry.longitude, props.geometry.latitude],
+      zoom: props.geometry.zoom
     });
 
     map.current.on('load', () => {
@@ -74,23 +72,23 @@ function Map(props){
       });
     });
 
-    map.current.on('click', (e) => {
-      const features = map.current.queryRenderedFeatures(e.point, {
-        layers: ['points']
-      });
-      if (!features.length) {
-        return;
-      }
-      const feature = features[0]
-      const popupNode = document.createElement("div")
-      createRoot(popupNode).render(
-        <Popup properties={feature.properties} handleClick={handleClick}/>
-      )
-      popupRef.current
-        .setLngLat(feature.geometry.coordinates)
-        .setDOMContent(popupNode)
-        .addTo(map.current);
-    })
+    if(props.search){
+      map.current.on('click', (e) => {
+        const features = map.current.queryRenderedFeatures(e.point, {
+          layers: ['points']
+        });
+        if (!features.length) return;
+        const feature = features[0]
+        const popupNode = document.createElement("div")
+        createRoot(popupNode).render(
+          <Popup properties={feature.properties} handleClick={handleClick}/>
+        )
+        popupRef.current
+          .setLngLat(feature.geometry.coordinates)
+          .setDOMContent(popupNode)
+          .addTo(map.current);
+      })
+    }
 
     return () => {
       map.current.remove();
@@ -105,16 +103,6 @@ function Map(props){
       mural: {...mural.mural, updatedBy: 'search'}
     })
     navigate(`/mural/search/${muralId}`)
-  }
-
-  const getMurals = async () => {
-    const muralsRes = await muralsAPI.getMurals()
-    const filteredMurals = muralsRes.murals.filter(mural => {
-      if(mural.longitude && mural.latitude && mural.title){
-        return mural
-      }
-    })
-    setMurals(filteredMurals)
   }
 
   return (

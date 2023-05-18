@@ -13,12 +13,27 @@ function MuralSearch(){
 	const [searchList, setSearchList] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const [showMap, setShowMap] = useState(true)
+	const [searched, setSearched] = useState(false)
 
 	useEffect(() => {
+		if(!murals){
+			getMurals()
+		}
 		return () => {
       setSearch(initialSearch)
     };
 	}, [])
+
+	const getMurals = async () => {
+    const muralsRes = await muralsAPI.getMurals()
+    const filteredMurals = muralsRes.murals.filter(mural => {
+      if(mural.longitude && mural.latitude && mural.title){
+        return mural
+      }
+    })
+		setSearched(false)
+    setMurals(filteredMurals)
+  }
 
 	const updateSearch = async (event) => {
 		setSearch({...search, term:event.target.value})
@@ -28,6 +43,7 @@ function MuralSearch(){
 		}else{
 			setSearchList(null)
 			setMurals(null)
+			setSearched(false)
 		}
 	}
 
@@ -42,6 +58,7 @@ function MuralSearch(){
 			foundMurals = await muralsAPI.searchMurals({...search, term})
 		}
 		setMurals(foundMurals.murals)
+		setSearched(true)
 		setSearch({...search, term:''})
 		setIsLoading(prevIsLoading => !prevIsLoading)
   }
@@ -61,6 +78,7 @@ function MuralSearch(){
 				variant={search.type === 'zipcode' ? "outline-dark active" : 'primary'} 
 				onClick={() => setSearch({...search, type:'zipcode'})}
 			>Zipcode</Button>
+			{murals && murals.length > 0 && searched && <><br></br><Button onClick={getMurals}>Reset Search</Button></>}
 			<Form onSubmit={searchMurals}>
 				<Form.Group controlId='search'>
 					<Form.Control
@@ -85,17 +103,24 @@ function MuralSearch(){
 				: <Button type='submit'>Search</Button>}
 			</Form>
 			{murals && !murals.length && <h2>No Murals Found from that {search.type}</h2>}
-			{murals && murals.length > 0 && <>
+			{murals && murals.length > 0 && searched && <>
 				<h1 className='text-center'>{murals[0].artist}'s murals</h1>
 				<Button onClick={() => setShowMap(!showMap)}>
 					{showMap ? 'View List' : 'View Map'}
 				</Button>
 			</>}
 			{showMap 
-			? <Map murals={murals} />
+			? <Map 
+					murals={murals} 
+					geometry={!searched ? 
+						{longitude: -87.64, latitude: 41.88, zoom: 11.5} : 
+						{longitude: murals[0].longitude, latitude: murals[0].latitude, zoom: 11.5}
+					}
+					search 
+				/>
 			: <MuralList 
 					murals={murals} 
-					updatedBy={'search'} 
+					updatedBy={'search'}
 				/>}
 		</Container>
 	)

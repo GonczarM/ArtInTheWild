@@ -7,7 +7,7 @@ import * as usersAPI from '../../utils/users-api'
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
 import PhotoList from '../../components/PhotoList/PhotoList'
-import Map2 from '../../components/Map2/Map2'
+import Map from '../../components/Map/Map'
 
 function ShowMural({ updateMurals }){
 
@@ -77,7 +77,6 @@ function ShowMural({ updateMurals }){
 	else{
 		updatedByURL = `/${updatedBy}`
 	}
-
 	return(
 		<>
 			{mural && <Container>
@@ -136,7 +135,10 @@ function ShowMural({ updateMurals }){
 							</Button><br></br>
 							<Button variant='danger' onClick={handleDelete}>Delete Mural</Button>
 						</>}
-						<Map2 mural={mural} />
+						{mural.address && <Map 
+							murals={[mural]} 
+							geometry={{longitude: mural.longitude, latitude: mural.latitude, zoom: 14}}
+						/>}
 					</Card.Body>
 				</Card>
 				{addPhoto && <AddPhoto 

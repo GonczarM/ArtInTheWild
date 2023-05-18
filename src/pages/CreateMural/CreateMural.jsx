@@ -39,10 +39,12 @@ function CreateMural(){
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		setIsLoading(true)
-		const address = `${form.address} ${form.zipcode}`
-		const coordinates = await mapboxAPI.geocode(address)
-		form.longitude = coordinates[0]
-		form.latitude = coordinates[1]
+		if(form.address && form.zipcode){
+			const address = `${form.address} ${form.zipcode}`
+			const coordinates = await mapboxAPI.geocode(address)
+			form.longitude = coordinates[0]
+			form.latitude = coordinates[1]
+		}
 		const data = new FormData()
 		for(const prop in form){
 			data.append(prop, form[prop])
