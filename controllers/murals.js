@@ -95,10 +95,10 @@ router.get('/', async (req, res, next) => {
 	}
 })
 
-// search murals by artist
-router.get('/search/murals/:search', async (req, res, next) => {
+// search murals by type with term
+router.get('/search/:type/:term', async (req, res, next) => {
 	try{
-		const searchedMurals = await Mural.find({'artist': req.params.search})
+		const searchedMurals = await Mural.find({[req.params.type]: req.params.term})
 		res.json({
 			status: 200,
 			murals: searchedMurals
@@ -113,25 +113,26 @@ router.get('/search/murals/:search', async (req, res, next) => {
 	}
 })
 
-// show list of artists by search
-router.get('/search/artists/:search', async (req, res, next) => {
+// show list of types by term 
+router.get('/list/:type/:term', async (req, res, next) => {
 	try {
 		const searchedMurals = await Mural.find({
-			artist: { $regex: new RegExp(req.params.search, 'i') }
+			[req.params.type]: { $regex: new RegExp(req.params.term, 'i') }
 		});
-		const artists = []
+		const searchList = []
 		searchedMurals.forEach(mural => {
-			if(artists.length >= 10){
+			if(searchList.length >= 10){
 				return
-			}else if(!artists.includes(mural.artist)){
-				artists.push(mural.artist)
+			}else if(!searchList.includes(mural[req.params.type])){
+				searchList.push(mural[req.params.type])
 			}
 		})
 		res.json({
 			status: 200,
-			artists
+			searchList
 		})
 	} catch (error) {
+		console.log(error)
 		next(error)
 		res.json({
 			status: 400,	
