@@ -1,29 +1,21 @@
-import Logo from '../../assets/artInTheWild.jpg'
+
 import MuralList from '../../components/MuralList/MuralList'
-import { Image, Spinner } from 'react-bootstrap';
-import './Home.css'
+import { Image, Spinner, Container } from 'react-bootstrap';
 import { useState } from 'react';
+import PhotoCarousel from '../../components/PhotoCarousel/PhotoCarousel';
 
 function Home({ murals }){
 
   const [imgLoading, setImgLoading] = useState(true)
 
   return(
-    <>
-      <Image 
-        fluid 
-        rounded 
-        src={Logo} 
-        onLoad={() => setImgLoading(false)} 
-        alt="logo" 
-        style={{ display: imgLoading ? 'none' : 'block'}}
-      />
-      {imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}} />}
+    <Container>
+      <PhotoCarousel />
       {murals && <MuralList 
         murals={murals} 
         updatedBy={'home'}
       />}
-    </>
+    </Container>
   )
 }
 

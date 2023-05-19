@@ -141,6 +141,22 @@ router.get('/list/:type/:term', async (req, res, next) => {
 	}
 })
 
+//get murals that have photos
+router.get('/photo', async (req, res, next) => {
+	try {
+		const foundMurals = await Mural.find({ photos: { $exists: true, $ne: [] }})
+		res.json({
+			status: 200,
+			murals: foundMurals
+		})
+	} catch (error) {
+		res.json({
+			status: 400,
+			error: next(error)
+		})
+	}
+})
+
 //show a mural
 router.get('/:id', async (req, res, next) => {
 	try {

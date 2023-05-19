@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import MuralList from '../../components/MuralList/MuralList'
 import { UserContext } from '../../utils/contexts';
 import * as userAPI from '../../utils/users-api'
-import './UserShow.css'
 
 const UserShow = ({ logoutUser }) => {
 

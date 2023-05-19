@@ -27,28 +27,26 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
   }
 
   return (
-    <>
-      <Modal show={addPhoto} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Add Mural Photo</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="file">
-              <Form.Label>Mural Photo</Form.Label>
-              <Form.Control 
-                type="file"
-                name="file"
-                onChange={(event) => setFile(event.target.files[0])}
-                required
-              />
-            </Form.Group>
-            {isLoading ? <Button disabled><Spinner size="sm"/></Button>
-            : <Button type="submit">Submit</Button>}
-          </Form>
-        </Modal.Body>
-      </Modal>
-    </>
+    <Modal show={addPhoto} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Add Mural Photo</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="file">
+            <Form.Label>Mural Photo</Form.Label>
+            <Form.Control 
+              type="file"
+              name="file"
+              onChange={(event) => setFile(event.target.files[0])}
+              required
+            />
+          </Form.Group>
+          {isLoading ? <Button disabled><Spinner size="sm"/></Button>
+          : <Button type="submit">Submit</Button>}
+        </Form>
+      </Modal.Body>
+    </Modal>
   );
 }
 

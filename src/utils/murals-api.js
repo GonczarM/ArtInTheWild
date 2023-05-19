@@ -13,6 +13,10 @@ export function getMural(muralId){
   return sendRequest(`${BASE_URL}/${muralId}`)
 }
 
+export function getMuralsWithPhoto(){
+  return sendRequest(`${BASE_URL}/photo`)
+}
+
 export function searchMuralsByType(searchData){
   return sendRequest(`${BASE_URL}/list/${searchData.type}/${searchData.term}`)
 }
