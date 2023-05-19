@@ -20,6 +20,7 @@ a, .breadcrumb-item+.breadcrumb-item::before{
 
 .map-container {
   height: 65vh;
+  margin-bottom: 2rem;
 }
 
 .sidebar {
