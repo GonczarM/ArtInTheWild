@@ -33,6 +33,14 @@ function MuralCard({ mural, user, handleOpen }) {
     navigate(`/user/${user.username}`)
   }
 
+  const handleAddPhotoClick = () => {
+    if(user){
+      handleOpen()
+    }else{
+      navigate('/login')
+    }
+  }
+
   return (
     <Card className='text-center'>
       {mural.favoritePhoto && <Card.Img 
@@ -72,7 +80,7 @@ function MuralCard({ mural, user, handleOpen }) {
           <Button variant='outline' className='bi bi-suit-heart-fill'></Button><br></br>
         </>
         }
-        {user && <><Button onClick={handleOpen}>Add Photo</Button><br></br></>}
+        <Button onClick={handleAddPhotoClick}>Add Photo</Button><br></br>
         {user && mural.user === user._id &&
         <>
           <Button
