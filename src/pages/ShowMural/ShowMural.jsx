@@ -1,31 +1,29 @@
 import { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Breadcrumb, Button, Card, Container, Spinner } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
+import { Breadcrumb, Container} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import * as muralsAPI from '../../utils/murals-api'
-import * as usersAPI from '../../utils/users-api'
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
 
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import PhotoList from '../../components/PhotoList/PhotoList'
-import Map from '../../components/Map/Map'
+import MuralCard from '../../components/MuralCard/MuralCard'
 
 function ShowMural({ updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
-	const [imgLoading, setImgLoading] = useState(true)
+	const [URL, setURL] = useState(null)
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
 	const mural = useContext(MuralContext)
 	const dispatch = useContext(MuralDispatchContext)
 
-	const navigate = useNavigate()
-
 	useEffect(() => {
 		if(!mural){
 			getMural()
 		}
+		updateURL()
 	}, [mural])
 
 	const getMural = async () => {
@@ -36,100 +34,32 @@ function ShowMural({ updateMurals }){
 		})
 	}
 
-  const handleDelete = () => {
-    muralsAPI.deleteMural(mural._id)
-    navigate(`/user/${user.username}`)
-  }
-
-	const favoriteMural = async () => {
-		const mural = await usersAPI.favoriteMural(muralId)
-		if(updatedBy === 'home'){
-			updateMurals(mural.mural)
+	const updateURL = () => {
+		if(updatedBy === 'home') {
+			setURL('/')
+		} 
+		else if(user && updatedBy === user.username){
+			setURL(`/user/${user.username}`)
 		}
-		dispatch({
-			type: 'changed',
-			mural: {...mural.mural, updatedBy}
-		})
-	}
-	
-	const hasUserFavorited = (favoriteUser) => {
-		return favoriteUser === user._id || favoriteUser._id === user._id
+		else{
+			setURL(`/${updatedBy}`)
+		}
 	}
 
-	let updatedByURL
-	if(updatedBy === 'home') {
-		updatedByURL = '/'
-	} 
-	else if(user && updatedBy === user.username){
-		updatedByURL = `/user/${user.username}`
-	}
-	else{
-		updatedByURL = `/${updatedBy}`
-	}
 	return(
 		<>
-			{mural && <Container>
+			{mural && URL && <Container>
 				<Breadcrumb>
-					<LinkContainer to={updatedByURL}>
+					<LinkContainer to={URL}>
 						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
-				<Card className='text-center'>
-					{mural.favoritePhoto && <Card.Img 
-						src={mural.favoritePhoto} 
-						onLoad={() => setImgLoading(false)}
-						style={{ display: imgLoading ? 'none' : 'block'}}
-					/>}
-					{mural.favoritePhoto && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
-					<Card.Body>
-						<Card.Title >{mural.title}</Card.Title>
-						<Card.Subtitle>by {mural.artist}</Card.Subtitle>
-						<Card.Text>{mural.year}</Card.Text>
-						<Card.Subtitle>Description</Card.Subtitle>
-						<Card.Text>{mural.description}</Card.Text>
-						{mural.affiliation && 
-						<>
-							<Card.Subtitle>Affiliation</Card.Subtitle>
-							<Card.Text>{mural.affiliation}</Card.Text>
-						</>}
-						{mural.address && 
-						<>
-							<Card.Subtitle>Address</Card.Subtitle>
-							<Card.Text>{mural.address}</Card.Text>
-						</>}
-						{mural.zipcode && 
-						<>
-							<Card.Subtitle>ZIP Code</Card.Subtitle>
-							<Card.Text>{mural.zipcode}</Card.Text>
-						</>}
-						{user && !mural.favorite.some(hasUserFavorited) && mural.user !== user._id ? 
-						<>
-							<Button onClick={favoriteMural}>Favorite Mural</Button><br></br>
-						</>
-						:
-						<>
-							<span>{mural.favorite.length}</span>
-							<Button variant='outline' className='bi bi-suit-heart-fill'></Button><br></br>
-						</>
-						}
-						{user && <><Button onClick={() => setAddPhoto(true)}>Add Photo</Button><br></br></>}
-						{user && mural.user === user._id &&
-						<>
-							<Button
-								variant='secondary' 
-								onClick={() => navigate(`/mural/edit/${updatedBy}/${mural._id}`)}
-							>
-								Edit Mural
-							</Button><br></br>
-							<Button variant='danger' onClick={handleDelete}>Delete Mural</Button>
-						</>}
-						{mural.address && <Map 
-							murals={[mural]} 
-							geometry={{longitude: mural.longitude, latitude: mural.latitude, zoom: 14}}
-						/>}
-					</Card.Body>
-				</Card>
+				<MuralCard 
+					mural={mural}
+					user={user}
+					handleOpen={() => setAddPhoto(true)}
+				/>
 				{addPhoto && <AddPhoto 
 					handleClose={() => setAddPhoto(false)} 
 					addPhoto={addPhoto} 
