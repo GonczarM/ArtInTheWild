@@ -28,6 +28,7 @@ function MuralSearch(){
 	const resetSearch = () => {
 		getMurals()
 		setShowMap(true)
+		setSearch({...search, term:''})
 		setSearched(false)
 		setAddress({})
 	}
@@ -68,7 +69,6 @@ function MuralSearch(){
 		setAddress(foundAddress)
 		setMurals(foundMurals.murals)
 		setSearched(true)
-		setSearch({...search, term:''})
 		setIsLoading(prevIsLoading => !prevIsLoading)
   }
 
@@ -104,18 +104,18 @@ function MuralSearch(){
 						onChange={updateSearch}
 						required
 					/>
-					<ListGroup>
-						{searchList && searchList.map((term, i) => <ListGroupItem 
+					{murals && murals.length > 0 && searched && <Button onClick={resetSearch}>Reset Search</Button>}
+					{searchList && <ListGroup>
+						{searchList.map((term, i) => <ListGroupItem 
 							key={i} 
 							onClick={(e) => {
 								searchMurals(e, term)
 							}}
 						>{term}</ListGroupItem>)}
-					</ListGroup>
+					</ListGroup>}
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Search</Button>}
-				{murals && murals.length > 0 && searched && <Button onClick={resetSearch}>Reset Search</Button>}
 			</Form>
 			{murals && !murals.length && <h2>No Murals Found from that {search.type}</h2>}
 			{murals && murals.length > 0 && searched && <>
