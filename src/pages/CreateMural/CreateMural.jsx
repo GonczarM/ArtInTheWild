@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
-import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { Button, Container, Form, Spinner } from 'react-bootstrap';
+import { AddressAutofill } from '@mapbox/search-js-react';
+
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
-import { AddressAutofill } from '@mapbox/search-js-react';
 import * as mapboxAPI from '../../utils/mapbox-api'
 
 
@@ -132,7 +133,6 @@ function CreateMural(){
 				</Form.Group>
 				<Form.Group controlId='zipcode'>
 					<Form.Label>Zipcode</Form.Label>
-					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
 						<Form.Control 
 							placeholder='Zipcode of Mural'
 							type='text'
@@ -141,7 +141,6 @@ function CreateMural(){
 							onChange={handleChange}
 							autoComplete='postal-code'
 						/>
-					</AddressAutofill>
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Create Mural</Button>}

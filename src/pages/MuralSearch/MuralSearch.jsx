@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, Container, Form, ListGroup, ListGroupItem, Spinner } from 'react-bootstrap';
-import MuralList from '../../components/MuralList/MuralList'
+
 import * as muralsAPI from '../../utils/murals-api'
+import MuralList from '../../components/MuralList/MuralList'
 import Map from '../../components/Map/Map'
 
 const initialSearch = {type: 'artist', term: ''}

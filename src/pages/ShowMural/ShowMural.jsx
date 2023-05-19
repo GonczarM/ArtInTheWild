@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
-import { Breadcrumb, Button, Card, Container, Spinner } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Breadcrumb, Button, Card, Container, Spinner } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+
 import * as muralsAPI from '../../utils/murals-api'
 import * as usersAPI from '../../utils/users-api'
-import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts'
+
+import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import PhotoList from '../../components/PhotoList/PhotoList'
 import Map from '../../components/Map/Map'
 

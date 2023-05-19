@@ -1,3 +1,10 @@
+import { useState, useEffect, useReducer } from 'react';
+import { Route, Routes, useNavigate} from 'react-router-dom';
+
+import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
+import * as userService from '../../utils/users-service';
+import * as muralsAPI from '../../utils/murals-api'
+
 import Home from '../Home/Home';
 import Login from '../Login/Login';
 import Header from '../../components/Header/Header';
@@ -7,11 +14,6 @@ import ShowMural from '../ShowMural/ShowMural';
 import UserShow from '../UserShow/UserShow';
 import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
-import { Route, Routes, useNavigate} from 'react-router-dom';
-import { useState, useEffect, useReducer } from 'react';
-import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
-import * as userService from '../../utils/users-service';
-import * as muralsAPI from '../../utils/murals-api'
 
 function muralReducer(mural, action){
   switch (action.type) {

@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { Button, Card, Container, Tab, Tabs } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import MuralList from '../../components/MuralList/MuralList'
+import { Button, Card, Container, Tab, Tabs } from 'react-bootstrap';
+
 import { UserContext } from '../../utils/contexts';
 import * as userAPI from '../../utils/users-api'
+import MuralList from '../../components/MuralList/MuralList'
 
 const UserShow = ({ logoutUser }) => {
 

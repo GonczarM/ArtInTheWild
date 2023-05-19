@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Form, Button, Container } from 'react-bootstrap'
+
 import { signUp } from '../../utils/users-service'
 
 const initialUser = {

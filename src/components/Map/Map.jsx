@@ -1,11 +1,12 @@
-import mapboxgl from 'mapbox-gl';
 import { useRef, useState, useEffect, useContext } from 'react';
-import { Container } from 'react-bootstrap';
-import * as muralsAPI from '../../utils/murals-api'
 import { createRoot } from 'react-dom/client'
-import Popup from '../Popup/Popup';
 import { useNavigate } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import mapboxgl from 'mapbox-gl';
+
+import * as muralsAPI from '../../utils/murals-api'
 import { MuralDispatchContext } from '../../utils/contexts';
+import Popup from '../Popup/Popup';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -15,6 +16,7 @@ function Map(props){
   const map = useRef(null);
   const mapContainer = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup());
+  
   const dispatch = useContext(MuralDispatchContext)
 
   const navigate = useNavigate()

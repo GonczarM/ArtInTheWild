@@ -1,9 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
-import { Carousel, Spinner } from 'react-bootstrap';
-import { getMuralsWithPhoto } from '../../utils/murals-api';
-import Logo from '../../assets/artInTheWild.jpg'
-import { MuralDispatchContext } from '../../utils/contexts';
 import { useNavigate } from 'react-router-dom';
+import { Carousel, Spinner } from 'react-bootstrap';
+
+import { getMuralsWithPhoto } from '../../utils/murals-api';
+import { MuralDispatchContext } from '../../utils/contexts';
+import Logo from '../../assets/artInTheWild.jpg'
 
 function PhotoCarousel() {
   const [murals, setMurals] = useState(null)

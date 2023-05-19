@@ -1,8 +1,9 @@
 import { useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { Button, Card, Spinner } from 'react-bootstrap';
+
 import * as usersAPI from '../../utils/users-api'
 import { UserContext, MuralDispatchContext } from '../../utils/contexts'
-import { useParams } from 'react-router-dom';
 
 function PhotoListItem({ photo }) {
 

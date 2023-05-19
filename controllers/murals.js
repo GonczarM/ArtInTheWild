@@ -202,6 +202,7 @@ router.put('/photo/:id', ensureLoggedIn, upload.single('photo'), async (req, res
 	try {
 		const updatedMural = await Mural.findById(req.params.id)
 		updatedMural.photos.push({photo: req.file.location})
+		updatedMural.favoritePhoto = req.file.location
 		updatedMural.save()
 		res.json({
 			status: 200,

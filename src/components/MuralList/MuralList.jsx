@@ -1,8 +1,9 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Row, Col, Container} from "react-bootstrap";
+
 import { MuralDispatchContext } from "../../utils/contexts";
 import MuralListItem from "../MuralListItem/MuralListItem";
-import { useNavigate } from "react-router-dom";
 
 const MuralsList = ({ murals, updatedBy }) => {
 

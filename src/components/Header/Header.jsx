@@ -1,6 +1,7 @@
+import { useContext } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useContext } from 'react';
+
 import { UserContext } from '../../utils/contexts';
 
 function Header({ logoutUser }){

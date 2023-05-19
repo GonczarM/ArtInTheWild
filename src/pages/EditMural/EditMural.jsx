@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Container, Breadcrumb, Spinner } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { AddressAutofill } from '@mapbox/search-js-react';
+
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
-import { AddressAutofill } from '@mapbox/search-js-react';
 import * as mapboxAPI from '../../utils/mapbox-api'
 
 const EditMural = () => {
