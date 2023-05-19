@@ -14,6 +14,7 @@ function MuralSearch(){
 	const [isLoading, setIsLoading] = useState(false)
 	const [showMap, setShowMap] = useState(true)
 	const [searched, setSearched] = useState(false)
+	const [address, setAddress] = useState({})
 
 	useEffect(() => {
 		if(!murals){
@@ -24,6 +25,13 @@ function MuralSearch(){
     };
 	}, [])
 
+	const resetSearch = () => {
+		getMurals()
+		setShowMap(true)
+		setSearched(false)
+		setAddress({})
+	}
+
 	const getMurals = async () => {
     const muralsRes = await muralsAPI.getMurals()
     const filteredMurals = muralsRes.murals.filter(mural => {
@@ -31,7 +39,6 @@ function MuralSearch(){
         return mural
       }
     })
-		setSearched(false)
     setMurals(filteredMurals)
   }
 
@@ -57,11 +64,19 @@ function MuralSearch(){
 		}else{
 			foundMurals = await muralsAPI.searchMurals({...search, term})
 		}
+		const foundAddress = foundMurals.murals.find(checkAddress)
+		setAddress(foundAddress)
 		setMurals(foundMurals.murals)
 		setSearched(true)
 		setSearch({...search, term:''})
 		setIsLoading(prevIsLoading => !prevIsLoading)
   }
+
+	const checkAddress = (mural) => {
+		if(mural.address){
+			return mural
+		}
+	}
 
 	return(
 		<Container className='text-center'>
@@ -78,7 +93,6 @@ function MuralSearch(){
 				variant={search.type === 'zipcode' ? "outline-dark active" : 'primary'} 
 				onClick={() => setSearch({...search, type:'zipcode'})}
 			>Zipcode</Button>
-			{murals && murals.length > 0 && searched && <><br></br><Button onClick={getMurals}>Reset Search</Button></>}
 			<Form onSubmit={searchMurals}>
 				<Form.Group controlId='search'>
 					<Form.Control
@@ -101,20 +115,21 @@ function MuralSearch(){
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Search</Button>}
+				{murals && murals.length > 0 && searched && <Button onClick={resetSearch}>Reset Search</Button>}
 			</Form>
 			{murals && !murals.length && <h2>No Murals Found from that {search.type}</h2>}
 			{murals && murals.length > 0 && searched && <>
 				<h1 className='text-center'>{murals[0].artist}'s murals</h1>
-				<Button onClick={() => setShowMap(!showMap)}>
+				{address && <Button onClick={() => setShowMap(!showMap)}>
 					{showMap ? 'View List' : 'View Map'}
-				</Button>
+				</Button>}
 			</>}
-			{showMap 
+			{showMap && address
 			? <Map 
 					murals={murals} 
 					geometry={!searched ? 
 						{longitude: -87.64, latitude: 41.88, zoom: 11.5} : 
-						{longitude: murals[0].longitude, latitude: murals[0].latitude, zoom: 11.5}
+						{longitude: address.longitude, latitude: address.latitude, zoom: 11.5}
 					}
 					search 
 				/>
