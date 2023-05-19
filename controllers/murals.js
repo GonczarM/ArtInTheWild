@@ -13,10 +13,10 @@ router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) 
 		if(req.file){
 			req.body.photos = []
 			req.body.photos.push({photo: req.file.location})
+			req.body.favoritePhoto = req.file.location
 		}
+		req.body.user = req.user._id
 		const createdMural = await Mural.create(req.body)
-		createdMural.user = req.user._id
-		createdMural.save()
 		res.json({
       status: 200,
       mural: createdMural

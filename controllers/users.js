@@ -116,6 +116,17 @@ router.put('/photo/:id', ensureLoggedIn, async (req, res, next) => {
 		const foundMural = await Mural.findOne({'photos._id': req.params.id})
 		const photo = foundMural.photos.id(req.params.id)
 		photo.likes.push(req.user._id)
+		let favPhoto = {likes: []}
+		for (let i = 0; i < foundMural.photos.length; i++) {
+			if(foundMural.photos[i].likes.length > favPhoto.likes.length || favPhoto.likes.length === 0){
+				favPhoto = foundMural.photos[i]
+			}
+		}
+		if(foundMural.favoritePhoto === favPhoto.photo){
+			return
+		}else{
+			foundMural.favoritePhoto = favPhoto.photo
+		}
 		foundMural.save()
 		res.json({
 			status: 200,

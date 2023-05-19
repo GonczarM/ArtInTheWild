@@ -28,7 +28,7 @@ function PhotoCarousel() {
   const getMurals = async () => {
     const muralsResponse = await getMuralsWithPhoto()
     const muralsWithLogo = [...muralsResponse.murals]
-    muralsWithLogo.unshift({photos:[{photo:Logo}]})
+    muralsWithLogo.unshift({favoritePhoto:Logo})
     setMurals(muralsWithLogo)
   }
 
@@ -37,7 +37,7 @@ function PhotoCarousel() {
       {murals && murals.map((mural, i) => (
       <Carousel.Item key={i} onClick={() => handleClick(mural)}>
         <img 
-          src={mural.photos[0].photo}
+          src={mural.favoritePhoto}
           onLoad={() => setImgLoading(false)} 
           style={{ display: imgLoading ? 'none' : 'block'}}
         />

@@ -12,7 +12,6 @@ import Map from '../../components/Map/Map'
 function ShowMural({ updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
-	const [favoritePhoto, setFavoritePhoto] = useState(null)
 	const [imgLoading, setImgLoading] = useState(true)
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
@@ -24,8 +23,6 @@ function ShowMural({ updateMurals }){
 	useEffect(() => {
 		if(!mural){
 			getMural()
-		}else{
-			comparePhotos()
 		}
 	}, [mural])
 
@@ -35,16 +32,6 @@ function ShowMural({ updateMurals }){
 			type: 'changed',
 			mural: {...mural.mural, updatedBy}
 		})
-	}
-	
-	const comparePhotos = () => {
-		let favPhoto = {likes: []}
-		for (let i = 0; i < mural.photos.length; i++) {
-			if(mural.photos[i].likes.length >= favPhoto.likes.length){
-				favPhoto = mural.photos[i]
-			}
-		}
-		setFavoritePhoto(favPhoto.photo)
 	}
 
   const handleDelete = () => {
@@ -87,12 +74,12 @@ function ShowMural({ updateMurals }){
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Card className='text-center'>
-					{mural.photos && mural.photos.length > 0 && <Card.Img 
-						src={favoritePhoto} 
+					{mural.favoritePhoto && <Card.Img 
+						src={mural.favoritePhoto} 
 						onLoad={() => setImgLoading(false)}
 						style={{ display: imgLoading ? 'none' : 'block'}}
 					/>}
-					{mural.photos && mural.photos.length > 0 && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
+					{mural.favoritePhoto && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
 					<Card.Body>
 						<Card.Title >{mural.title}</Card.Title>
 						<Card.Subtitle>by {mural.artist}</Card.Subtitle>

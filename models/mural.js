@@ -48,7 +48,10 @@ const muralSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
-	photos: [photosSchema]
+	photos: [photosSchema],
+	favoritePhoto: {
+		type: String
+	}
 }, {
 	timestamps: true
 })
