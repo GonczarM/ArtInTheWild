@@ -46,7 +46,8 @@ function CreateMural(){
   };
 
   const handleError = (error) => {
-   console.log('error')
+		console.log(error)
+   	console.log('error')
   };
 
 	const handleChange = (event) => {
