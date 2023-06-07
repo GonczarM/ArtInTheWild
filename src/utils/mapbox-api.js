@@ -5,3 +5,10 @@ export async function geocode(address){
   const res = await fetch(`${BASE_URL}/${address}.json?access_token=${ACCESS_TOKEN}`).then(res => res.json())
   return res.features[0].geometry.coordinates
 }
+
+export async function reverseGeocode(coordinates){
+  const res = await fetch(
+    `${BASE_URL}/${coordinates.longitude},${coordinates.latitude}.json?access_token=${ACCESS_TOKEN}`
+  ).then(res => res.json())
+  return res.features[0].place_name
+}

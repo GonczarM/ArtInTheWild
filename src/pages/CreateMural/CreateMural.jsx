@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import { AddressAutofill } from '@mapbox/search-js-react';
@@ -28,6 +28,26 @@ function CreateMural(){
 	const dispatch = useContext(MuralDispatchContext)
 
 	const navigate = useNavigate()
+
+	const handleGetLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+    } else {
+      console.log('not supported')
+    }
+  };
+
+  const handleSuccess = async (position) => {
+    const placeName = await mapboxAPI.reverseGeocode(position.coords)
+		const words = placeName.split(', ')
+		const address = words[0]
+		const zipcode = words[2].split(' ')[1]
+		setForm({...form, address, zipcode})
+  };
+
+  const handleError = (error) => {
+   console.log('error')
+  };
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.id]: event.target.value})
@@ -118,6 +138,7 @@ function CreateMural(){
 						onChange={handleFile}
 					/>
 				</Form.Group>
+				<Button onClick={handleGetLocation}>Get Location</Button>
 				<Form.Group controlId='address'>
 					<Form.Label>Address</Form.Label>
 					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
