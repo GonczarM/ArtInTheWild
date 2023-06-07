@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -6,10 +6,31 @@ import { UserContext } from '../../utils/contexts';
 
 function Header({ logoutUser }){
 
+	const [toggle, setToggle] = useState(false)
+	const navbarRef = useRef(null)
 	const user = useContext(UserContext)
+
+	useEffect(() => {
+		const handleOutsideClick = (e) => {
+			if (toggle && navbarRef.current && !navbarRef.current.contains(e.target)) {
+				setToggle(false);
+			}
+		}
+		document.addEventListener('click', handleOutsideClick)
+
+		return () => {
+			document.removeEventListener('click', handleOutsideClick)
+		}
+	}, [toggle])
+
+	const handleToggle = () => {
+		setToggle(!toggle)
+	}
 
 	return (
 		<Navbar 
+			expanded={toggle}
+			ref={navbarRef}
 			collapseOnSelect 
 			expand="sm" 
 			bg="primary" 
@@ -18,7 +39,7 @@ function Header({ logoutUser }){
 		>
 			<Container>
 				<LinkContainer to='/'><Navbar.Brand>Art in the Wild</Navbar.Brand></LinkContainer>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Toggle onClick={handleToggle} />
         <Navbar.Collapse id="responsive-navbar-nav">
 					<Nav>
 						<LinkContainer to='/'><Nav.Link>Home</Nav.Link></LinkContainer>
