@@ -13,6 +13,7 @@ const EditMural = () => {
 	const mural = useContext(MuralContext)
 	const [form, setForm] = useState(mural)
 	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
 	const { updatedBy, muralId } = useParams()
@@ -24,6 +25,30 @@ const EditMural = () => {
 			navigate(`/mural/${updatedBy}/${muralId}`)
 		}
 	}, [])
+
+	const handleGetLocation = () => {
+		setIsLoadingLocation(true)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+    } else {
+      console.log('not supported')
+			setIsLoadingLocation(false)
+    }
+  };
+
+  const handleSuccess = async (position) => {
+    const placeName = await mapboxAPI.reverseGeocode(position.coords)
+		const words = placeName.split(', ')
+		const address = words[0]
+		const zipcode = words[2].split(' ')[1]
+		setForm({...form, address, zipcode})
+		setIsLoadingLocation(false)
+  };
+
+  const handleError = (error) => {
+		console.log(error)
+		setIsLoadingLocation(false)
+  };
 
 	const handleChange = (event) => {
 		setForm({...form, [event.target.id]: event.target.value})
@@ -106,6 +131,8 @@ const EditMural = () => {
 							required
 						/>
 					</Form.Group>
+					{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
+					: <Button onClick={handleGetLocation}>Get Location</Button>}
 					<Form.Group controlId='address'>
 						<Form.Label>Address</Form.Label>
 						<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>

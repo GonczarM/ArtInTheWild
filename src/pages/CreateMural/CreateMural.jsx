@@ -24,16 +24,19 @@ function CreateMural(){
 
 	const [form, setForm] = useState(initialForm)
 	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
 
 	const navigate = useNavigate()
 
 	const handleGetLocation = () => {
+		setIsLoadingLocation(true)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
     } else {
       console.log('not supported')
+			setIsLoadingLocation(false)
     }
   };
 
@@ -43,11 +46,12 @@ function CreateMural(){
 		const address = words[0]
 		const zipcode = words[2].split(' ')[1]
 		setForm({...form, address, zipcode})
+		setIsLoadingLocation(false)
   };
 
   const handleError = (error) => {
 		console.log(error)
-   	console.log('error')
+		setIsLoadingLocation(false)
   };
 
 	const handleChange = (event) => {
@@ -139,7 +143,8 @@ function CreateMural(){
 						onChange={handleFile}
 					/>
 				</Form.Group>
-				<Button onClick={handleGetLocation}>Get Location</Button>
+				{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
+				: <Button onClick={handleGetLocation}>Get Location</Button>}
 				<Form.Group controlId='address'>
 					<Form.Label>Address</Form.Label>
 					<AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
