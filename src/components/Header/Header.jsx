@@ -12,12 +12,20 @@ function Header({ logoutUser }){
 
 	useEffect(() => {
 		const handleOutsideClick = (e) => {
-			if (toggle && navbarRef.current && !navbarRef.current.contains(e.target)) {
-				setToggle(false);
+			if (toggle && navbarRef.current){
+				if(!navbarRef.current.contains(e.target)) {
+					setToggle(false);
+				}
+				const navbarLinks = navbarRef.current.getElementsByClassName('nav-link');
+				for (let i = 0; i < navbarLinks.length; i++) {
+					if (navbarLinks[i].contains(e.target)) {
+						setToggle(false);
+						break;
+					}
+				}
 			}
 		}
 		document.addEventListener('click', handleOutsideClick)
-
 		return () => {
 			document.removeEventListener('click', handleOutsideClick)
 		}
