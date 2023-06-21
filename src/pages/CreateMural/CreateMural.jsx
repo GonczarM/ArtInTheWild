@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Container, Form, Spinner } from 'react-bootstrap';
+import { Button, Container, Form, Spinner, Image } from 'react-bootstrap';
 import { AddressAutofill } from '@mapbox/search-js-react';
 
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
@@ -65,7 +65,7 @@ function CreateMural(){
 	}
 
 	const handleFile = (event) => {
-		setForm({...form, [event.target.name]: event.target.files[0]})
+		setForm({...form, photo: event.target.files[0]})
 	}
 
 	const handleSubmit = async (event) => {
@@ -157,6 +157,7 @@ function CreateMural(){
 						onChange={handleFile}
 					/>
 				</Form.Group>
+				{form.photo && <Image fluid src={URL.createObjectURL(form.photo)} />}
 				{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button onClick={handleGetLocation}>Get Location</Button>}
 				<Form.Group controlId='address'>
