@@ -25,6 +25,7 @@ function CreateMural(){
 	const [form, setForm] = useState(initialForm)
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+	const [error, setError] = useState('')
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
 
@@ -35,22 +36,27 @@ function CreateMural(){
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
     } else {
-      console.log('not supported')
+      setError('Can not get location. Not supported')
 			setIsLoadingLocation(false)
     }
   };
 
   const handleSuccess = async (position) => {
-    const placeName = await mapboxAPI.reverseGeocode(position.coords)
-		const words = placeName.split(', ')
-		const address = words[0]
-		const zipcode = words[2].split(' ')[1]
-		setForm({...form, address, zipcode})
-		setIsLoadingLocation(false)
+		try{
+    	const placeName = await mapboxAPI.reverseGeocode(position.coords)
+			const words = placeName.split(', ')
+			const address = words[0]
+			const zipcode = words[2].split(' ')[1]
+			setForm({...form, address, zipcode})
+		}catch{
+			setError('Could not get address. Please try again.')
+		}finally{
+			setIsLoadingLocation(false)
+		}
   };
 
   const handleError = (error) => {
-		console.log(error)
+		setError('Can not get location. Please try again.')
 		setIsLoadingLocation(false)
   };
 
@@ -67,22 +73,31 @@ function CreateMural(){
 		setIsLoading(true)
 		if(form.address && form.zipcode){
 			const address = `${form.address} ${form.zipcode}`
-			const coordinates = await mapboxAPI.geocode(address)
-			form.longitude = coordinates[0]
-			form.latitude = coordinates[1]
+			try{
+				const coordinates = await mapboxAPI.geocode(address)
+				form.longitude = coordinates[0]
+				form.latitude = coordinates[1]
+			}catch{
+				setError('Could not get coordinates. Please try again.')
+			}
 		}
 		const data = new FormData()
 		for(const prop in form){
 			data.append(prop, form[prop])
 		}
-		const createdMural = await muralsAPI.createMural(data)
-		dispatch({
-			type: 'changed',
-			mural: {...createdMural.mural, updatedBy: user.username}
-		})
-		setForm(initialForm)
-		setIsLoading(prevIsLoading => !prevIsLoading)
-		navigate(`/mural/${user.username}/${createdMural.mural._id}`)
+		try{
+			const createdMural = await muralsAPI.createMural(data)
+			dispatch({
+				type: 'changed',
+				mural: {...createdMural.mural, updatedBy: user.username}
+			})
+			setForm(initialForm)
+			navigate(`/mural/${user.username}/${createdMural.mural._id}`)
+		}catch{
+			setError('Could not create Mural. Please try again.')
+		}finally{
+			setIsLoading(prevIsLoading => !prevIsLoading)
+		}
   }
 
 	return(
@@ -134,7 +149,6 @@ function CreateMural(){
 						required
 					/>
 				</Form.Group>
-				<h2 className='text-center'>Optional</h2>
 				<Form.Group controlId='photo'>
 					<Form.Label>Photo</Form.Label>
 					<Form.Control
@@ -169,6 +183,7 @@ function CreateMural(){
 							autoComplete='postal-code'
 						/>
 				</Form.Group>
+				{error && <p>{error}</p>}
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Create Mural</Button>}
 			</Form>

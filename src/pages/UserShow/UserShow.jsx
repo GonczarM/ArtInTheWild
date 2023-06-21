@@ -11,6 +11,7 @@ const UserShow = ({ logoutUser }) => {
   const [murals, setMurals] = useState(null)
   const [favorites, setFavorites] = useState(null)
   const [key, setKey] = useState('murals')
+  const [error, setError] = useState('')
   const user = useContext(UserContext)
 
   const navigate = useNavigate()
@@ -24,15 +25,23 @@ const UserShow = ({ logoutUser }) => {
   }, [])
 
   const getMurals = async () => {
-    const userMurals = await userAPI.getUserMurals()
-    if(userMurals.murals.length) setMurals(userMurals.murals)
-    const userFavorites = await userAPI.getUserFavorites()
-    if(userFavorites.murals.length) setFavorites(userFavorites.murals)
+    try{
+      const userMurals = await userAPI.getUserMurals()
+      if(userMurals.murals.length) setMurals(userMurals.murals)
+      const userFavorites = await userAPI.getUserFavorites()
+      if(userFavorites.murals.length) setFavorites(userFavorites.murals)
+    }catch{
+      setError('Could not get murals. Please try again.')
+    }
   }
 
   const handleDelete = async () => {
-    await userAPI.deleteUser()
-    logoutUser()
+    try{
+      await userAPI.deleteUser()
+      logoutUser()
+    }catch{
+      setError('Could not delete user. Please try again.')
+    }
   }
 
 	return(
@@ -43,6 +52,7 @@ const UserShow = ({ logoutUser }) => {
           <Button onClick={handleDelete}>Delete {user.username}</Button>
         </Card.Body>
       </Card>}
+      {error && <p>{error}</p>}
       <Tabs justify onSelect={(key) => setKey(key)}>
         <Tab eventKey="murals" title="Murals">
           {murals && user ? 

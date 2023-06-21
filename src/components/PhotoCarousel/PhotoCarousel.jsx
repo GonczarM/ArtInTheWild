@@ -27,10 +27,14 @@ function PhotoCarousel() {
 	}
 
   const getMurals = async () => {
-    const muralsResponse = await getMuralsWithPhoto()
-    const muralsWithLogo = [...muralsResponse.murals]
-    muralsWithLogo.unshift({favoritePhoto:Logo})
-    setMurals(muralsWithLogo)
+    try{
+      const muralsResponse = await getMuralsWithPhoto()
+      const muralsWithLogo = [...muralsResponse.murals]
+      muralsWithLogo.unshift({favoritePhoto:Logo})
+      setMurals(muralsWithLogo)
+    }catch{
+      setMurals({favoritePhoto:Logo})
+    }
   }
 
   return (

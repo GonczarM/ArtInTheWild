@@ -13,6 +13,7 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 function Map(props){
 
   const [murals, setMurals] = useState(null)
+  const [error, setError] = useState('')
   const map = useRef(null);
   const mapContainer = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup());
@@ -38,7 +39,9 @@ function Map(props){
 
     map.current.on('load', () => {
       map.current.loadImage('https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png', (error, image) => {
-        if (error) throw error;
+        if (error) {
+          setError('Map error, please try again.')
+        }
         map.current.addImage('custom-marker', image);
         map.current.addSource('points', {
           'type': 'geojson',
@@ -99,16 +102,23 @@ function Map(props){
   }, [murals])
 
   const handleClick = async (muralId) => {
-    const mural = await muralsAPI.getMural(muralId)
-    dispatch({
-      type: 'changed',
-      mural: {...mural.mural, updatedBy: 'search'}
-    })
-    navigate(`/mural/search/${muralId}`)
+    try{
+      const mural = await muralsAPI.getMural(muralId)
+      dispatch({
+        type: 'changed',
+        mural: {...mural.mural, updatedBy: 'search'}
+      })
+      navigate(`/mural/search/${muralId}`)
+    }catch{
+      setError('Could not get mural, please try again.')
+    }
   }
 
   return (
-    <Container ref={mapContainer} className="map-container" />
+    <>
+      <Container ref={mapContainer} className="map-container" />
+      {error && <p>{error}</p>}
+    </>
   );
 }
 

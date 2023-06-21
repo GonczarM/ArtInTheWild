@@ -14,6 +14,7 @@ function ShowMural({ updateMurals }){
 
 	const [addPhoto, setAddPhoto] = useState(false);
 	const [URL, setURL] = useState(null)
+	const [error, setError] = useState('')
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
 	const mural = useContext(MuralContext)
@@ -27,11 +28,15 @@ function ShowMural({ updateMurals }){
 	}, [mural])
 
 	const getMural = async () => {
-		const mural = await muralsAPI.getMural(muralId)
-		dispatch({
-			type: 'changed',
-			mural: {...mural.mural, updatedBy}
-		})
+		try{
+			const mural = await muralsAPI.getMural(muralId)
+			dispatch({
+				type: 'changed',
+				mural: {...mural.mural, updatedBy}
+			})
+		}catch{
+			setError('Could not get mural. Please try again.')
+		}
 	}
 
 	const updateURL = () => {
@@ -55,6 +60,7 @@ function ShowMural({ updateMurals }){
 					</LinkContainer>
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
+				{error && <p>{error}</p>}
 				<MuralCard 
 					mural={mural}
 					user={user}

@@ -8,16 +8,21 @@ import { UserContext, MuralDispatchContext } from '../../utils/contexts'
 function PhotoListItem({ photo }) {
 
   const [imgLoading, setImgLoading] = useState(true)
+  const [error, setError] = useState('')
   const { updatedBy } = useParams()
   const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
   
   const favoritePhoto = async () => {
-    const mural = await usersAPI.favoritePhoto(photo._id)
-    dispatch({
-			type: 'changed',
-			mural: {...mural.mural, updatedBy}
-		})
+    try{
+      const mural = await usersAPI.favoritePhoto(photo._id)
+      dispatch({
+			  type: 'changed',
+			  mural: {...mural.mural, updatedBy}
+		  })
+    }catch{
+      setError('Could not favorite photo. Please try again.')
+    }
   }
 
   return (
@@ -31,6 +36,7 @@ function PhotoListItem({ photo }) {
       {user && !photo.likes.includes(user._id) &&
       <Card.Body>
         <Button onClick={favoritePhoto}>Favorite Picture</Button>
+        {error && <p>{error}</p>}
       </Card.Body>
       } 
     </Card>

@@ -14,6 +14,7 @@ const EditMural = () => {
 	const [form, setForm] = useState(mural)
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+	const [error, setError] = useState('')
 	const user = useContext(UserContext)
 	const dispatch = useContext(MuralDispatchContext)
 	const { updatedBy, muralId } = useParams()
@@ -31,22 +32,27 @@ const EditMural = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
     } else {
-      console.log('not supported')
+      setError('Can not get location. Not supported')
 			setIsLoadingLocation(false)
     }
   };
 
   const handleSuccess = async (position) => {
-    const placeName = await mapboxAPI.reverseGeocode(position.coords)
-		const words = placeName.split(', ')
-		const address = words[0]
-		const zipcode = words[2].split(' ')[1]
-		setForm({...form, address, zipcode})
-		setIsLoadingLocation(false)
+		try{
+			const placeName = await mapboxAPI.reverseGeocode(position.coords)
+			const words = placeName.split(', ')
+			const address = words[0]
+			const zipcode = words[2].split(' ')[1]
+			setForm({...form, address, zipcode})
+		}catch{
+			setError('Could not get address. Please try again.')
+		}finally{
+			setIsLoadingLocation(false)
+		}
   };
 
   const handleError = (error) => {
-		console.log(error)
+		setError('Can not get location. Please try again.')
 		setIsLoadingLocation(false)
   };
 
@@ -59,17 +65,26 @@ const EditMural = () => {
 		setIsLoading(true)
 		if(form.address && form.zipcode){
 			const address = `${form.address} ${form.zipcode}`
-			const coordinates = await mapboxAPI.geocode(address)
-			form.longitude = coordinates[0]
-			form.latitude = coordinates[1]
+			try{
+				const coordinates = await mapboxAPI.geocode(address)
+				form.longitude = coordinates[0]
+				form.latitude = coordinates[1]
+			}catch{
+				setError('Could not get coordinates. Please try again.')
+			}
 		}
-		const updatedMural = await muralsAPI.editMural(form, muralId)
-		dispatch({
-			type: 'changed',
-			mural: {...updatedMural.mural, updatedBy: user.username}
-		})
-		setIsLoading(prevIsLoading => !prevIsLoading)
-		navigate(`/mural/${user.username}/${updatedMural.mural._id}`)
+		try{
+			const updatedMural = await muralsAPI.editMural(form, muralId)
+			dispatch({
+				type: 'changed',
+				mural: {...updatedMural.mural, updatedBy: user.username}
+			})
+			navigate(`/mural/${user.username}/${updatedMural.mural._id}`)
+		}catch{
+			setError('Could not edit Mural. Please try again.')
+		}finally{
+			setIsLoading(prevIsLoading => !prevIsLoading)
+		}
   }
 
 	return(
@@ -159,6 +174,7 @@ const EditMural = () => {
 							/>
 						</AddressAutofill>
 					</Form.Group>
+					{error && <p>{error}</p>}
 					{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 					: <Button type='submit'>Edit Mural</Button>}
 				</Form>

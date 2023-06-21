@@ -28,6 +28,7 @@ function App(){
 	const [user, setUser] = useState(userService.getUser())
   const [mural, dispatch] = useReducer(muralReducer, null);
   const [murals, setMurals] = useState(null)
+  const [error, setError] = useState('')
 
   const navigate = useNavigate()
 
@@ -38,13 +39,17 @@ function App(){
   }, [])
 
   const getMurals = async () => {
-    const APIMurals = await muralsAPI.getMurals()
-    const randomMurals = []
-    for (let i = 0; i < 6; i++) {
-      const randomMural = getRandomMural(APIMurals.murals)
-      randomMurals.push(randomMural)
+    try{
+      const APIMurals = await muralsAPI.getMurals()
+      const randomMurals = []
+      for (let i = 0; i < 6; i++) {
+        const randomMural = getRandomMural(APIMurals.murals)
+        randomMurals.push(randomMural)
+      }
+      setMurals(randomMurals)
+    }catch{
+      setError('Could not get murals. Please refresh and try again.')
     }
-    setMurals(randomMurals)
   }
 
   const getRandomMural = (arr) => {
@@ -64,9 +69,13 @@ function App(){
   }
 
   const logoutUser = () => {
-    userService.logOut()
-    setUser(null)
-    navigate('/')
+    try{
+      userService.logOut()
+      setUser(null)
+      navigate('/')
+    }catch{
+      setError('Could not logout. Please try again.')
+    }
   }
 
   const updateMurals = (newMural) => {
@@ -88,6 +97,7 @@ function App(){
       <Header 
         logoutUser={logoutUser} 
       />
+      {error && <p>{error}</p>}
       <Routes>
         {/* home */}
         <Route path="/" element={<Home 

@@ -9,19 +9,24 @@ import Map from '../../components/Map/Map'
 function MuralCard({ mural, user, handleOpen }) {
 
   const [imgLoading, setImgLoading] = useState(true)
+  const [error, setError] = useState('')
   const { muralId, updatedBy } = useParams()
 
   const navigate = useNavigate()
 
   const favoriteMural = async () => {
-		const mural = await usersAPI.favoriteMural(muralId)
-		if(updatedBy === 'home'){
-			updateMurals(mural.mural)
-		}
-		dispatch({
-			type: 'changed',
-			mural: {...mural.mural, updatedBy}
-		})
+    try{
+		  const mural = await usersAPI.favoriteMural(muralId)
+		  if(updatedBy === 'home'){
+			  updateMurals(mural.mural)
+		  }
+		  dispatch({
+			  type: 'changed',
+			  mural: {...mural.mural, updatedBy}
+		  })
+    }catch{
+      setError('Could not favorite Mural. Please try again.')
+    }
 	}
 
 	const hasUserFavorited = (favoriteUser) => {
@@ -29,8 +34,12 @@ function MuralCard({ mural, user, handleOpen }) {
 	}
 
   const handleDelete = () => {
-    muralsAPI.deleteMural(mural._id)
-    navigate(`/user/${user.username}`)
+    try{
+      muralsAPI.deleteMural(mural._id)
+      navigate(`/user/${user.username}`)
+    }catch{
+      setError('Could not delete Mural. Please try again.')
+    }
   }
 
   const handleAddPhotoClick = () => {
@@ -43,6 +52,7 @@ function MuralCard({ mural, user, handleOpen }) {
 
   return (
     <Card className='text-center'>
+      {error && <p>{error}</p>}
       {mural.favoritePhoto && <Card.Img 
         src={mural.favoritePhoto} 
         onLoad={() => setImgLoading(false)}

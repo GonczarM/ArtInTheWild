@@ -11,6 +11,7 @@ const initialUser = {
 function Login({loginUser}){
 	
 	const [form, setForm] = useState(initialUser)
+	const [error, setError] = useState('')
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})
@@ -23,8 +24,8 @@ function Login({loginUser}){
 			setForm(initialUser)
 			loginUser(user)
 		}
-		catch(error){
-      return error
+		catch{
+      setError('Could not login. Please try again.')
     }
 	}
 
@@ -55,6 +56,7 @@ function Login({loginUser}){
 					/>
 				</Form.Group>
 				<Button type='submit'>Login</Button>
+				{error && <p>{error}</p>}
 			</Form>
 		</Container>
 	)

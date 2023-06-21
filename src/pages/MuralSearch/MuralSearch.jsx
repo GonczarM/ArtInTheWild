@@ -16,6 +16,7 @@ function MuralSearch(){
 	const [showMap, setShowMap] = useState(true)
 	const [searched, setSearched] = useState(false)
 	const [address, setAddress] = useState({})
+	const [error, setError] = useState('')
 
 	useEffect(() => {
 		if(!murals){
@@ -35,20 +36,28 @@ function MuralSearch(){
 	}
 
 	const getMurals = async () => {
-    const muralsRes = await muralsAPI.getMurals()
-    const filteredMurals = muralsRes.murals.filter(mural => {
-      if(mural.longitude && mural.latitude && mural.title){
-        return mural
-      }
-    })
-    setMurals(filteredMurals)
+		try{
+			const muralsRes = await muralsAPI.getMurals()
+			const filteredMurals = muralsRes.murals.filter(mural => {
+				if(mural.longitude && mural.latitude && mural.title){
+					return mural
+				}
+			})
+			setMurals(filteredMurals)
+		}catch{
+			setError('Could not get Murals. Please try again.')
+		}
   }
 
 	const updateSearch = async (event) => {
 		setSearch({...search, term:event.target.value})
 		if(event.target.value){
-			const foundSearchList = await muralsAPI.searchMuralsByType({...search, term:event.target.value})
-			setSearchList(foundSearchList.searchList)
+			try{
+				const foundSearchList = await muralsAPI.searchMuralsByType({...search, term:event.target.value})
+				setSearchList(foundSearchList.searchList)
+			}catch{
+				setError('Could not search Murals. Please try again.')
+			}
 		}else{
 			setSearchList(null)
 			setMurals(null)
@@ -61,16 +70,21 @@ function MuralSearch(){
 		setIsLoading(true)
 		setSearchList(null)
 		let foundMurals
-		if(!term){
-			foundMurals = await muralsAPI.searchMurals(search)
-		}else{
-			foundMurals = await muralsAPI.searchMurals({...search, term})
+		try{
+			if(!term){
+				foundMurals = await muralsAPI.searchMurals(search)
+			}else{
+				foundMurals = await muralsAPI.searchMurals({...search, term})
+			}
+			const foundAddress = foundMurals.murals.find(checkAddress)
+			setAddress(foundAddress)
+			setMurals(foundMurals.murals)
+			setSearched(true)
+		}catch{
+			setError('Could not search Murals. Please try again.')
+		}finally{
+			setIsLoading(prevIsLoading => !prevIsLoading)
 		}
-		const foundAddress = foundMurals.murals.find(checkAddress)
-		setAddress(foundAddress)
-		setMurals(foundMurals.murals)
-		setSearched(true)
-		setIsLoading(prevIsLoading => !prevIsLoading)
   }
 
 	const checkAddress = (mural) => {
@@ -117,6 +131,7 @@ function MuralSearch(){
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Search</Button>}
+				{error && <p>{error}</p>}
 			</Form>
 			{murals && !murals.length && <h2>No Murals Found from that {search.type}</h2>}
 			{murals && murals.length > 0 && searched && <>

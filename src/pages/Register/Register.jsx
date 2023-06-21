@@ -11,6 +11,7 @@ const initialUser = {
 function Register({loginUser}){
 	
 	const [form, setForm] = useState(initialUser)
+	const [error, setError] = useState('')
 
 	const handleChange = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value})
@@ -23,8 +24,8 @@ function Register({loginUser}){
 			setForm(initialUser)
 			loginUser(user)
 		}
-		catch(error){
-			return error
+		catch{
+			setError('Could not register. Please try again.')
 		}
 	}
 
@@ -55,6 +56,7 @@ function Register({loginUser}){
 					/>
 				</Form.Group>
 				<Button type='submit'>Register</Button>
+				{error && <p>{error}</p>}
 			</Form>
 		</Container>
 	)

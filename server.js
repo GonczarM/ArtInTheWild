@@ -20,7 +20,10 @@ app.use(require('./config/checkToken'));
 //controllers
 app.use('/api/users', usersController)
 app.use('/api/murals', muralsController)
-//catch all route
+app.use((err, req, res, next) => {
+  console.log('congrats you hit the error middleware');
+  console.log(err);
+})
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
