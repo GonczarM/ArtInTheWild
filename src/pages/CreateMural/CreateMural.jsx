@@ -165,7 +165,7 @@ function CreateMural(){
 						type="file"
 						name="photo"
 						accept="image/*"
-						capture="environment"
+						// capture="environment"
 						onChange={handleFile}
 					/>
 				</Form.Group>
