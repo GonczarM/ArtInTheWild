@@ -15,7 +15,6 @@ const muralSchema = new mongoose.Schema({
 	},
 	artist: {
 		type: String,
-		required: true
 	},
 	description: {
 		type: String,
@@ -23,7 +22,6 @@ const muralSchema = new mongoose.Schema({
 	},
 	year: {
 		type: Number,
-		required: true
 	},
 	affiliation: {
 		type: String

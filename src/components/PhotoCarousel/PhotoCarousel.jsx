@@ -9,6 +9,7 @@ import Logo from '../../assets/artInTheWild.jpg'
 function PhotoCarousel() {
   const [murals, setMurals] = useState(null)
   const [imgLoading, setImgLoading] = useState(true)
+  const [error, setError] = useState('')
   const dispatch = useContext(MuralDispatchContext)
   
 	const navigate = useNavigate()
@@ -33,27 +34,30 @@ function PhotoCarousel() {
       muralsWithLogo.unshift({favoritePhoto:Logo})
       setMurals(muralsWithLogo)
     }catch{
-      setMurals({favoritePhoto:Logo})
+      setError('Could not get murals. Please try again')
     }
   }
 
   return (
-    <Carousel>
-      {murals && murals.map((mural, i) => (
-      <Carousel.Item key={i} onClick={() => handleClick(mural)}>
-        <img 
-          src={mural.favoritePhoto}
-          onLoad={() => setImgLoading(false)} 
-          style={{ display: imgLoading ? 'none' : 'block'}}
-        />
-        {imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}} />}
-        <Carousel.Caption>
-          <h3>{mural.title}</h3>
-          <p>{mural.artist}</p>
-        </Carousel.Caption>
-      </Carousel.Item>
-      ))}
-    </Carousel>
+    <>
+      {error && <p>{error}</p>}
+      <Carousel>
+        {murals && murals.map((mural, i) => (
+        <Carousel.Item key={i} onClick={() => handleClick(mural)}>
+          <img 
+            src={mural.favoritePhoto}
+            onLoad={() => setImgLoading(false)} 
+            style={{ display: imgLoading ? 'none' : 'block'}}
+          />
+          {imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}} />}
+          <Carousel.Caption>
+            <h3>{mural.title}</h3>
+            <p>{mural.artist}</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        ))}
+      </Carousel>
+    </>
   );
 }
 

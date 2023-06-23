@@ -24,8 +24,12 @@ function Login({loginUser}){
 			setForm(initialUser)
 			loginUser(user)
 		}
-		catch{
-      setError('Could not login. Please try again.')
+		catch({message}){
+			if(message === 'Conflict'){
+				setError('Incorrect username or password. Please try again.')
+			}else{
+      	setError('Could not login. Please try again.')
+			}
     }
 	}
 

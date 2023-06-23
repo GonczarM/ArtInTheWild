@@ -80,8 +80,12 @@ const EditMural = () => {
 				mural: {...updatedMural.mural, updatedBy: user.username}
 			})
 			navigate(`/mural/${user.username}/${updatedMural.mural._id}`)
-		}catch{
-			setError('Could not edit Mural. Please try again.')
+		}catch({message}){
+			if(message === 'Unauthorized' || message === 'Forbidden'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+				setError('Could not edit Mural. Please try again.')
+			}
 		}finally{
 			setIsLoading(prevIsLoading => !prevIsLoading)
 		}

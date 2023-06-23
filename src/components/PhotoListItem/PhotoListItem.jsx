@@ -20,8 +20,12 @@ function PhotoListItem({ photo }) {
 			  type: 'changed',
 			  mural: {...mural.mural, updatedBy}
 		  })
-    }catch{
-      setError('Could not favorite photo. Please try again.')
+    }catch({message}){
+			if(message === 'Unauthorized'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+        setError('Could not favorite photo. Please try again.')
+      }
     }
   }
 

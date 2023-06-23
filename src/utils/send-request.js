@@ -14,6 +14,15 @@ export default async function sendRequest(url, method = 'GET', payload = null) {
     options.headers.Authorization = `Bearer ${token}`;
   }
   const res = await fetch(url, options);
-  if (res.ok) return res.json();
-  throw new Error('Bad Request');
+  if (res.ok){
+    return res.json();
+  }else if(res.status === 401){
+    throw new Error('Unauthorized');
+  }else if(res.status === 403){
+    throw new Error('Forbidden');
+  }else if(res.status === 409){
+    throw new Error('Conflict');
+  }else{
+    throw new Error('Bad Request');
+  }
 }

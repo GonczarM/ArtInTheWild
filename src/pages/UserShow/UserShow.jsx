@@ -39,8 +39,12 @@ const UserShow = ({ logoutUser }) => {
     try{
       await userAPI.deleteUser()
       logoutUser()
-    }catch{
-      setError('Could not delete user. Please try again.')
+    }catch({message}){
+			if(message === 'Unauthorized'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+        setError('Could not delete user. Please try again.')
+      }
     }
   }
 

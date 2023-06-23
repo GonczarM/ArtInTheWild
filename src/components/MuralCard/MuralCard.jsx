@@ -24,8 +24,12 @@ function MuralCard({ mural, user, handleOpen }) {
 			  type: 'changed',
 			  mural: {...mural.mural, updatedBy}
 		  })
-    }catch{
-      setError('Could not favorite Mural. Please try again.')
+    }catch({message}){
+			if(message === 'Unauthorized' || message === 'Forbidden'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+        setError('Could not favorite Mural. Please try again.')
+      }
     }
 	}
 
@@ -37,8 +41,12 @@ function MuralCard({ mural, user, handleOpen }) {
     try{
       muralsAPI.deleteMural(mural._id)
       navigate(`/user/${user.username}`)
-    }catch{
-      setError('Could not delete Mural. Please try again.')
+    }catch({message}){
+			if(message === 'Unauthorized'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+        setError('Could not delete Mural. Please try again.')
+      }
     }
   }
 

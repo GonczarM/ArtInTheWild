@@ -24,8 +24,12 @@ function Register({loginUser}){
 			setForm(initialUser)
 			loginUser(user)
 		}
-		catch{
-			setError('Could not register. Please try again.')
+		catch({message}){
+			if(message === 'Conflict'){
+				setError('This username already exists. Please try again.')
+			}else{
+				setError('Could not register. Please try again.')
+			}
 		}
 	}
 

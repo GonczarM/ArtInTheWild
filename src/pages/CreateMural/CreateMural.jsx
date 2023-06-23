@@ -93,8 +93,12 @@ function CreateMural(){
 			})
 			setForm(initialForm)
 			navigate(`/mural/${user.username}/${createdMural.mural._id}`)
-		}catch{
-			setError('Could not create Mural. Please try again.')
+		}catch({message}){
+			if(message === 'Unauthorized'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+				setError('Could not create Mural. Please try again.')
+			}
 		}finally{
 			setIsLoading(prevIsLoading => !prevIsLoading)
 		}

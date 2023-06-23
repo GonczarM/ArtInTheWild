@@ -27,8 +27,12 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
         mural: {...updatedMural.mural, updatedBy}
       })
       handleClose()
-    } catch{
-      setError('Add Photo Failed. Please try Again.')
+    }catch({message}){
+			if(message === 'Unauthorized'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+        setError('Add Photo Failed. Please try Again.')
+      }
     }finally{
       setIsLoading(false)
     }

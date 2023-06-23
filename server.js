@@ -20,9 +20,16 @@ app.use(require('./config/checkToken'));
 //controllers
 app.use('/api/users', usersController)
 app.use('/api/murals', muralsController)
-app.use((err, req, res, next) => {
-  console.log('congrats you hit the error middleware');
-  console.log(err);
+app.use((error, req, res, next) => {
+  if(error.status === 403){
+    res.status(403).json('Forbidden')
+  }else if(error.code === 11000 || error.status === 409){
+    res.status(409).json('Conflict')
+  }else{
+    res.status(400).json({
+      error
+    })
+  }
 })
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));

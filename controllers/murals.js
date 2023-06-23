@@ -18,16 +18,12 @@ router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) 
 		req.body.user = req.user._id
 		const createdMural = await Mural.create(req.body)
 		res.json({
-      status: 200,
       mural: createdMural
     });
   } 
 	catch(error){
-		res.json({
-      status: 400,
-      error: next(error)
-    })
-  }	
+		next(error)
+	}
 })
 
 //seed api
@@ -65,16 +61,12 @@ router.get('/seed', async (req, res, next) => {
 		}, []);
 		const createdMurals = await Mural.create(outputArr)
 		res.json({
-      status: 200,
       mural: createdMurals
     });
   } 
 	catch(error){
-		res.json({
-      status: 400,
-      error: next(error)
-    })
-  }	
+		next(error)
+	}
 })
 
 // get all murals
@@ -82,16 +74,11 @@ router.get('/', async (req, res, next) => {
 	try{
 		const murals = await Mural.find({})
 		res.json({
-			status: 200,
 			murals: murals
 		})
 	}
 	catch(error){
 		next(error)
-		res.json({
-			status: 400,	
-			error: error
-		})
 	}
 })
 
@@ -100,16 +87,11 @@ router.get('/search/:type/:term', async (req, res, next) => {
 	try{
 		const searchedMurals = await Mural.find({[req.params.type]: req.params.term})
 		res.json({
-			status: 200,
 			murals: searchedMurals
 		})
 	}
 	catch(error){
 		next(error)
-		res.json({
-			status: 400,	
-			error: error
-		})
 	}
 })
 
@@ -128,16 +110,11 @@ router.get('/list/:type/:term', async (req, res, next) => {
 			}
 		})
 		res.json({
-			status: 200,
 			searchList
 		})
-	} catch (error) {
-		console.log(error)
+	}
+	catch(error){
 		next(error)
-		res.json({
-			status: 400,	
-			error: error
-		})
 	}
 })
 
@@ -146,14 +123,10 @@ router.get('/photo', async (req, res, next) => {
 	try {
 		const foundMurals = await Mural.find({ photos: { $exists: true, $ne: [] }})
 		res.json({
-			status: 200,
 			murals: foundMurals
 		})
-	} catch (error) {
-		res.json({
-			status: 400,
-			error: next(error)
-		})
+	}catch(error){
+		next(error)
 	}
 })
 
@@ -162,14 +135,10 @@ router.get('/:id', async (req, res, next) => {
 	try {
 		const foundMural = await Mural.findById(req.params.id)
 		res.json({
-			status: 200,
 			mural: foundMural
 		})
-	} catch (error) {
-		res.json({
-			status: 400,
-			error: next(error)
-		})
+	}catch(error){
+		next(error)
 	}
 })
 
@@ -180,21 +149,17 @@ router.put('/:id', ensureLoggedIn, async (req, res, next) => {
 		if(req.user._id === foundMural.user.toString()){
 			const updatedMural = await Mural.findByIdAndUpdate(req.params.id, req.body, {new: true});
 			res.json({
-				status: 200,
 				mural: updatedMural
 			})
 		}else{
-			res.json({
-				status: 401
-			})
+			const error = {status: 403}
+			next(error)
 		}
 	}
 	catch(error){
-	res.json({
-      status: 400,
-      error: next(error)
-    })
-  }			
+		console.log(error)
+		next(error)
+	}		
 })
 
 // add photo to mural
@@ -207,14 +172,10 @@ router.put('/photo/:id', ensureLoggedIn, upload.single('photo'), async (req, res
 		}
 		updatedMural.save()
 		res.json({
-			status: 200,
 			mural: updatedMural
 		})
-	} catch (error) {
-		res.json({
-			status: 400,
-			error: next(error)
-		})
+	}catch(error){
+		next(error)
 	}
 })
 
@@ -229,17 +190,13 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
 				mural: deletedMural
 			})
 		}else{
-			res.json({
-				status: 401
-			})
+			const error = {status: 403}
+			next(error)
 		}
 	}
 	catch(error){
-		res.json({
-			status: 400,
-			error: next(error)
-		})
-	}		
+		next(error)
+	}
 })
 
 module.exports = router;
