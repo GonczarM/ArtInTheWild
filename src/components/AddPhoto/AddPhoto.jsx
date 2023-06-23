@@ -54,6 +54,7 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
             <Form.Control 
               type="file"
               name="file"
+              accept="image/*"
               onChange={handleChange}
               required
             />

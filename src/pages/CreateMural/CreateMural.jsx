@@ -65,13 +65,7 @@ function CreateMural(){
 	}
 
 	const handleFile = (event) => {
-		// console.log(event.target.value)
-		// if(event.target.files[0].type === 'image/jpeg'){
-			setForm({...form, photo: event.target.files[0]})
-		// }else{
-		// 	event.target.value = ''
-		// 	setError('File type is not supported. Please try again.')
-		// }
+		setForm({...form, photo: event.target.files[0]})
 	}
 
 	const handleSubmit = async (event) => {
@@ -165,7 +159,6 @@ function CreateMural(){
 						type="file"
 						name="photo"
 						accept="image/*"
-						// capture="environment"
 						onChange={handleFile}
 					/>
 				</Form.Group>
