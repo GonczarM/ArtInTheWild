@@ -27,16 +27,20 @@ const muralSchema = new mongoose.Schema({
 		type: String
 	},
 	address: {
-		type: String
+		type: String,
+		required: true
 	},
 	zipcode: {
-		type: String
+		type: String,
+		required: true
 	},
 	latitude: {
-		type: Number
+		type: Number,
+		required: true
 	},
 	longitude: {
-		type: Number
+		type: Number,
+		required: true
 	},
 	favorite: [{
 		type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +48,8 @@ const muralSchema = new mongoose.Schema({
 	}],
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'User',
+		required: true
 	},
 	photos: [photosSchema],
 	favoritePhoto: {

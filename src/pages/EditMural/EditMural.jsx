@@ -124,7 +124,6 @@ const EditMural = () => {
 							name="artist"
 							value={form.artist}
 							onChange={handleChange}
-							required
 						/>
 					</Form.Group>
 					<Form.Group controlId='year'>
@@ -135,7 +134,6 @@ const EditMural = () => {
 							name="year"
 							value={form.year}
 							onChange={handleChange}
-							required
 						/>
 					</Form.Group>
 					<Form.Group controlId='description'>
@@ -162,6 +160,7 @@ const EditMural = () => {
 								value={form.address}
 								onChange={handleChange}
 								autoComplete='address-line1'
+								required
 							/>
 						</AddressAutofill>
 					</Form.Group>
@@ -175,6 +174,7 @@ const EditMural = () => {
 								value={form.zipcode}
 								onChange={handleChange}
 								autoComplete='postal-code'
+								required
 							/>
 						</AddressAutofill>
 					</Form.Group>

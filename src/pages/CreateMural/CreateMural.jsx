@@ -127,7 +127,6 @@ function CreateMural(){
 						name="artist"
 						value={form.artist}
 						onChange={handleChange}
-						required
 					/>
 				</Form.Group>
 				<Form.Group controlId='year'>
@@ -138,7 +137,6 @@ function CreateMural(){
 						name="year"
 						value={form.year}
 						onChange={handleChange}
-						required
 					/>
 				</Form.Group>
 				<Form.Group controlId='description'>
@@ -175,6 +173,7 @@ function CreateMural(){
 							value={form.address}
 							onChange={handleChange}
 							autoComplete='address-line1'
+							required
 						/>
 					</AddressAutofill>
 				</Form.Group>
@@ -187,6 +186,7 @@ function CreateMural(){
 							value={form.zipcode}
 							onChange={handleChange}
 							autoComplete='postal-code'
+							required
 						/>
 				</Form.Group>
 				{error && <p>{error}</p>}
