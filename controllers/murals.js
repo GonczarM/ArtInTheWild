@@ -85,7 +85,7 @@ router.get('/', async (req, res, next) => {
 // search murals by type with term
 router.get('/search/:type/:term', async (req, res, next) => {
 	try{
-		const searchedMurals = await Mural.find({[req.params.type]: req.params.term})
+		const searchedMurals = await Mural.find({[req.params.type]: {$regex: new RegExp(req.params.term, 'i')}})
 		res.json({
 			murals: searchedMurals
 		})
@@ -99,7 +99,7 @@ router.get('/search/:type/:term', async (req, res, next) => {
 router.get('/list/:type/:term', async (req, res, next) => {
 	try {
 		const searchedMurals = await Mural.find({
-			[req.params.type]: { $regex: new RegExp(req.params.term, 'i') }
+			[req.params.type]: {$regex: new RegExp(req.params.term, 'i')}
 		});
 		const searchList = []
 		searchedMurals.forEach(mural => {
