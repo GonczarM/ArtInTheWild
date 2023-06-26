@@ -89,14 +89,15 @@ function CreateMural(){
 			const createdMural = await muralsAPI.createMural(data)
 			dispatch({
 				type: 'changed',
-				mural: {...createdMural.mural, updatedBy: user.username}
+				mural: {...createdMural.mural, updatedBy: user ? user.username : 'user'}
 			})
 			setForm(initialForm)
-			navigate(`/mural/${user.username}/${createdMural.mural._id}`)
+			navigate(`/mural/${user ? user.username : 'user'}/${createdMural.mural._id}`)
 		}catch({message}){
 			if(message === 'Unauthorized'){
 				setError('Unauthorized. Please login and try again.')
 			}else{
+				console.log(message, user)
 				setError('Could not create Mural. Please try again.')
 			}
 		}finally{

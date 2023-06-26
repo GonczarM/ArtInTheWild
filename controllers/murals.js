@@ -8,14 +8,16 @@ const upload = require('../config/S3upload')
 const API_URL = 'https://data.cityofchicago.org/resource/we8h-apcf.json'
 
 // create mural
-router.post('/', ensureLoggedIn, upload.single('photo'), async (req, res, next) => {
+router.post('/', upload.single('photo'), async (req, res, next) => {
 	try{
 		if(req.file){
 			req.body.photos = []
 			req.body.photos.push({photo: req.file.location})
 			req.body.favoritePhoto = req.file.location
 		}
-		req.body.user = req.user._id
+		if(req.user){
+			req.body.user = req.user._id
+		}
 		const createdMural = await Mural.create(req.body)
 		res.json({
       mural: createdMural

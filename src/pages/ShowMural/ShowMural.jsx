@@ -54,12 +54,14 @@ function ShowMural({ updateMurals }){
 	return(
 		<>
 			{mural && URL && <Container>
+				{updatedBy !== 'user' &&
 				<Breadcrumb>
 					<LinkContainer to={URL}>
 						<Breadcrumb.Item >{updatedBy}</Breadcrumb.Item>
 					</LinkContainer>
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
+				}
 				{error && <p>{error}</p>}
 				<MuralCard 
 					mural={mural}
