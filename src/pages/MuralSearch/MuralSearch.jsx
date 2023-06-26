@@ -56,8 +56,8 @@ function MuralSearch(){
 			}
 		}else{
 			setSearchList(null)
-			setMurals(null)
-			setSearch({...search, hasSearched: false})
+			getMurals()
+			setSearch(prevSearch => {return {...prevSearch, hasSearched: false}})
 		}
 	}
 
