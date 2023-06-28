@@ -16,8 +16,9 @@ const EditMural = () => {
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const [error, setError] = useState('')
 	const user = useContext(UserContext)
-	const dispatch = useContext(MuralDispatchContext)
 	const { updatedBy, muralId } = useParams()
+	
+	const dispatch = useContext(MuralDispatchContext)
 
 	const navigate = useNavigate()
 

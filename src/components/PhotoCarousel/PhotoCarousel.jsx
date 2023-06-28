@@ -7,9 +7,11 @@ import { MuralDispatchContext } from '../../utils/contexts';
 import Logo from '../../assets/artInTheWild.jpg'
 
 function PhotoCarousel() {
+
   const [murals, setMurals] = useState(null)
   const [imgLoading, setImgLoading] = useState(true)
   const [error, setError] = useState('')
+
   const dispatch = useContext(MuralDispatchContext)
   
 	const navigate = useNavigate()
@@ -52,7 +54,7 @@ function PhotoCarousel() {
           {imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}} />}
           <Carousel.Caption>
             <h3>{mural.title}</h3>
-            <p>{mural.artist}</p>
+            {mural.artist && <p>{mural.artist}</p>}
           </Carousel.Caption>
         </Carousel.Item>
         ))}

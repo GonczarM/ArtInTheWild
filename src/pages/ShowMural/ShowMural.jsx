@@ -18,6 +18,7 @@ function ShowMural({ updateMurals }){
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
 	const mural = useContext(MuralContext)
+	
 	const dispatch = useContext(MuralDispatchContext)
 
 	useEffect(() => {

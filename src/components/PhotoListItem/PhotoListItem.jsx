@@ -11,6 +11,7 @@ function PhotoListItem({ photo }) {
   const [error, setError] = useState('')
   const { updatedBy } = useParams()
   const user = useContext(UserContext)
+  
 	const dispatch = useContext(MuralDispatchContext)
   
   const favoritePhoto = async () => {

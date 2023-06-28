@@ -57,14 +57,13 @@ function MuralSearch(){
 		}else{
 			setSearchList(null)
 			getMurals()
+			setShowMap(true)
 			setSearch(prevSearch => {return {...prevSearch, hasSearched: false}})
 		}
 	}
 
 	const searchMurals = async (event, term) => {
-		if(event){
-				event.preventDefault()
-			}
+		event.preventDefault()
 		setIsLoading(true)
 		setSearchList(null)
 		let foundMurals

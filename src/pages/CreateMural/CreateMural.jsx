@@ -27,6 +27,7 @@ function CreateMural(){
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const [error, setError] = useState('')
 	const user = useContext(UserContext)
+
 	const dispatch = useContext(MuralDispatchContext)
 
 	const navigate = useNavigate()
@@ -152,6 +153,7 @@ function CreateMural(){
 						required
 					/>
 				</Form.Group>
+				{user && <>
 				<Form.Group controlId='photo'>
 					<Form.Label>Photo</Form.Label>
 					<Form.Control
@@ -162,6 +164,7 @@ function CreateMural(){
 					/>
 				</Form.Group>
 				{form.photo && <Image fluid src={URL.createObjectURL(form.photo)} />}
+				</>}
 				{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button onClick={handleGetLocation}>Get Location</Button>}
 				<Form.Group controlId='address'>

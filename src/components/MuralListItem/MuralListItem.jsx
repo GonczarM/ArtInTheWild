@@ -15,8 +15,8 @@ function MuralListItem({ mural }) {
         {mural.favoritePhoto && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
         <Card.Body>
           <Card.Title>{mural.title}</Card.Title>
-          <Card.Subtitle>By {mural.artist}</Card.Subtitle>
-          <Card.Text>{mural.year}</Card.Text>
+          {mural.artist && <Card.Subtitle>by {mural.artist}</Card.Subtitle>}
+          {mural.year && <Card.Text>{mural.year}</Card.Text>}
           <Card.Subtitle>Description</Card.Subtitle>
           <Card.Text>
             {mural.description.length > 300 

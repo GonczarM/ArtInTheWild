@@ -54,7 +54,7 @@ function MuralCard({ mural, user, handleOpen }) {
     if(user){
       handleOpen()
     }else{
-      navigate('/login')
+      setError('Please login first before adding a photo.')
     }
   }
 
@@ -69,8 +69,8 @@ function MuralCard({ mural, user, handleOpen }) {
       {mural.favoritePhoto && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
       <Card.Body>
         <Card.Title >{mural.title}</Card.Title>
-        <Card.Subtitle>by {mural.artist}</Card.Subtitle>
-        <Card.Text>{mural.year}</Card.Text>
+        {mural.artist && <Card.Subtitle>by {mural.artist}</Card.Subtitle>}
+        {mural.year && <Card.Text>{mural.year}</Card.Text>}
         <Card.Subtitle>Description</Card.Subtitle>
         <Card.Text>{mural.description}</Card.Text>
         {mural.affiliation && 
@@ -78,16 +78,10 @@ function MuralCard({ mural, user, handleOpen }) {
           <Card.Subtitle>Affiliation</Card.Subtitle>
           <Card.Text>{mural.affiliation}</Card.Text>
         </>}
-        {mural.address && 
-        <>
           <Card.Subtitle>Address</Card.Subtitle>
           <Card.Text>{mural.address}</Card.Text>
-        </>}
-        {mural.zipcode && 
-        <>
           <Card.Subtitle>ZIP Code</Card.Subtitle>
           <Card.Text>{mural.zipcode}</Card.Text>
-        </>}
         {user && !mural.favorite.some(hasUserFavorited) && mural.user !== user._id ? 
         <>
           <Button onClick={favoriteMural}>Favorite Mural</Button><br></br>
