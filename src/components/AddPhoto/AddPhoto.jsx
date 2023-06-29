@@ -4,6 +4,7 @@ import {Button, Modal, Form, Spinner, Image} from 'react-bootstrap';
 
 import { MuralDispatchContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 function AddPhoto({ handleClose, addPhoto, updateMurals }) {
 
@@ -43,6 +44,8 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
   }
 
   return (
+    <>
+    {error && <ErrorMessage error={error} setError={setError} />}
     <Modal show={addPhoto} onHide={handleClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>Add Mural Photo</Modal.Title>
@@ -60,12 +63,12 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
             />
           </Form.Group>
           {file && <Image fluid src={URL.createObjectURL(file)} />}
-          {error && <p>{error}</p>}
           {isLoading ? <Button disabled><Spinner size="sm"/></Button>
           : <Button type="submit">Submit</Button>}
         </Form>
       </Modal.Body>
     </Modal>
+    </>
   );
 }
 

@@ -5,6 +5,7 @@ import { Carousel, Spinner } from 'react-bootstrap';
 import { getMuralsWithPhoto } from '../../utils/murals-api';
 import { MuralDispatchContext } from '../../utils/contexts';
 import Logo from '../../assets/artInTheWild.jpg'
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 function PhotoCarousel() {
 
@@ -21,7 +22,6 @@ function PhotoCarousel() {
   }, [])
 
 	const handleClick = (mural) => {
-    if(!mural._id) return
 		dispatch({
       type: 'changed',
       mural: {...mural, updatedBy:'home'}
@@ -42,7 +42,7 @@ function PhotoCarousel() {
 
   return (
     <>
-      {error && <p>{error}</p>}
+      {error && <ErrorMessage error={error} setError={setError} />}
       <Carousel>
         {murals && murals.map((mural, i) => (
         <Carousel.Item key={i} onClick={() => handleClick(mural)}>

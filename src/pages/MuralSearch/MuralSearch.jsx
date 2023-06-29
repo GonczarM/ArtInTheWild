@@ -4,6 +4,7 @@ import { Button, Container, Form, ListGroup, ListGroupItem, Spinner } from 'reac
 import * as muralsAPI from '../../utils/murals-api'
 import MuralList from '../../components/MuralList/MuralList'
 import Map from '../../components/Map/Map'
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 const initialSearch = {type: 'artist', term: '', hasSearched: false}
 
@@ -94,6 +95,7 @@ function MuralSearch(){
 
 	return(
 		<Container className='text-center'>
+			{error && <ErrorMessage error={error} setError={setError} />}
 			<h1>Search Murals by...</h1>
 			<Button 
 				variant={search.type === 'artist' ? "outline-dark active" : 'primary'} 
@@ -130,7 +132,6 @@ function MuralSearch(){
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Search</Button>}
-				{error && <p>{error}</p>}
 			</Form>
 			{murals && !murals.length && <h2>No Murals Found from that {search.type}</h2>}
 			{murals && murals.length > 0 && search.hasSearched && <>

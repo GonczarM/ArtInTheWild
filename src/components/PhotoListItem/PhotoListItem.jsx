@@ -4,6 +4,7 @@ import { Button, Card, Spinner } from 'react-bootstrap';
 
 import * as usersAPI from '../../utils/users-api'
 import { UserContext, MuralDispatchContext } from '../../utils/contexts'
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 function PhotoListItem({ photo }) {
 
@@ -11,7 +12,7 @@ function PhotoListItem({ photo }) {
   const [error, setError] = useState('')
   const { updatedBy } = useParams()
   const user = useContext(UserContext)
-  
+
 	const dispatch = useContext(MuralDispatchContext)
   
   const favoritePhoto = async () => {
@@ -31,6 +32,8 @@ function PhotoListItem({ photo }) {
   }
 
   return (
+    <>
+    {error && <ErrorMessage error={error} setError={setError} />}
     <Card bg='secondary' className='text-center'>
       <Card.Img
         src={photo.photo} 
@@ -41,10 +44,10 @@ function PhotoListItem({ photo }) {
       {user && !photo.likes.includes(user._id) &&
       <Card.Body>
         <Button onClick={favoritePhoto}>Favorite Picture</Button>
-        {error && <p>{error}</p>}
       </Card.Body>
       } 
     </Card>
+    </>
   );
 }
 

@@ -9,6 +9,7 @@ import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/con
 import AddPhoto from '../../components/AddPhoto/AddPhoto'
 import PhotoList from '../../components/PhotoList/PhotoList'
 import MuralCard from '../../components/MuralCard/MuralCard'
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage'
 
 function ShowMural({ updateMurals }){
 
@@ -18,7 +19,7 @@ function ShowMural({ updateMurals }){
 	const { muralId, updatedBy } = useParams()
 	const user = useContext(UserContext)
 	const mural = useContext(MuralContext)
-	
+
 	const dispatch = useContext(MuralDispatchContext)
 
 	useEffect(() => {
@@ -54,6 +55,7 @@ function ShowMural({ updateMurals }){
 
 	return(
 		<>
+		{error && <ErrorMessage error={error} setError={setError} />}
 			{mural && URL && <Container>
 				{updatedBy !== 'user' &&
 				<Breadcrumb>
@@ -63,7 +65,6 @@ function ShowMural({ updateMurals }){
 					<Breadcrumb.Item active>{mural.title}</Breadcrumb.Item>
 				</Breadcrumb>
 				}
-				{error && <p>{error}</p>}
 				<MuralCard 
 					mural={mural}
 					user={user}

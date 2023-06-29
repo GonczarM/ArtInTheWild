@@ -7,6 +7,7 @@ import mapboxgl from 'mapbox-gl';
 import * as muralsAPI from '../../utils/murals-api'
 import { MuralDispatchContext } from '../../utils/contexts';
 import Popup from '../Popup/Popup';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -116,8 +117,8 @@ function Map(props){
 
   return (
     <>
+      {error && <ErrorMessage error={error} setError={setError} />}
       <Container ref={mapContainer} className="map-container" />
-      {error && <p>{error}</p>}
     </>
   );
 }

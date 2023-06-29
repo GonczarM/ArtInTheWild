@@ -5,6 +5,7 @@ import { Button, Card, Container, Tab, Tabs } from 'react-bootstrap';
 import { UserContext } from '../../utils/contexts';
 import * as userAPI from '../../utils/users-api'
 import MuralList from '../../components/MuralList/MuralList'
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 const UserShow = ({ logoutUser }) => {
 
@@ -50,13 +51,13 @@ const UserShow = ({ logoutUser }) => {
 
 	return(
 		<Container>
+      {error && <ErrorMessage error={error} setError={setError} />}
       {user &&<Card className='text-center'>
         <Card.Body>
           <Card.Title>{user.username}</Card.Title>
           <Button onClick={handleDelete}>Delete {user.username}</Button>
         </Card.Body>
       </Card>}
-      {error && <p>{error}</p>}
       <Tabs justify onSelect={(key) => setKey(key)}>
         <Tab eventKey="murals" title="Murals">
           {murals && user ? 

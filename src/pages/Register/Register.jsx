@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Form, Button, Container } from 'react-bootstrap'
 
 import { signUp } from '../../utils/users-service'
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage'
 
 const initialUser = {
 	username: '',
@@ -35,6 +36,7 @@ function Register({loginUser}){
 
 	return(
 		<Container>
+			{error && <ErrorMessage error={error} setError={setError} />}
 			<h1 className='text-center'>Register</h1>
 			<Form onSubmit={handleRegister}>
 				<Form.Group controlId='username'>
@@ -60,7 +62,6 @@ function Register({loginUser}){
 					/>
 				</Form.Group>
 				<Button type='submit'>Register</Button>
-				{error && <p>{error}</p>}
 			</Form>
 		</Container>
 	)

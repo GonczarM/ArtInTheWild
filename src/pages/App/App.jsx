@@ -14,6 +14,7 @@ import ShowMural from '../ShowMural/ShowMural';
 import UserShow from '../UserShow/UserShow';
 import MuralSearch from '../MuralSearch/MuralSearch';
 import EditMural from '../EditMural/EditMural';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 function muralReducer(mural, action){
   switch (action.type) {
@@ -97,7 +98,7 @@ function App(){
       <Header 
         logoutUser={logoutUser} 
       />
-      {error && <p>{error}</p>}
+      {error && <ErrorMessage error={error} setError={setError} />}
       <Routes>
         {/* home */}
         <Route path="/" element={<Home 

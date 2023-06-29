@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as usersAPI from '../../utils/users-api'
 import * as muralsAPI from '../../utils/murals-api'
 import Map from '../../components/Map/Map'
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 function MuralCard({ mural, user, handleOpen }) {
 
@@ -59,8 +60,9 @@ function MuralCard({ mural, user, handleOpen }) {
   }
 
   return (
+    <>
+    {error && <ErrorMessage error={error} setError={setError} />}
     <Card className='text-center'>
-      {error && <p>{error}</p>}
       {mural.favoritePhoto && <Card.Img 
         src={mural.favoritePhoto} 
         onLoad={() => setImgLoading(false)}
@@ -109,6 +111,7 @@ function MuralCard({ mural, user, handleOpen }) {
         />}
       </Card.Body>
     </Card>
+    </>
   );
 }
 

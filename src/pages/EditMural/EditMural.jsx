@@ -7,6 +7,7 @@ import { AddressAutofill } from '@mapbox/search-js-react';
 import { MuralContext, MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 import * as mapboxAPI from '../../utils/mapbox-api'
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 const EditMural = () => {
 	
@@ -17,7 +18,7 @@ const EditMural = () => {
 	const [error, setError] = useState('')
 	const user = useContext(UserContext)
 	const { updatedBy, muralId } = useParams()
-	
+
 	const dispatch = useContext(MuralDispatchContext)
 
 	const navigate = useNavigate()
@@ -53,7 +54,11 @@ const EditMural = () => {
   };
 
   const handleError = (error) => {
-		setError('Can not get location. Please try again.')
+		if(error.code === 1){
+			setError('Please allow location access and try again.')
+		}else{
+			setError('Can not get location. Please try again.')
+		}
 		setIsLoadingLocation(false)
   };
 
@@ -64,18 +69,19 @@ const EditMural = () => {
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		setIsLoading(true)
-		if(form.address && form.zipcode){
-			const address = `${form.address} ${form.zipcode}`
-			try{
-				const coordinates = await mapboxAPI.geocode(address)
-				form.longitude = coordinates[0]
-				form.latitude = coordinates[1]
-			}catch{
-				setError('Could not get coordinates. Please try again.')
-			}
+		const address = `${form.address} ${form.zipcode}`
+		const copyOfForm = {...form}
+		try{
+			const coordinates = await mapboxAPI.geocode(address)
+			copyOfForm.longitude = coordinates[0]
+			copyOfForm.latitude = coordinates[1]
+		}catch{
+			setError('Could not get coordinates. Please try again.')
+			setIsLoading(prevIsLoading => !prevIsLoading)
+			return
 		}
 		try{
-			const updatedMural = await muralsAPI.editMural(form, muralId)
+			const updatedMural = await muralsAPI.editMural(copyOfForm, muralId)
 			dispatch({
 				type: 'changed',
 				mural: {...updatedMural.mural, updatedBy: user.username}
@@ -94,6 +100,7 @@ const EditMural = () => {
 
 	return(
 		<>
+			{error && <ErrorMessage error={error} setError={setError} />}
 			{form && <Container>
 				<Breadcrumb>
 					<LinkContainer to={`/user/${updatedBy}`}>
@@ -179,11 +186,11 @@ const EditMural = () => {
 							/>
 						</AddressAutofill>
 					</Form.Group>
-					{error && <p>{error}</p>}
 					{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 					: <Button type='submit'>Edit Mural</Button>}
 				</Form>
 			</Container>}
+			{error && <ErrorMessage error={error} setError={setError} />}
 		</>
 	)
 }

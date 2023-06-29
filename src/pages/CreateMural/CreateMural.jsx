@@ -6,6 +6,7 @@ import { AddressAutofill } from '@mapbox/search-js-react';
 import { MuralDispatchContext, UserContext } from '../../utils/contexts';
 import * as muralsAPI from '../../utils/murals-api'
 import * as mapboxAPI from '../../utils/mapbox-api'
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 
 const initialForm = {
@@ -57,7 +58,11 @@ function CreateMural(){
   };
 
   const handleError = (error) => {
-		setError('Can not get location. Please try again.')
+		if(error.code === 1){
+			setError('Please allow location access and try again.')
+		}else{
+			setError('Can not get location. Please try again.')
+		}
 		setIsLoadingLocation(false)
   };
 
@@ -72,19 +77,20 @@ function CreateMural(){
 	const handleSubmit = async (event) => {
     event.preventDefault()
 		setIsLoading(true)
-		if(form.address && form.zipcode){
-			const address = `${form.address} ${form.zipcode}`
-			try{
-				const coordinates = await mapboxAPI.geocode(address)
-				form.longitude = coordinates[0]
-				form.latitude = coordinates[1]
-			}catch{
-				setError('Could not get coordinates. Please try again.')
-			}
+		const address = `${form.address} ${form.zipcode}`
+		const copyOfForm = {...form}
+		try{
+			const coordinates = await mapboxAPI.geocode(address)
+			copyOfForm.longitude = coordinates[0]
+			copyOfForm.latitude = coordinates[1]
+		}catch{
+			setError('Could not get coordinates. Please try again.')
+			setIsLoading(prevIsLoading => !prevIsLoading)
+			return
 		}
 		const data = new FormData()
-		for(const prop in form){
-			data.append(prop, form[prop])
+		for(const prop in copyOfForm){
+			data.append(prop, copyOfForm[prop])
 		}
 		try{
 			const createdMural = await muralsAPI.createMural(data)
@@ -92,15 +98,9 @@ function CreateMural(){
 				type: 'changed',
 				mural: {...createdMural.mural, updatedBy: user ? user.username : 'user'}
 			})
-			setForm(initialForm)
 			navigate(`/mural/${user ? user.username : 'user'}/${createdMural.mural._id}`)
-		}catch({message}){
-			if(message === 'Unauthorized'){
-				setError('Unauthorized. Please login and try again.')
-			}else{
-				console.log(message, user)
-				setError('Could not create Mural. Please try again.')
-			}
+		}catch{
+			setError('Could not create Mural. Please try again.')
 		}finally{
 			setIsLoading(prevIsLoading => !prevIsLoading)
 		}
@@ -108,6 +108,7 @@ function CreateMural(){
 
 	return(
 		<Container>
+			{error && <ErrorMessage error={error} setError={setError} />}
 			<h1 className='text-center'>Create Mural</h1>
 			<Form onSubmit={handleSubmit}>
 				<Form.Group controlId='title'>
@@ -193,7 +194,6 @@ function CreateMural(){
 							required
 						/>
 				</Form.Group>
-				{error && <p>{error}</p>}
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button type='submit'>Create Mural</Button>}
 			</Form>
