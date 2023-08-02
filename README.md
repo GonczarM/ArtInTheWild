@@ -95,7 +95,7 @@ The Profile Page presents users with their own contributions to the platform. Ad
 On the specific art page, you can view the most favorited photo first, followed by a collection of other art uploads. Unravel the art's narrative through its compelling details, including the title, creator, year installed, and a vivid description, allowing you to appreciate the artistry and significance behind each masterpiece.
 
 <div align="center">
- <h2>:camera_flash: How to Run Locally: </h2>
+ <h2>🚀 How to Run Locally: </h2>
 </div>
 
 1. Clone this repository
