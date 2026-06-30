@@ -55,6 +55,7 @@ Mounted in `server.js`:
 - Stateless JWT, no server-side session store. Token payload is `{ user: <full user doc minus password> }`, 24h expiry, signed with `SECRET`.
 - Client stores token in `localStorage` (`src/utils/users-service.js`) and sends as `Authorization: Bearer <token>` on every request (`src/utils/send-request.js`).
 - This maps reasonably well to Strapi's `users-permissions` plugin (Phase 2), which also issues bearer JWTs — but the "decoded payload is the user doc" pattern won't carry over (Strapi just gives an id, frontend calls `/api/users/me`).
+- **Where the cookie gets set (Phase 1 finding, see §5):** entirely client-side in Next.js, not Express. Express has zero cookie awareness on either side of the handshake.
 
 ---
 
@@ -161,3 +162,151 @@ env var — worth deciding whether to externalize it for Strapi's config.
    `/list/:type/:term`) — **Confirmed only `title`, `artist`, and `zipcode` are actually
    used by the frontend.** Drop the open-ended arbitrary-field version; Strapi
    filters/custom routes only need to cover these three fields.
+
+---
+
+## 5. Phase 1 Findings — Where the Auth Cookie Is Set
+
+Checked per the Phase 2 kickoff question. **The cookie is set entirely client-side, in
+Next.js — Express is not involved in cookie handling at all, in either direction.**
+
+- `controllers/users.js`'s `/register` and `/login` routes call `res.json(token)` —
+  a raw JWT string as the whole response body. No `Set-Cookie` header, no
+  `res.cookie(...)` call anywhere in the Express app (verified via grep across
+  `controllers/`, `server.js`, `config/`).
+- `next-app/utils/users-service.js`'s `login`/`signUp` functions take that raw JWT
+  string from the response body and write it into `document.cookie` themselves
+  (`setTokenCookie()`), readable (non-httpOnly) per the Phase 1 decision.
+- Express's only role is reading the `Authorization: Bearer <token>` header on
+  protected routes (`config/checkToken.js`) — it never reads or writes the cookie
+  itself. The cookie is purely a Next.js-side storage mechanism for a token Express
+  hands back in plain JSON.
+
+**Why this matters for Phase 4 (rewiring Next.js to Strapi):**
+1. Strapi's `/api/auth/local` and `/api/auth/local/register` endpoints also return the
+   JWT in the JSON response body, not via `Set-Cookie` — so the "client reads the body,
+   writes its own cookie" pattern in `users-service.js` carries over structurally. But
+   the response **shape** differs: Strapi returns `{ jwt: "...", user: {...} }` (two
+   separate fields), not a bare token string — `setTokenCookie`/`getUser` call sites
+   will need updating to match.
+2. Bigger gap: the current custom JWT embeds the **entire user object** in the token
+   payload (`jwt.sign({ user }, ...)` in `controllers/users.js`), which is why
+   `getUser()` can synchronously decode the token to get `{username, _id, ...}` with no
+   extra API call. Strapi's JWT payload only contains the user **id** — `getUser()`
+   will need to become async and call `/api/users/me` (or rely on the `user` object
+   Strapi already returns at login time and cache it separately from the token) rather
+   than decoding it out of the JWT itself.
+
+---
+
+## 6. Phase 2 — Strapi Content Types
+
+Fresh Strapi v5.49.0 (Community, JS, SQLite for now) project scaffolded standalone at
+`strapi-cms/`, sibling to `next-app/` — neither `next-app/` nor the Express app were
+touched. Content types, permissions, and S3 config were all verified against the live
+admin panel and REST API (registered two test users, created an owned Mural, uploaded a
+real photo to S3, and had both users like it — one rejected as a duplicate — see below).
+
+### Content types built
+- **Mural** (`src/api/mural/`) — title/artist/description/affiliation/address/zipcode/
+  latitude/longitude ported directly from `models/mural.js`. `year` is `integer`,
+  explicitly `required: false` — this is a deliberate schema decision (an optional,
+  nullable number field), not a side effect of how the old Mongoose schema happened to
+  cast empty strings to `null`; see §4 decision and `models/mural.js` for contrast.
+  `user` is an optional `manyToOne` to the Strapi User (orphaning decision, §4 #4).
+  `photos` is the inverse side of Photo's relation (replaces the embedded array).
+  `favoritedBy` is the Favorites many-to-many (see below). `draftAndPublish: false` —
+  the old app had no draft/review concept, entries are live the instant they're created,
+  same as `Mural.create()` always did.
+- **Photo** (`src/api/photo/`) — new content type, promoted out of the old embedded
+  `Mural.photos[]` array. `mural` (`manyToOne`, required), `photo` (Strapi `media` field,
+  routed through the S3 provider), `likes` (inverse of Like). The brief's suggestion of a
+  `caption` field was **not added** — `models/mural.js`'s `photosSchema` only ever had
+  `photo` and `likes`, no caption, so nothing was invented that wasn't in the original
+  schema. `favoritePhoto` (the old denormalized "most-liked or first photo" convenience
+  field on Mural) was **dropped, not ported** — with Photo/Like now first-class and
+  queryable, recomputing "most-liked photo" via a sort-by-like-count query is simpler and
+  has no drift-on-write-path to maintain, vs. the old app's recompute-on-every-like
+  approach. Flagging this since the brief asked to surface rather than silently drop —
+  Phase 4 should compute it in the frontend or a custom Strapi endpoint, not store it.
+- **Like** (`src/api/like/`) — new content type, replaces `Mural.photos[].likes`.
+  `photo` + `user` (`manyToOne` each), built-in `createdAt` as the like timestamp (no
+  custom field). One-like-per-user-per-photo is enforced in a custom controller
+  (`src/api/like/controllers/like.js`), not a DB constraint — see gotchas below for why
+  the first version of this check silently did nothing.
+- **Favorites** — a plain `manyToMany` relation (`Mural.favoritedBy` ↔
+  `User.favoriteMurals`), not a separate content type, since unlike Like it needs no
+  extra fields or uniqueness logic beyond the relation itself.
+- **User** — Strapi's built-in `users-permissions` plugin, extended via
+  `src/extensions/users-permissions/content-types/user/schema.json` to add `murals`,
+  `favoriteMurals`, and `likes` inverse relations.
+
+### Permissions
+Public/Authenticated role permissions are seeded in code (`src/index.js` `bootstrap()`)
+rather than left as untracked admin-panel clicks, mirroring the old Express auth model:
+Public gets read-only access (matches the old app's public `GET /api/murals/*`);
+Authenticated additionally gets create/update/delete on Mural/Photo and create/delete on
+Like (matches `ensureLoggedIn`). **Not yet ported:** the old app's per-owner check
+(`req.user._id === mural.user` before allowing edit/delete) — Strapi's default role
+permissions are "any authenticated user can," with no built-in per-record ownership gate.
+This wasn't in the Phase 2 scope (schema/content-types/relations/S3/search filters) so it
+was deliberately left out rather than built ad hoc — flagging for Phase 4 as a real gap:
+right now any logged-in user can edit or delete *any* mural via the API, not just their
+own.
+
+### S3 upload provider
+`@strapi/provider-upload-aws-s3` configured in `config/plugins.js`, reusing the same
+bucket/credentials from the old Express app's `.env` (copied into `strapi-cms/.env`,
+plus a hardcoded `AWS_REGION=us-west-2` matching the old `config/S3upload.js`). One fix
+needed: the provider defaults to setting `ACL: 'public-read'` on every upload unless
+`ACL` is explicitly present-but-undefined in config — this bucket has S3's modern
+"Bucket owner enforced" object ownership (ACLs disabled), so the default ACL caused
+every upload to fail with `AccessControlListNotSupported`. The old app's `multer-s3`
+config never set an ACL either, so this isn't a behavior change, just an explicit
+opt-out needed for this Strapi provider. `config/middlewares.js` also needed the S3
+host added to the `strapi::security` CSP `img-src`/`media-src` directives, or the admin
+panel's media previews are blocked.
+
+### Search routes
+`GET /api/murals/search/:type/:term` and `/api/murals/list/:type/:term` ported as custom
+routes (`src/api/mural/routes/mural-search.js` + matching controller actions), with
+`:type` validated server-side against an allowlist of exactly `title`/`artist`/`zipcode`
+— a non-allowlisted field now gets a clean 400 `ValidationError` instead of being passed
+through to a query, closing the old open-ended-field-name gap (§4 decision #7).
+
+### Gotchas hit while building this (useful for Phase 3/4)
+1. **Setting a relation on create requires read (`find`) permission on the relation's
+   target type**, separately from permission on the relation's own field. Posting
+   `{"user": "<documentId>"}` to create a Mural returned a generic `400 Invalid key user`
+   until the Authenticated role was also granted `plugin::users-permissions.user.find` —
+   Strapi gates *writing* a relation behind the requester's *read* access to what it
+   points at (`@strapi/utils` `throw-restricted-relations.js`). Same gate applies on the
+   read side: `GET /api/murals?populate=user` silently omits `user` entirely (not even an
+   error) for a requester without that same `find` permission.
+2. **Strapi never includes a relation's ID in a response unless you explicitly
+   `populate` it** — unlike Mongoose, which always serialized the raw `ObjectId` even
+   without `.populate()`. The old app's frontend ownership check
+   (`mural.user === user._id`) relied on that raw ID always being present; Phase 4 will
+   need `populate=user` (or similar) on every mural fetch to replicate that, even for
+   otherwise-unauthenticated public requests.
+3. **Filtering by a relation with a flat value silently matches nothing** via
+   `strapi.documents(...).findFirst({ filters: { photo: someDocumentId } })` — it has to
+   be the nested form, `filters: { photo: { documentId: someDocumentId } }`. The first
+   version of the Like duplicate-check used the flat form and the bug was invisible: no
+   error, `existing` was just always `null`, so duplicates sailed through silently until
+   caught by an actual two-user test (not just "does it run without throwing").
+4. **Combined multipart create (`data` JSON field + `files.<attr>` file field in one
+   POST to a content-type's create route) didn't work** in this version — requests
+   consistently got `400 Missing "data" payload` regardless of how the multipart form was
+   built. Worked around with the more universally-supported two-step pattern instead:
+   `POST /api/upload` (multipart, returns a file id) then `POST /api/photos` with
+   `{"photo": <fileId>}` referencing it. Phase 4's "add photo" flow should use this same
+   two-step pattern rather than trying to replicate the old single-request
+   `multer-s3` upload.
+5. `better-sqlite3` doesn't create its parent directory — `strapi-cms/.tmp/` has to exist
+   before first boot or you get a misleading `SqliteError: unable to open database file`.
+   Separately, **`DATABASE_FILENAME=` left blank (but present) in `.env` does not fall
+   back to the documented default** (`.tmp/data.db`) — Strapi's `env()` helper only
+   applies a default when a var is fully unset, not when it's set to an empty string, so
+   a blank line resolved to the project root itself as the "database file" path. Both
+   are scaffolding artifacts of `create-strapi-app`, not anything introduced here.
