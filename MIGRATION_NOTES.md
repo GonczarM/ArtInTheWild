@@ -310,3 +310,78 @@ through to a query, closing the old open-ended-field-name gap (§4 decision #7).
    applies a default when a var is fully unset, not when it's set to an empty string, so
    a blank line resolved to the project root itself as the "database file" path. Both
    are scaffolding artifacts of `create-strapi-app`, not anything introduced here.
+
+---
+
+## 7. Phase 3 — Data Migration
+
+**SQLite is now confirmed as the database going forward**, not a placeholder — Phase 2's
+"for now" framing is resolved. One-off migration script at
+`strapi-cms/scripts/migrate.js` (not part of either running app), run via
+`cd strapi-cms && node scripts/migrate.js`. Boots a real Strapi instance
+(`createStrapi().load()`) and uses the Document Service directly rather than going over
+REST, to sidestep the permission-coupling gotchas from Phase 2's §6 — this turned out to
+be the right call for `create()` operations, but see the `update()` gotcha below for
+where it wasn't.
+
+Migrates in dependency order — Users → Murals → Photos → Likes → Favorites — keeping
+`mongoId -> { id, documentId }` maps in memory per content type, dumped into
+`strapi-cms/MIGRATION_LOG.md` (summary counts, full ID mapping tables, skip list with
+reasons, non-fatal warnings) after each run. Safe to re-run: wipes Mural/Photo/Like/
+upload-file content and every non-admin User at the start, then migrates fresh from
+Mongo every time. Verified against a seeded MongoDB fixture (3 users, 5 murals covering
+owned/orphaned/no-photos/multi-photo/dangling-reference cases — Mongo was empty going
+into Phase 3) by spot-checking all 5 migrated murals' relations against the originals,
+not just record existence.
+
+### Decisions made
+- **`favoritePhoto` was not migrated** — confirmed dropped in Phase 2 (§6), nothing to
+  carry over.
+- **Email is synthesized** as `${username}@migrated.local` for every migrated user — the
+  old schema has no email field at all, but Strapi's User requires one (unique,
+  required). Same flag as Phase 2 §6, now actually exercised against real-shaped data.
+- **Original passwords are not preserved.** Confirmed empirically (see gotcha below)
+  that Strapi's `users-permissions` user-creation service hashes whatever password value
+  it's given, every time — there's no way to pass through an already-hashed Mongo bcrypt
+  string without it being hashed *again*, which would make it unverifiable against the
+  user's real password. Every migrated user instead gets the same placeholder password
+  (`ChangeMe!Migrated2026`, set in `scripts/migrate.js`). **This means a real production
+  migration needs a plan for this** — most likely a forced password-reset email to every
+  migrated user before cutover, since there's no way to silently carry logins over.
+
+### Gotchas hit while building this
+1. **`strapi.documents(uid).update()` silently does nothing when called from a
+   standalone bootstrapped script** (`createStrapi(appContext).load()`, with or without
+   also calling `.start()`) — it returns `null` and the database is left unchanged, with
+   no thrown error to catch. The exact same update through the real HTTP server (a
+   `PUT /api/murals/:id` REST call) works correctly and persists. This was diagnosed by
+   directly inspecting the SQLite join table after a "successful" (non-throwing) script
+   run and finding it empty — the Favorites step's first version reported 4/5 succeeded
+   in the log while having silently written zero rows. **`create()` was unaffected by
+   this** — every User/Mural/Photo/Like in this migration was created via
+   `strapi.documents(uid).create()` in the same script context and all persisted
+   correctly; only `update()` (used for connecting the `favoritedBy` many-to-many) showed
+   this behavior. Worked around by using the lower-level `strapi.db.query(uid).update()`
+   instead, which writes correctly from a standalone script. Whether this is a Strapi
+   5.49.0 bug specific to `draftAndPublish: false` content types, or some other
+   standalone-vs-HTTP runtime-state gap, wasn't tracked down further — it's the kind of
+   thing worth a quick check against a newer Strapi patch version before relying on
+   `documents().update()` from a script again.
+2. **`strapi.db.query(uid).update()`'s relation `connect` needs numeric internal `id`s,
+   not `documentId` strings** — passing a documentId throws a clear
+   `Expected a valid Number` error, unlike `documents().create()`'s relation inputs,
+   which accept either. This is why the migration script's ID maps store both
+   `{ id, documentId }` per record rather than just `documentId`.
+3. **Reusing an existing S3 object without re-uploading or re-processing it** means
+   inserting a `plugin::upload.file` row directly (`strapi.db.query('plugin::upload.file')
+   .create(...)`, not `strapi.documents()` or the upload service's own create path, to
+   avoid triggering any actual upload/processing pipeline) with metadata that matches
+   what's already in the bucket. `HEAD`-ing the object (`@aws-sdk/client-s3`'s
+   `HeadObjectCommand` — metadata only, no image bytes downloaded) gets the real
+   `size`/`mime` without violating "don't re-upload or re-process"; for the dry run's two
+   fabricated S3 URLs that don't actually exist in the bucket, the `HEAD` request fails
+   and the script falls back to a best-effort placeholder (size 0, mime guessed from the
+   file extension) with a logged warning rather than failing the whole Photo migration —
+   worth treating as a real data-integrity signal in the actual production migration
+   (a Mongo-referenced photo URL that doesn't resolve in S3 is a problem worth
+   investigating, not just a script quirk).

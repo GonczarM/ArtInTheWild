@@ -32,5 +32,9 @@
   "strapi": {
     "uuid": "379909a6-19e7-4539-9aad-e033d0176da8",
     "installId": "f13c988b1d6f60dcd08966470d039ecb530a61a0c9eefd0903c893bd92f5dffe"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1077.0",
+    "mongodb": "^7.4.0"
   }
 }
