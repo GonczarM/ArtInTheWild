@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Button, Container, Form, Spinner, Image } from 'react-bootstrap';
 
-import { MuralDispatchContext, UserContext } from '../../../utils/contexts';
+import { MuralDispatchContext, UserContext, AuthCheckedContext } from '../../../utils/contexts';
 import * as muralsAPI from '../../../utils/murals-api'
 import * as photosAPI from '../../../utils/photos-api'
 import * as mapboxAPI from '../../../utils/mapbox-api'
@@ -35,16 +35,17 @@ function CreateMural(){
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const [error, setError] = useState('')
 	const user = useContext(UserContext)
+	const authChecked = useContext(AuthCheckedContext)
 
 	const dispatch = useContext(MuralDispatchContext)
 
 	const router = useRouter()
 
 	useEffect(() => {
-		if(!user){
+		if(authChecked && !user){
 			router.push('/login')
 		}
-	}, [])
+	}, [authChecked, user, router])
 
 	const handleGetLocation = () => {
 		setIsLoadingLocation(true)
@@ -191,7 +192,7 @@ function CreateMural(){
 						onChange={handleFile}
 					/>
 				</Form.Group>
-				{form.photo && <Image fluid src={URL.createObjectURL(form.photo)} />}
+				{form.photo && <Image fluid alt='Mural photo preview' src={URL.createObjectURL(form.photo)} />}
 				{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button onClick={handleGetLocation}>Get Location</Button>}
 				<Form.Group controlId='address'>

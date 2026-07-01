@@ -34,8 +34,8 @@ const MuralsList = ({ murals, updatedBy, page, pageCount, onPageChange }) => {
 	return(
 		<Container>
 			<Row xs={1} lg={2}>
-				{murals && murals.map((mural, i) => (
-					<Col onClick={() => handleClick(mural)} key={i} >
+				{murals && murals.map((mural) => (
+					<Col onClick={() => handleClick(mural)} key={mural.documentId} >
 						<MuralListItem mural={mural} />
 					</Col>
 				))}

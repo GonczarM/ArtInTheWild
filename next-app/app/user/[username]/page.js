@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Card, Container, Tab, Tabs } from 'react-bootstrap';
 
-import { UserContext, UserActionsContext } from '../../../utils/contexts';
+import { UserContext, UserActionsContext, AuthCheckedContext } from '../../../utils/contexts';
 import * as userAPI from '../../../utils/users-api'
 import * as muralsAPI from '../../../utils/murals-api'
 import MuralList from '../../../components/MuralList/MuralList'
@@ -19,18 +19,20 @@ const UserShow = () => {
   const [key, setKey] = useState('murals')
   const [error, setError] = useState('')
   const user = useContext(UserContext)
+  const authChecked = useContext(AuthCheckedContext)
   const { logoutUser } = useContext(UserActionsContext)
 
   const router = useRouter()
 
   useEffect(() => {
+    if(!authChecked) return
     if(!user){
 			router.push('/')
 		}else{
       getMurals(1)
       getFavorites(1)
     }
-  }, [])
+  }, [authChecked, user])
 
   const getMurals = async (page) => {
     try{

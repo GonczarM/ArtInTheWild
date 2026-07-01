@@ -3,7 +3,7 @@
 import { useState, useEffect, useReducer } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { MuralContext, MuralDispatchContext, UserContext, UserActionsContext } from '../utils/contexts';
+import { MuralContext, MuralDispatchContext, UserContext, UserActionsContext, AuthCheckedContext } from '../utils/contexts';
 import * as userService from '../utils/users-service';
 
 import Header from '../components/Header/Header';
@@ -20,6 +20,7 @@ function muralReducer(mural, action){
 export default function Providers({ children }) {
 
   const [user, setUser] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const [mural, dispatch] = useReducer(muralReducer, null);
   const [error, setError] = useState('')
 
@@ -27,9 +28,11 @@ export default function Providers({ children }) {
 
   // Reading the auth cookie has to happen client-side (after mount), since it's
   // unavailable during server rendering - this means the header briefly renders
-  // logged-out before hydration picks up an existing session.
+  // logged-out before hydration picks up an existing session. authChecked lets
+  // pages that redirect on `!user` tell "logged out" apart from "not checked yet".
   useEffect(() => {
     setUser(userService.getUser())
+    setAuthChecked(true)
   }, [])
 
   const loginUser = (userToLogin) => {
@@ -48,6 +51,7 @@ export default function Providers({ children }) {
   }
 
   return (
+    <AuthCheckedContext.Provider value={authChecked}>
     <UserContext.Provider value={user}>
     <UserActionsContext.Provider value={{ loginUser, logoutUser }}>
     <MuralContext.Provider value={mural}>
@@ -61,5 +65,6 @@ export default function Providers({ children }) {
     </MuralContext.Provider>
     </UserActionsContext.Provider>
     </UserContext.Provider>
+    </AuthCheckedContext.Provider>
   );
 }

@@ -16,6 +16,10 @@ const UNPAGINATED = 'pagination[pageSize]=100';
 
 export const USER_MURALS_PAGE_SIZE = 12;
 
+function paginate(page) {
+  return `pagination[page]=${page}&pagination[pageSize]=${USER_MURALS_PAGE_SIZE}`;
+}
+
 export async function createMural(data) {
   const res = await sendRequest(`${BASE_URL}?${POPULATE}`, 'POST', { data });
   return { mural: res.data };
@@ -56,14 +60,12 @@ export async function deleteMural(muralId) {
 }
 
 export async function getUserMurals(userId, page = 1) {
-  const pagination = `pagination[page]=${page}&pagination[pageSize]=${USER_MURALS_PAGE_SIZE}`;
-  const res = await sendRequest(`${BASE_URL}?filters[user][id][$eq]=${userId}&${POPULATE}&${pagination}`);
+  const res = await sendRequest(`${BASE_URL}?filters[user][id][$eq]=${userId}&${POPULATE}&${paginate(page)}`);
   return { murals: res.data, pagination: res.meta.pagination };
 }
 
 export async function getUserFavorites(userId, page = 1) {
-  const pagination = `pagination[page]=${page}&pagination[pageSize]=${USER_MURALS_PAGE_SIZE}`;
-  const res = await sendRequest(`${BASE_URL}?filters[favoritedBy][id][$eq]=${userId}&${POPULATE}&${pagination}`);
+  const res = await sendRequest(`${BASE_URL}?filters[favoritedBy][id][$eq]=${userId}&${POPULATE}&${paginate(page)}`);
   return { murals: res.data, pagination: res.meta.pagination };
 }
 
