@@ -11,17 +11,11 @@ import * as muralsAPI from '../../../../../utils/murals-api'
 import * as mapboxAPI from '../../../../../utils/mapbox-api'
 import ErrorMessage from '../../../../../components/ErrorMessage/ErrorMessage';
 
-// @mapbox/search-js-react touches `document` at module scope, so it can't be server-rendered.
 const AddressAutofill = dynamic(
   () => import('@mapbox/search-js-react').then(mod => mod.AddressAutofill),
   { ssr: false }
 )
 
-// Strapi returns `null` for any unset optional field (title/address are the
-// only required Mural fields now - see MIGRATION_NOTES.md), unlike the old
-// Mongoose data, which always had these as at least an empty string. Feeding
-// a Form.Control a null value trips a React warning and half-breaks the
-// input, so it's normalized to '' here for editing.
 function muralToFormValues(mural) {
 	if(!mural) return mural
 	return {
@@ -105,9 +99,6 @@ const EditMural = () => {
 			setIsLoading(prevIsLoading => !prevIsLoading)
 			return
 		}
-		// Relations (user/favoritedBy/photos) live on `mural`/`form` too since
-		// form was seeded from the populated mural, but they're never edited
-		// here - only the scalar fields below get sent back.
 		const data = {
 			title: form.title,
 			artist: form.artist,
@@ -187,7 +178,6 @@ const EditMural = () => {
 							value={form.description}
 							onChange={handleChange}
 							style={{ height: '7rem' }}
-							required
 						/>
 					</Form.Group>
 					{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
@@ -216,7 +206,6 @@ const EditMural = () => {
 								value={form.zipcode}
 								onChange={handleChange}
 								autoComplete='postal-code'
-								required
 							/>
 						</AddressAutofill>
 					</Form.Group>

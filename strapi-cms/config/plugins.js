@@ -11,11 +11,6 @@ module.exports = ({ env }) => ({
           region: env('AWS_REGION'),
           params: {
             Bucket: env('S3_BUCKET'),
-            // This bucket has S3's modern "Bucket owner enforced" object
-            // ownership (ACLs disabled) - matches the old Express app's
-            // multer-s3 config, which never set an ACL either. Explicitly
-            // present-but-undefined so the provider doesn't default it to
-            // 'public-read' and get AccessControlListNotSupported.
             ACL: undefined,
           },
         },

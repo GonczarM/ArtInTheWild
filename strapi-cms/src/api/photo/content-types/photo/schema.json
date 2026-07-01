@@ -5,7 +5,7 @@
     "singularName": "photo",
     "pluralName": "photos",
     "displayName": "Photo",
-    "description": "A photo of a Mural - promoted out of the Mongoose Mural.photos[] embedded array so likes can be modeled as their own relation."
+    "description": "A photo of a Mural."
   },
   "options": {
     "draftAndPublish": false

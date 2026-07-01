@@ -3,12 +3,6 @@ import * as usersAPI from './users-api'
 const TOKEN_COOKIE = 'token'
 const USER_COOKIE = 'user'
 
-// Strapi's JWT payload is just { id, iat, exp } - unlike the old custom JWT,
-// it doesn't carry the user object, so there's nothing to decode getUser()
-// out of. The user object Strapi returns alongside the jwt at login/register
-// time is cached in its own cookie instead, so getUser() can stay
-// synchronous for every existing caller (Header, providers.js, etc.)
-// without needing to become async and hit /api/users/me.
 function decodeExp(token) {
   return JSON.parse(window.atob(token.split('.')[1])).exp
 }

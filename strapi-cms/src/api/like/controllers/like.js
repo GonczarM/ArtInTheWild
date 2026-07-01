@@ -26,10 +26,6 @@ module.exports = createCoreController('api::like.like', ({ strapi }) => ({
       throw new errors.ValidationError('A photo is required to create a like.');
     }
 
-    // Filtering a relation by a flat value (`{ photo: photoId }`) silently
-    // matches nothing via the Document Service - it has to be the nested
-    // field-on-the-related-record form below, or this never finds the
-    // existing like and the duplicate check becomes a no-op.
     const existing = await strapi.documents('api::like.like').findFirst({
       filters: { user: { id: user.id }, photo: { documentId: photoId } },
     });

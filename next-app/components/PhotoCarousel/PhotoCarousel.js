@@ -22,7 +22,7 @@ function PhotoCarousel() {
 	const router = useRouter()
 
 	const handleClick = (mural) => {
-		if(!mural.documentId) return // the prepended logo slide isn't a real mural
+		if(!mural.documentId) return
 		dispatch({
       type: 'changed',
       mural: {...mural, updatedBy:'home'}

@@ -1,9 +1,5 @@
 import sendRequest from './send-request';
 
-// Two-step pattern from Phase 2's gotchas (MIGRATION_NOTES.md): a combined
-// multipart create (data + files.<attr> in one request) doesn't work against
-// this Strapi version. Upload the file first, then create the Photo
-// referencing the returned file id.
 export async function uploadFile(file) {
   const formData = new FormData();
   formData.append('files', file);

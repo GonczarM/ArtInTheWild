@@ -10,7 +10,6 @@ import { MuralDispatchContext } from '../../utils/contexts';
 import { getFavoritePhoto } from '../../utils/mural-helpers';
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
-// mapbox-gl touches `window` at module scope, so it can't be server-rendered.
 const Map = dynamic(() => import('../../components/Map/Map'), { ssr: false })
 
 function MuralCard({ mural, user, handleOpen }) {

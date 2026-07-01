@@ -5,7 +5,7 @@
     "singularName": "like",
     "pluralName": "likes",
     "displayName": "Like",
-    "description": "A user's like on a Photo - replaces the Mongoose Mural.photos[].likes embedded array. createdAt (built-in) is the like timestamp."
+    "description": "A user's like on a Photo."
   },
   "options": {
     "draftAndPublish": false

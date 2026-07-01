@@ -8,7 +8,6 @@ import * as muralsAPI from '../../utils/murals-api'
 import MuralList from '../../components/MuralList/MuralList'
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
-// mapbox-gl touches `window` at module scope, so it can't be server-rendered.
 const Map = dynamic(() => import('../../components/Map/Map'), { ssr: false })
 
 const initialSearch = {type: 'artist', term: '', hasSearched: false}

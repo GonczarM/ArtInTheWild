@@ -11,7 +11,6 @@ import * as photosAPI from '../../../utils/photos-api'
 import * as mapboxAPI from '../../../utils/mapbox-api'
 import ErrorMessage from '../../../components/ErrorMessage/ErrorMessage';
 
-// @mapbox/search-js-react touches `document` at module scope, so it can't be server-rendered.
 const AddressAutofill = dynamic(
   () => import('@mapbox/search-js-react').then(mod => mod.AddressAutofill),
   { ssr: false }
@@ -174,7 +173,6 @@ function CreateMural(){
 						value={form.description}
 						onChange={handleChange}
 						style={{ height: '7rem' }}
-						required
 					/>
 				</Form.Group>
 				{user && <>
@@ -214,7 +212,6 @@ function CreateMural(){
 							value={form.zipcode}
 							onChange={handleChange}
 							autoComplete='postal-code'
-							required
 						/>
 				</Form.Group>
 				{isLoading ? <Button disabled><Spinner size="sm"/></Button>

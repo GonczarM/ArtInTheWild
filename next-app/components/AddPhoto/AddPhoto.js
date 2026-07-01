@@ -23,8 +23,6 @@ function AddPhoto({ handleClose, addPhoto }) {
     try{
       setIsLoading(true)
       await photosAPI.addPhoto(file, muralId)
-      // addPhoto only returns the new Photo, not the whole mural tree -
-      // re-fetch to pick it up everywhere the mural is shown.
       const updatedMural = await muralsAPI.getMural(muralId)
       dispatch({
         type: 'changed',

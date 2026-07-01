@@ -1,33 +1,7 @@
 'use strict';
 
-// Phase 2 permission seeding: mirrors the old Express app's auth model
-// (see MIGRATION_NOTES.md "Auth model summary") onto Strapi's
-// users-permissions roles, in code rather than as untracked admin-panel
-// clicks, so the next phase/session can see what's public vs authenticated
-// just by reading this file.
-//
-// - Public (no token): read-only on Mural/Photo/Like, plus the allowlisted
-//   search routes - matches the old app's public GET /api/murals/*.
-// - Authenticated (any logged-in user): everything Public has, plus
-//   create/update/delete on Mural/Photo and create/delete on Like.
-//   Mural update/delete are further gated by the `is-owner` policy
-//   (src/api/mural/policies/is-owner.js, wired in routes/mural.js) - closed
-//   in Phase 4, was previously "any authenticated user can" with no
-//   per-owner check. Account deletion is a separate self-scoped custom
-//   route (src/api/account/) rather than the built-in
-//   `DELETE /api/users/:id`, which has no self-only restriction at all.
-//   Favoriting is its own custom action/route too (mural.favorite,
-//   PUT /murals/:id/favorite) - NOT gated by is-owner, since favoriting a
-//   mural you don't own is supposed to work (bug found during the Phase 5
-//   Chicago-reseed verification: routing it through the generic `update`
-//   action would have made every non-owner's favorite attempt a 403).
 const ROLE_ACTIONS = {
   public: [
-    // Without this, GET /api/murals?populate=user omits the `user` relation
-    // entirely for anonymous requests (Strapi requires read access to a
-    // relation's target type to populate it, same gate as the write-side
-    // check below) - granted because the old Express app's public mural
-    // list always included the raw `user` ObjectId, populated or not.
     'plugin::users-permissions.user.find',
     'api::mural.mural.find',
     'api::mural.mural.findOne',
@@ -39,10 +13,6 @@ const ROLE_ACTIONS = {
     'api::like.like.findOne',
   ],
   authenticated: [
-    // Strapi requires read (`find`) access to a relation's target type
-    // before that relation can be *set* on create/update (see
-    // @strapi/utils throw-restricted-relations.js) - needed here so a
-    // logged-in user can attach themselves as a Mural/Photo/Like's `user`.
     'plugin::users-permissions.user.find',
     'plugin::upload.content-api.upload',
     'api::mural.mural.find',

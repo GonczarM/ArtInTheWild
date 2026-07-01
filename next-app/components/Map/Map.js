@@ -43,9 +43,6 @@ function Map(props){
   }, [])
 
   useEffect(() => {
-    // Deliberately not just using props.murals directly: this keeps the
-    // last non-empty value instead of tearing the map down whenever the
-    // parent briefly re-renders with an empty/not-yet-loaded prop.
     if(props.murals && props.murals.length){
       setMurals(props.murals)
     }

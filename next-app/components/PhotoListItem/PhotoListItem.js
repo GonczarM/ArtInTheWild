@@ -21,9 +21,6 @@ function PhotoListItem({ photo }) {
   const favoritePhoto = async () => {
     try{
       await likesAPI.likePhoto(photo.documentId)
-      // Liking a photo only creates a Like record, not the whole mural tree
-      // the way the old PUT /api/users/photo/:id did - re-fetch to pick up
-      // the new like count/relations everywhere the mural is shown.
       const updated = await muralsAPI.getMural(muralId)
       dispatch({
 			  type: 'changed',

@@ -5,7 +5,7 @@
     "singularName": "mural",
     "pluralName": "murals",
     "displayName": "Mural",
-    "description": "A piece of public art - ported from the Mongoose Mural schema."
+    "description": "A piece of public art "
   },
   "options": {
     "draftAndPublish": false
