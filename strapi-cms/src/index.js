@@ -16,6 +16,11 @@
 //   per-owner check. Account deletion is a separate self-scoped custom
 //   route (src/api/account/) rather than the built-in
 //   `DELETE /api/users/:id`, which has no self-only restriction at all.
+//   Favoriting is its own custom action/route too (mural.favorite,
+//   PUT /murals/:id/favorite) - NOT gated by is-owner, since favoriting a
+//   mural you don't own is supposed to work (bug found during the Phase 5
+//   Chicago-reseed verification: routing it through the generic `update`
+//   action would have made every non-owner's favorite attempt a 403).
 const ROLE_ACTIONS = {
   public: [
     // Without this, GET /api/murals?populate=user omits the `user` relation
@@ -47,6 +52,7 @@ const ROLE_ACTIONS = {
     'api::mural.mural.create',
     'api::mural.mural.update',
     'api::mural.mural.delete',
+    'api::mural.mural.favorite',
     'api::photo.photo.find',
     'api::photo.photo.findOne',
     'api::photo.photo.create',

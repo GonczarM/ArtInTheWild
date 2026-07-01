@@ -424,6 +424,21 @@ not just record existence.
    standalone-vs-HTTP runtime-state gap, wasn't tracked down further — it's the kind of
    thing worth a quick check against a newer Strapi patch version before relying on
    `documents().update()` from a script again.
+
+   **Correction (Phase 5): this diagnosis was wrong.** The real cause, found while
+   debugging a near-identical symptom in a *real* HTTP-triggered controller action during
+   Phase 5 (favoriting a mural silently connected nothing, no error): `documents(uid)
+   .update()` takes **one** options object — `update({ documentId, data })` — not two
+   positional arguments. Every failing call site here was written as
+   `update(documentId, { data })`, which silently destructures `documentId` as `undefined`
+   from a string and does nothing, in *any* execution context, not just standalone
+   scripts. Confirmed by reading `strapi.documents(uid).update()`'s actual definition
+   (`async function update(opts = {})`) and Strapi's own core `update` controller, which
+   calls it correctly as `documents(uid).update({ ...params, documentId })`. The
+   `db.query(uid).update()` workaround here still stands (and was never affected, since it
+   was never written with the wrong signature), but the "standalone script vs. real HTTP
+   request" theory above is incorrect — re-checked and fixed at every call site as of
+   Phase 5 (see §9).
 2. **`strapi.db.query(uid).update()`'s relation `connect` needs numeric internal `id`s,
    not `documentId` strings** — passing a documentId throws a clear
    `Expected a valid Number` error, unlike `documents().create()`'s relation inputs,
@@ -553,3 +568,114 @@ change).
   wholesale in a `PUT` would have tried to write populated objects into relation fields.
   The edit payload is now built explicitly from just the scalar fields actually editable
   in that form.
+
+---
+
+## 9. Cleanup + Chicago Reseed
+
+**Deployment is still on hold.** This round retired the old Mongo-derived dataset (Phase
+3's migrated data) and replaced it entirely with a fresh seed from Chicago's own public
+art API, plus removed the now-fully-superseded Express/Vite/MongoDB stack from the repo.
+
+### Cleanup
+Removed: `server.js`, `config/`, `controllers/`, root-level `models/` (Express); `src/`,
+`index.html`, `vite.config.js`, root `public/` (Vite/React — `next-app/` already has its
+own copy of the logo); `dist/` (Vite build output) and a stray root-level `.next/`
+(leftover from an early Phase 1 build run in the wrong directory); the Express `.env`
+(never tracked by git — its S3 credentials were already copied into `strapi-cms/.env`
+back in Phase 2). Root `package.json` trimmed to a bare shell (name/version/private, no
+scripts, no dependencies) since every dependency it had belonged exclusively to the
+deleted code, and root `node_modules` removed entirely. Local MongoDB instance and data
+directory stopped and deleted. Confirmed via grep afterward that neither `strapi-cms/`
+nor `next-app/` reference the old Express port, `MONGO_URI`, or any deleted path.
+
+**`strapi-cms/scripts/migrate.js`, `MIGRATION_LOG.md`, and this file are kept as
+historical record, not something to be regenerated going forward.** The Mongo-derived
+dataset they describe is retired — the live dataset from this point on comes from
+`scripts/seed-chicago.js` below. If MongoDB data migration is ever needed again for real
+production data, `migrate.js`'s general shape (bootstrapped Strapi instance, Document
+Service creates, dependency-ordered migration, logged summary) is still a reasonable
+starting point, but the specific ID mappings and record counts in `MIGRATION_LOG.md` are
+stale and describe data that no longer exists in Strapi.
+
+### Chicago public art API — research findings
+Verified live rather than assumed from the old (deleted) Express seed route, though that
+code's URL turned out to still be correct:
+- **Endpoint:** `https://data.cityofchicago.org/resource/we8h-apcf.json` — a Socrata SODA2
+  API. Confirmed reachable and returning current data via a direct unauthenticated
+  request.
+- **Dataset:** "Mural Registry," City of Chicago, Historic Preservation category (fetched
+  via the dataset's own metadata endpoint, `.../api/views/we8h-apcf.json`, not assumed).
+  Actively maintained — last data update 2025-02-28 at research time. 458 rows
+  (`$select=count(*)`).
+- **No app token required** for this volume of read access — a plain unauthenticated GET
+  returned real data with no throttling. Socrata's general guidance still recommends one
+  for reliability on repeated/production use; the seed script optionally sends one via
+  `X-App-Token` if `SOCRATA_APP_TOKEN` is set, but doesn't require it.
+- **No image/photo field of any kind** — confirmed by listing every column the dataset
+  metadata endpoint reports (`mural_registration_id`, `artist_credit`, `artwork_title`,
+  `media` — a free-text description of the physical medium, e.g. "Acrylic and exterior
+  latex paint," not a file — `year_installed`, `year_restored`, `location_description`,
+  `street_address`, `zip`, `ward`, `affiliated_or_commissioning`, `description_of_artwork`,
+  `community_areas`, `latitude`, `longitude`, plus computed boundary/region columns).
+  **Decision: no Photo/Like records are seeded for Chicago murals** — there is nothing to
+  create them from. Flagged per the brief rather than assumed away.
+- Field mapping used: `artwork_title`→`title`, `artist_credit`→`artist`,
+  `description_of_artwork`→`description`, `affiliated_or_commissioning`→`affiliation`,
+  `street_address`→`address`, `zip`→`zipcode`, `latitude`/`longitude` direct (parsed to
+  numbers — the API returns them as strings), `year_installed`→`year` (parsed to integer).
+  `media`, `location_description`, `ward`, `community_areas`, and `mural_registration_id`
+  have no home in the current Mural schema and aren't carried over — none of them map to
+  an existing field, and the schema wasn't extended to fit them since nothing asked for
+  that.
+- **No user owner on any seeded mural** — consistent with the existing optional-owner /
+  orphaning decision (§4 #4): these are public-record murals, not user submissions, so
+  there was never an owner to assign in the first place, not an application of orphaning
+  after the fact.
+- **Inclusion filter relaxed from the old Express version.** The old (deleted) seed route
+  required `artwork_title` **and** `artist_credit` **and** `description_of_artwork` **and**
+  `year_installed` all present, which silently dropped a lot of real records (confirmed —
+  many source rows lack a description entirely). Since the schema now makes everything but
+  `title`/`address` optional (see the "Loosen Mural required fields" decision), that
+  four-field requirement is gone. The new filter requires only `artwork_title` +
+  `street_address` + `latitude` + `longitude` — not because the schema demands it, but
+  because a mural with no location isn't useful in this map-centric app regardless of what
+  the schema allows.
+- **Duplicate titles are skipped**, same as the old seed route's behavior — the source
+  dataset genuinely contains literal duplicate titles (e.g. multiple rows titled simply
+  "untitled"), confirmed in the live data, not assumed.
+- Seeded 403 of 458 fetched records; 55 skipped (16 missing title/address/coordinates, 39
+  duplicate titles) — logged with per-record reasons in `strapi-cms/CHICAGO_SEED_LOG.md`
+  (git-committed, alongside `MIGRATION_LOG.md`, as the equivalent reviewable record for
+  this seed). Spot-checked two seeded murals ("Letter H," "Skender") field-by-field
+  against the live source API — exact match, including a source-data encoding glitch
+  (`ï¿½`, a mis-decoded smart quote) in one description that's already broken in Chicago's
+  own dataset, not introduced by the seed script.
+
+### A real bug found during re-verification (not present in the seed script itself)
+Favoriting a mural you don't own **broke** after Phase 4's ownership policy landed,
+because favoriting was implemented as a `PUT /api/murals/:id` call — the same generic
+`update` route the Phase 4 `is-owner` policy gates. The old Express app had favoriting as
+a wholly separate route (`PUT /api/users/favorite/:id`) with no ownership check at all;
+collapsing it into Strapi's generic mural-update endpoint accidentally inherited a
+restriction it was never supposed to have. Caught by actually testing a non-owner
+favoriting a mural during this phase's re-verification (silent 403, swallowed by the
+frontend's generic catch) rather than assuming Phase 4's favorite-flow tests (which only
+ever exercised an *owner* favoriting their own mural — a gap in that phase's own test
+coverage) still covered it. Fixed with a dedicated `PUT /api/murals/:id/favorite` route
+and `mural.favorite` controller action, deliberately **not** gated by `is-owner`, which
+also surfaced and got the `documents().update()` call-signature bug described in §7's
+correction above.
+
+### Verification
+All 9 golden paths re-passed against the Chicago-seeded dataset. Since seeded murals have
+no owner, "my murals"/"my favorites"/create/edit/delete were tested with fresh registered
+users instead: create → edit → (separately) two-user ownership check (UI hides
+Edit/Delete for a non-owner; a direct API call bypassing the UI gets a 403; a non-owner
+*can* favorite, confirmed after the bug above was fixed) → account deletion verified to
+orphan **all** of a multi-mural owner's murals (not just one, to specifically rule out
+the update-signature bug coincidentally hitting the right row by chance) → adding a
+photo to a seeded mural and liking it, since seeded murals start with none. After
+verification, re-ran `seed-chicago.js` once more to wash out every test artifact (test
+users, test murals) created along the way, leaving Strapi holding exactly the 403 clean
+Chicago records and nothing else.

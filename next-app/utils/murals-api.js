@@ -68,9 +68,12 @@ export async function getUserFavorites(userId) {
   return { murals: res.data };
 }
 
-export async function favoriteMural(muralId, userId) {
-  const res = await sendRequest(`${BASE_URL}/${muralId}?${POPULATE}`, 'PUT', {
-    data: { favoritedBy: { connect: [userId] } },
-  });
+export async function favoriteMural(muralId) {
+  // Its own endpoint, not the generic update - see
+  // strapi-cms/src/api/mural/controllers/mural.js's `favorite` action for
+  // why (the generic update route is gated by an is-owner policy that
+  // favoriting must not be subject to). The server assigns the requesting
+  // user itself, so no userId needs to be sent.
+  const res = await sendRequest(`${BASE_URL}/${muralId}/favorite`, 'PUT');
   return { mural: res.data };
 }

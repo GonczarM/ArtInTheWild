@@ -25,7 +25,7 @@ function MuralCard({ mural, user, handleOpen }) {
 
   const favoriteMural = async () => {
     try{
-		  const updated = await muralsAPI.favoriteMural(mural.documentId, user.id)
+		  const updated = await muralsAPI.favoriteMural(mural.documentId)
 		  dispatch({
 			  type: 'changed',
 			  mural: {...updated.mural, updatedBy}
