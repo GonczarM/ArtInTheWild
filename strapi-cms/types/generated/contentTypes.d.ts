@@ -490,16 +490,16 @@ export interface ApiMuralMural extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
     favoritedBy: Schema.Attribute.Relation<
       'manyToMany',
       'plugin::users-permissions.user'
     >;
-    latitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    latitude: Schema.Attribute.Decimal;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::mural.mural'> &
       Schema.Attribute.Private;
-    longitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    longitude: Schema.Attribute.Decimal;
     photos: Schema.Attribute.Relation<'oneToMany', 'api::photo.photo'>;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -511,7 +511,7 @@ export interface ApiMuralMural extends Struct.CollectionTypeSchema {
       'plugin::users-permissions.user'
     >;
     year: Schema.Attribute.Integer;
-    zipcode: Schema.Attribute.String & Schema.Attribute.Required;
+    zipcode: Schema.Attribute.String;
   };
 }
 

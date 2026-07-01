@@ -1,6 +1,6 @@
 # Migration Log
 
-Run at: 2026-06-30T23:38:17.553Z
+Run at: 2026-07-01T00:03:39.777Z
 
 ## Summary
 
@@ -18,29 +18,29 @@ Run at: 2026-06-30T23:38:17.553Z
 
 | Mongo _id | username | Strapi documentId |
 |---|---|---|
-| 6a4450a114858a824c3f6592 | alice_mongo | mldsdz7889ru64q82coq6886 |
-| 6a4450a114858a824c3f6594 | bob_mongo | ayfg8nebd2yctjanmn4xwfjc |
-| 6a4450a114858a824c3f6596 | carol_mongo | cc0api1d7rs1c2oxs7ls7ads |
+| 6a4450a114858a824c3f6592 | alice_mongo | gnsh2kqsl2fk8r7e8tarx1t2 |
+| 6a4450a114858a824c3f6594 | bob_mongo | g0h464lnqhfm7va16g3j013r |
+| 6a4450a114858a824c3f6596 | carol_mongo | k5ug2h39x89o8spbn2r1uq8v |
 
 ### Murals (Mongo `_id` -> Strapi `documentId`)
 
 | Mongo _id | title | Strapi documentId |
 |---|---|---|
-| 6a4450a114858a824c3f6599 | Riverwalk Mosaic | qudj3pv7gx821qtbwdxuvirx |
-| 6a4450a114858a824c3f659d | Quiet Alley Wall | ktt09aouti7rqej960nn2j9n |
-| 6a4450a114858a824c3f65a0 | Public Plaza Piece | x1h53ts32yozevjkmwicnw3e |
-| 6a4450a114858a824c3f65a3 | Empty Lot Backdrop | wlw8m9kgkilvvodbuaew0vqa |
-| 6a4450a114858a824c3f65a5 | Underpass Tribute | z17a4nvzulqy4f6ba6scbt3m |
+| 6a4450a114858a824c3f6599 | Riverwalk Mosaic | li6hj3tc6dtxa6xlc7w4tlnm |
+| 6a4450a114858a824c3f659d | Quiet Alley Wall | fqo0fitamcdylylpqc3mdq7b |
+| 6a4450a114858a824c3f65a0 | Public Plaza Piece | c5dp4a71u04g59x4zzjjsnup |
+| 6a4450a114858a824c3f65a3 | Empty Lot Backdrop | td6mglaexk6w6kpbw8o0za2k |
+| 6a4450a114858a824c3f65a5 | Underpass Tribute | jo3ngev1rericq7m7ididiak |
 
 ### Photos (Mongo photo subdoc `_id` -> Strapi `documentId`)
 
 | Mongo photo _id | parent mural | Strapi documentId |
 |---|---|---|
-| 6a4450a114858a824c3f659a | Riverwalk Mosaic | x92cak56yn5lqx09gvulv66c |
-| 6a4450a114858a824c3f659b | Riverwalk Mosaic | wbmidgdzy51bat101w27z9u8 |
-| 6a4450a114858a824c3f659e | Quiet Alley Wall | zrsz7kkqju8teg8gobf4uvmd |
-| 6a4450a114858a824c3f65a1 | Public Plaza Piece | rstk4etrah8sgnjduygexd4s |
-| 6a4450a114858a824c3f65a6 | Underpass Tribute | e8vnm19qqzf87k72yzujaf8z |
+| 6a4450a114858a824c3f659a | Riverwalk Mosaic | tc8fki69huje3imhsm9ye4o6 |
+| 6a4450a114858a824c3f659b | Riverwalk Mosaic | aann5qy1wi9vav1819671vvv |
+| 6a4450a114858a824c3f659e | Quiet Alley Wall | krin90a8qw4n8p3gg2n1x3b2 |
+| 6a4450a114858a824c3f65a1 | Public Plaza Piece | qk6vwodz37jvjh075g2gi6ew |
+| 6a4450a114858a824c3f65a6 | Underpass Tribute | i9ls21go72feyyzei14ezhr8 |
 
 ## Skipped Records
 

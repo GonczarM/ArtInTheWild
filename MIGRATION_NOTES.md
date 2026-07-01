@@ -165,7 +165,9 @@ env var — worth deciding whether to externalize it for Strapi's config.
 
 ---
 
-## 5. Phase 1 Findings — Where the Auth Cookie Is Set
+## 5. Phase 1 Findings
+
+### Where the auth cookie is set
 
 Checked per the Phase 2 kickoff question. **The cookie is set entirely client-side, in
 Next.js — Express is not involved in cookie handling at all, in either direction.**
@@ -197,6 +199,48 @@ Next.js — Express is not involved in cookie handling at all, in either directi
    Strapi already returns at login time and cache it separately from the token) rather
    than decoding it out of the JWT itself.
 
+### Address-to-coordinates geocoding
+
+Checked explicitly (2026-06-30): **this exists, client-side only, and was already ported
+in Phase 1 — nothing left to build.**
+
+- **Never existed server-side.** Grepped `controllers/`, `config/`, `server.js` for
+  `geocod` — zero hits. The Express API has never done geocoding; `POST /api/murals`
+  just stores whatever `latitude`/`longitude` it's given in the request body, no
+  validation or derivation. (The one other place lat/long shows up server-side is the
+  `/api/murals/seed` dev route, which copies them straight from the Chicago public art
+  API's own response — not geocoded either.)
+- **Lives entirely in the original Vite frontend**, in `src/utils/mapbox-api.js`:
+  ```js
+  export async function geocode(address){
+    const res = await fetch(`${BASE_URL}/${address}.json?access_token=${ACCESS_TOKEN}`).then(res => res.json())
+    return res.features[0].geometry.coordinates
+  }
+  ```
+  a thin wrapper around Mapbox's forward-geocoding endpoint. Called from both
+  `src/pages/CreateMural/CreateMural.jsx` and `src/pages/EditMural/EditMural.jsx`: on
+  submit, `form.address + ' ' + form.zipcode` is geocoded into `[longitude, latitude]`,
+  which is what actually gets sent to the API — the user only ever types an address, the
+  `latitude`/`longitude` form fields are populated programmatically and aren't editable
+  inputs in the UI. That's the "address alone produces lat/long" behavior. The same forms
+  also wrap the address `Form.Control` in Mapbox's `<AddressAutofill>` component, which
+  handles address-entry autocomplete/suggestions as the user types — a separate,
+  complementary piece from the explicit `geocode()` call above, which is what actually
+  resolves the final typed address into coordinates at submit time. Both are client-side
+  Mapbox calls; neither touches Express.
+- **Already ported in Phase 1**, verbatim: `next-app/utils/mapbox-api.js` has the same
+  `geocode()` function, called the same way from `next-app/app/mural/create/page.js` and
+  `next-app/app/mural/edit/[updatedBy]/[muralId]/page.js`. This isn't just present in the
+  code — it was exercised and confirmed working during Phase 1's browser verification
+  (the "Create Mural" golden-path test used a real address and the resulting mural's map
+  marker landed in the correct location).
+- **Nothing for Phase 4 to build here.** When Next.js gets rewired to Strapi, this
+  geocode-on-submit logic carries over unchanged — it never touched Express and doesn't
+  need to touch Strapi either, since it's a pure client-side Mapbox API call that happens
+  before the create/update request is sent. The only Phase 4-relevant detail is the
+  already-noted env var rename (`VITE_MAPBOX_TOKEN` → `NEXT_PUBLIC_MAPBOX_TOKEN`, done in
+  Phase 1) — no new work, no Strapi-side equivalent needed.
+
 ---
 
 ## 6. Phase 2 — Strapi Content Types
@@ -218,6 +262,19 @@ real photo to S3, and had both users like it — one rejected as a duplicate —
   `favoritedBy` is the Favorites many-to-many (see below). `draftAndPublish: false` —
   the old app had no draft/review concept, entries are live the instant they're created,
   same as `Mural.create()` always did.
+
+  **Update (2026-06-30, post-Phase 3):** loosened field requirements — only `title` and
+  `address` are `required: true` now. `artist`, `description`, `affiliation`, `zipcode`,
+  `latitude`, and `longitude` are all `required: false` (matching `year`, already
+  optional since the original Phase 2 build). This is a pure schema decision, not a
+  response to any geocoding gap: address-to-coordinate resolution is (and was already
+  confirmed to be, see §5) handled entirely client-side via Mapbox — `AddressAutofill`
+  for address-entry autocomplete plus an explicit `geocode()` call at submit time, both
+  ported in Phase 1 and untouched by Express or Strapi either one. Loosening
+  `latitude`/`longitude` to optional here doesn't reopen that as a server-side gap to
+  fill; it just means the schema no longer hard-requires values that the client-side flow
+  was already reliably supplying, in case a future entry point (e.g. an admin manually
+  typing a title and address with no geocode step) doesn't have them yet.
 - **Photo** (`src/api/photo/`) — new content type, promoted out of the old embedded
   `Mural.photos[]` array. `mural` (`manyToOne`, required), `photo` (Strapi `media` field,
   routed through the S3 provider), `likes` (inverse of Like). The brief's suggestion of a
