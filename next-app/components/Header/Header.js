@@ -54,7 +54,7 @@ function Header({ logoutUser }){
 					<Nav>
 						<Nav.Link as={Link} href='/'>Home</Nav.Link>
 						<Nav.Link as={Link} href='/search'>Search</Nav.Link>
-						<Nav.Link as={Link} href='/mural/create'>Create Mural</Nav.Link>
+						<Nav.Link as={Link} href={user ? '/mural/create' : '/login'}>Create Mural</Nav.Link>
 						{user ?
 						<>
 							<Nav.Link as={Link} href={`/user/${user.username}`}>{user.username}</Nav.Link>

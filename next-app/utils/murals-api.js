@@ -10,8 +10,11 @@ const POPULATE =
 
 // The old Mongoose `Mural.find({})` had no pagination; Strapi defaults to
 // 25 per page. Bumped up to roughly match old unpaginated behavior at this
-// app's scale rather than actually building pagination UI.
+// app's scale for lists that aren't paginated in the UI (home page preview,
+// search - which also needs the full result set for the map view).
 const UNPAGINATED = 'pagination[pageSize]=100';
+
+export const USER_MURALS_PAGE_SIZE = 12;
 
 export async function createMural(data) {
   const res = await sendRequest(`${BASE_URL}?${POPULATE}`, 'POST', { data });
@@ -52,14 +55,16 @@ export async function deleteMural(muralId) {
   return { mural: res.data };
 }
 
-export async function getUserMurals(userId) {
-  const res = await sendRequest(`${BASE_URL}?filters[user][id][$eq]=${userId}&${POPULATE}&${UNPAGINATED}`);
-  return { murals: res.data };
+export async function getUserMurals(userId, page = 1) {
+  const pagination = `pagination[page]=${page}&pagination[pageSize]=${USER_MURALS_PAGE_SIZE}`;
+  const res = await sendRequest(`${BASE_URL}?filters[user][id][$eq]=${userId}&${POPULATE}&${pagination}`);
+  return { murals: res.data, pagination: res.meta.pagination };
 }
 
-export async function getUserFavorites(userId) {
-  const res = await sendRequest(`${BASE_URL}?filters[favoritedBy][id][$eq]=${userId}&${POPULATE}&${UNPAGINATED}`);
-  return { murals: res.data };
+export async function getUserFavorites(userId, page = 1) {
+  const pagination = `pagination[page]=${page}&pagination[pageSize]=${USER_MURALS_PAGE_SIZE}`;
+  const res = await sendRequest(`${BASE_URL}?filters[favoritedBy][id][$eq]=${userId}&${POPULATE}&${pagination}`);
+  return { murals: res.data, pagination: res.meta.pagination };
 }
 
 export async function favoriteMural(muralId) {

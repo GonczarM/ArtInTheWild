@@ -443,7 +443,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiLikeLike extends Struct.CollectionTypeSchema {
   collectionName: 'likes';
   info: {
-    description: "A user's like on a Photo - replaces the Mongoose Mural.photos[].likes embedded array. createdAt (built-in) is the like timestamp.";
+    description: "A user's like on a Photo.";
     displayName: 'Like';
     pluralName: 'likes';
     singularName: 'like';
@@ -475,7 +475,7 @@ export interface ApiLikeLike extends Struct.CollectionTypeSchema {
 export interface ApiMuralMural extends Struct.CollectionTypeSchema {
   collectionName: 'murals';
   info: {
-    description: 'A piece of public art - ported from the Mongoose Mural schema.';
+    description: 'A piece of public art ';
     displayName: 'Mural';
     pluralName: 'murals';
     singularName: 'mural';
@@ -518,7 +518,7 @@ export interface ApiMuralMural extends Struct.CollectionTypeSchema {
 export interface ApiPhotoPhoto extends Struct.CollectionTypeSchema {
   collectionName: 'photos';
   info: {
-    description: 'A photo of a Mural - promoted out of the Mongoose Mural.photos[] embedded array so likes can be modeled as their own relation.';
+    description: 'A photo of a Mural.';
     displayName: 'Photo';
     pluralName: 'photos';
     singularName: 'photo';

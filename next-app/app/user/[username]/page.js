@@ -13,7 +13,9 @@ import ErrorMessage from '../../../components/ErrorMessage/ErrorMessage';
 const UserShow = () => {
 
   const [murals, setMurals] = useState(null)
+  const [muralsPage, setMuralsPage] = useState({ page: 1, pageCount: 1 })
   const [favorites, setFavorites] = useState(null)
+  const [favoritesPage, setFavoritesPage] = useState({ page: 1, pageCount: 1 })
   const [key, setKey] = useState('murals')
   const [error, setError] = useState('')
   const user = useContext(UserContext)
@@ -25,18 +27,28 @@ const UserShow = () => {
     if(!user){
 			router.push('/')
 		}else{
-      getMurals()
+      getMurals(1)
+      getFavorites(1)
     }
   }, [])
 
-  const getMurals = async () => {
+  const getMurals = async (page) => {
     try{
-      const userMurals = await muralsAPI.getUserMurals(user.id)
+      const userMurals = await muralsAPI.getUserMurals(user.id, page)
       if(userMurals.murals.length) setMurals(userMurals.murals)
-      const userFavorites = await muralsAPI.getUserFavorites(user.id)
-      if(userFavorites.murals.length) setFavorites(userFavorites.murals)
+      setMuralsPage({ page: userMurals.pagination.page, pageCount: userMurals.pagination.pageCount })
     }catch{
       setError('Could not get murals. Please try again.')
+    }
+  }
+
+  const getFavorites = async (page) => {
+    try{
+      const userFavorites = await muralsAPI.getUserFavorites(user.id, page)
+      if(userFavorites.murals.length) setFavorites(userFavorites.murals)
+      setFavoritesPage({ page: userFavorites.pagination.page, pageCount: userFavorites.pagination.pageCount })
+    }catch{
+      setError('Could not get favorites. Please try again.')
     }
   }
 
@@ -68,6 +80,9 @@ const UserShow = () => {
           <MuralList
             murals={murals}
             updatedBy={user.username}
+            page={muralsPage.page}
+            pageCount={muralsPage.pageCount}
+            onPageChange={getMurals}
           />
           :
           <>
@@ -81,6 +96,9 @@ const UserShow = () => {
           <MuralList
             murals={favorites}
             updatedBy={user.username}
+            page={favoritesPage.page}
+            pageCount={favoritesPage.pageCount}
+            onPageChange={getFavorites}
           />
           :
           <>

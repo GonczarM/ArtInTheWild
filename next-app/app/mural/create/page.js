@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Button, Container, Form, Spinner, Image } from 'react-bootstrap';
@@ -15,7 +15,6 @@ const AddressAutofill = dynamic(
   () => import('@mapbox/search-js-react').then(mod => mod.AddressAutofill),
   { ssr: false }
 )
-
 
 const initialForm = {
 	title: '',
@@ -40,6 +39,12 @@ function CreateMural(){
 	const dispatch = useContext(MuralDispatchContext)
 
 	const router = useRouter()
+
+	useEffect(() => {
+		if(!user){
+			router.push('/login')
+		}
+	}, [])
 
 	const handleGetLocation = () => {
 		setIsLoadingLocation(true)
@@ -106,7 +111,7 @@ function CreateMural(){
 			latitude: copyOfForm.latitude,
 			longitude: copyOfForm.longitude,
 			year: copyOfForm.year ? Number(copyOfForm.year) : undefined,
-			user: user ? user.id : undefined,
+			user: user.id,
 		}
 		try{
 			const createdMural = await muralsAPI.createMural(data)
@@ -118,15 +123,17 @@ function CreateMural(){
 				: createdMural.mural
 			dispatch({
 				type: 'changed',
-				mural: {...finalMural, updatedBy: user ? user.username : 'user'}
+				mural: {...finalMural, updatedBy: user.username}
 			})
-			router.push(`/mural/${user ? user.username : 'user'}/${finalMural.documentId}`)
+			router.push(`/mural/${user.username}/${finalMural.documentId}`)
 		}catch{
 			setError('Could not create Mural. Please try again.')
 		}finally{
 			setIsLoading(prevIsLoading => !prevIsLoading)
 		}
   }
+
+	if(!user) return null
 
 	return(
 		<Container>
@@ -175,7 +182,6 @@ function CreateMural(){
 						style={{ height: '7rem' }}
 					/>
 				</Form.Group>
-				{user && <>
 				<Form.Group controlId='photo'>
 					<Form.Label>Photo</Form.Label>
 					<Form.Control
@@ -186,7 +192,6 @@ function CreateMural(){
 					/>
 				</Form.Group>
 				{form.photo && <Image fluid src={URL.createObjectURL(form.photo)} />}
-				</>}
 				{isLoadingLocation ? <Button disabled><Spinner size="sm"/></Button>
 				: <Button onClick={handleGetLocation}>Get Location</Button>}
 				<Form.Group controlId='address'>

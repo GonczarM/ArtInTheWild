@@ -12,10 +12,16 @@ const Map = dynamic(() => import('../../components/Map/Map'), { ssr: false })
 
 const initialSearch = {type: 'artist', term: '', hasSearched: false}
 
+// Client-side pagination: the map view needs the full result set for its
+// markers, so results are still fetched unpaginated and only sliced for
+// the list view.
+const LIST_PAGE_SIZE = 12
+
 function MuralSearch(){
 
 	const [search, setSearch] = useState(initialSearch)
 	const [murals, setMurals] = useState(null)
+	const [listPage, setListPage] = useState(1)
 	const [searchList, setSearchList] = useState(null)
 	const [showMap, setShowMap] = useState(true)
 	const [isLoading, setIsLoading] = useState(false)
@@ -43,6 +49,10 @@ function MuralSearch(){
       setSearch(initialSearch)
     };
 	}, [])
+
+	useEffect(() => {
+		setListPage(1)
+	}, [murals])
 
 	const resetSearch = () => {
 		getMurals()
@@ -156,8 +166,11 @@ function MuralSearch(){
 					search
 				/>
 			: <MuralList
-					murals={murals}
+					murals={murals && murals.slice((listPage - 1) * LIST_PAGE_SIZE, listPage * LIST_PAGE_SIZE)}
 					updatedBy={'search'}
+					page={listPage}
+					pageCount={murals ? Math.ceil(murals.length / LIST_PAGE_SIZE) : 0}
+					onPageChange={setListPage}
 				/>}
 		</Container>
 	)
