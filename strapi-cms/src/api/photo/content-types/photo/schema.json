@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "photos",
+  "info": {
+    "singularName": "photo",
+    "pluralName": "photos",
+    "displayName": "Photo",
+    "description": "A photo of a Mural - promoted out of the Mongoose Mural.photos[] embedded array so likes can be modeled as their own relation."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "mural": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::mural.mural",
+      "inversedBy": "photos",
+      "required": true
+    },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "likes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::like.like",
+      "mappedBy": "photo"
+    }
+  }
+}

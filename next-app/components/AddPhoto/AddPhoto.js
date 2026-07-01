@@ -1,0 +1,78 @@
+'use client';
+
+import { useContext, useState } from 'react';
+import { useParams } from 'next/navigation';
+import {Button, Modal, Form, Spinner, Image} from 'react-bootstrap';
+
+import { MuralDispatchContext } from '../../utils/contexts';
+import * as photosAPI from '../../utils/photos-api'
+import * as muralsAPI from '../../utils/murals-api'
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+
+function AddPhoto({ handleClose, addPhoto }) {
+
+  const [file, setFile] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+  const { updatedBy, muralId } = useParams()
+
+  const dispatch = useContext(MuralDispatchContext)
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    try{
+      setIsLoading(true)
+      await photosAPI.addPhoto(file, muralId)
+      // addPhoto only returns the new Photo, not the whole mural tree -
+      // re-fetch to pick it up everywhere the mural is shown.
+      const updatedMural = await muralsAPI.getMural(muralId)
+      dispatch({
+        type: 'changed',
+        mural: {...updatedMural.mural, updatedBy}
+      })
+      handleClose()
+    }catch({message}){
+			if(message === 'Unauthorized'){
+				setError('Unauthorized. Please login and try again.')
+			}else{
+        setError('Add Photo Failed. Please try Again.')
+      }
+    }finally{
+      setIsLoading(false)
+    }
+  }
+
+  const handleChange = async (event) => {
+    setFile(event.target.files[0])
+  }
+
+  return (
+    <>
+    {error && <ErrorMessage error={error} setError={setError} />}
+    <Modal show={addPhoto} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Add Mural Photo</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="file">
+            <Form.Label>Mural Photo</Form.Label>
+            <Form.Control
+              type="file"
+              name="file"
+              accept="image/*"
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
+          {file && <Image fluid src={URL.createObjectURL(file)} />}
+          {isLoading ? <Button disabled><Spinner size="sm"/></Button>
+          : <Button type="submit">Submit</Button>}
+        </Form>
+      </Modal.Body>
+    </Modal>
+    </>
+  );
+}
+
+export default AddPhoto

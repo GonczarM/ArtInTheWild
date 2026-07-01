@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "murals",
+  "info": {
+    "singularName": "mural",
+    "pluralName": "murals",
+    "displayName": "Mural",
+    "description": "A piece of public art - ported from the Mongoose Mural schema."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "artist": {
+      "type": "string",
+      "required": false
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "year": {
+      "type": "integer",
+      "required": false
+    },
+    "affiliation": {
+      "type": "string",
+      "required": false
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "zipcode": {
+      "type": "string",
+      "required": false
+    },
+    "latitude": {
+      "type": "decimal",
+      "required": false
+    },
+    "longitude": {
+      "type": "decimal",
+      "required": false
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "murals"
+    },
+    "favoritedBy": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "favoriteMurals"
+    },
+    "photos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::photo.photo",
+      "mappedBy": "mural"
+    }
+  }
+}

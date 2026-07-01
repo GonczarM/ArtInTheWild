@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "likes",
+  "info": {
+    "singularName": "like",
+    "pluralName": "likes",
+    "displayName": "Like",
+    "description": "A user's like on a Photo - replaces the Mongoose Mural.photos[].likes embedded array. createdAt (built-in) is the like timestamp."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "photo": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::photo.photo",
+      "inversedBy": "likes",
+      "required": true
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "likes",
+      "required": true
+    }
+  }
+}

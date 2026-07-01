@@ -1,0 +1,40 @@
+{
+  "name": "strapi-cms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Strapi application",
+  "scripts": {
+    "build": "strapi build",
+    "console": "strapi console",
+    "deploy": "strapi deploy",
+    "dev": "strapi develop",
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "upgrade": "npx @strapi/upgrade latest",
+    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+  },
+  "dependencies": {
+    "@strapi/plugin-cloud": "5.49.0",
+    "@strapi/plugin-users-permissions": "5.49.0",
+    "@strapi/provider-upload-aws-s3": "^5.49.0",
+    "@strapi/strapi": "5.49.0",
+    "better-sqlite3": "12.11.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <=26.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "uuid": "379909a6-19e7-4539-9aad-e033d0176da8",
+    "installId": "f13c988b1d6f60dcd08966470d039ecb530a61a0c9eefd0903c893bd92f5dffe"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1077.0",
+    "mongodb": "^7.4.0"
+  }
+}
