@@ -442,3 +442,114 @@ not just record existence.
    worth treating as a real data-integrity signal in the actual production migration
    (a Mongo-referenced photo URL that doesn't resolve in S3 is a problem worth
    investigating, not just a script quirk).
+
+---
+
+## 8. Phase 4 — Rewire Next.js to Strapi
+
+`next-app/` now talks to Strapi exclusively — `next.config.mjs`'s `/api/*` rewrite
+points at Strapi (`STRAPI_API_URL`, default `http://localhost:1337`), not Express.
+Express/MongoDB are left running for reference/comparison per the brief, but nothing in
+`next-app/` calls them anymore.
+
+### 1. Ownership policy (closed the Phase 2 gap)
+`strapi-cms/src/api/mural/policies/is-owner.js`, wired onto the `update`/`delete` routes
+in `routes/mural.js`. Compares `ctx.state.user.id` against the mural's populated `user`
+relation; a mural with no owner (orphaned) rejects everyone, matching the old Express
+app's exact behavior (`req.user._id === foundMural.user.toString()` is always false when
+`foundMural.user` is unset — so an orphaned mural could never be edited/deleted there
+either, not a new restriction). Verified with two real users end to end: the UI hides
+Edit/Delete for a non-owner, and a **direct API call bypassing the UI entirely** (PUT and
+DELETE, using a second user's real token) both got a clean 403, with the mural's data
+confirmed unchanged afterward. Strapi's `PolicyError` returns a generic "Forbidden"
+message rather than my policy's custom one — that's intentional Strapi behavior (doesn't
+leak *why* access was denied), not a bug to chase.
+
+**New, not explicitly asked for but needed for parity:** self-account deletion had the
+same class of gap — Strapi's built-in `DELETE /api/users/:id` takes an arbitrary target
+id with no self-only restriction, unlike the old Express app's `DELETE /api/users`, which
+always deleted `req.user` and took no id at all. Rather than exposing the generic route
+and bolting on a policy, added a small self-scoped custom endpoint
+(`DELETE /api/account/me`, `strapi-cms/src/api/account/`) that always operates on
+`ctx.state.user` — there's no id parameter, so there's no way to even attempt targeting
+someone else. This is also where the Phase 0 orphaning-on-delete decision (§4 #4) actually
+got implemented for the first time — it was decided back in Phase 0 but nothing had built
+it yet.
+
+### 2. Auth swap
+`utils/users-service.js` now calls Strapi's `/api/auth/local` (login) and
+`/api/auth/local/register` (register) instead of the old Express routes. Strapi's JWT
+payload is just `{ id, iat, exp }` — unlike the old custom JWT, it doesn't carry the user
+object, so `getUser()` can't decode it out anymore (this was flagged as a likely gap back
+in §5). Fixed by caching the `user` object Strapi returns alongside the `jwt` at
+login/register time in a **second cookie**, so `getUser()` stays synchronous for every
+existing caller (`Header`, `providers.js`, etc.) without needing to become async and hit
+`/api/users/me`. `proxy.js` needed no logic changes — Strapi's JWT has the same `exp`
+field in the same place, confirmed by testing the logged-out `/user/:username` redirect
+end to end, not just by reasoning about it.
+
+Register now collects an **email** field (Strapi's User requires one, unique; the old
+Mongo schema never had one at all — flagged back in §5/§7, now actually surfaced in the
+UI). Strapi doesn't reuse `409` the way Express did — duplicate registration and bad
+login are both a plain `400` with a specific `error.message` (`"Email or Username are
+already taken"` / `"Invalid identifier or password"`). `send-request.js` now surfaces
+that real message instead of collapsing every non-401/403 error into one generic string,
+and Login/Register match on the actual Strapi message text instead of a `'Conflict'`
+placeholder that no longer applies.
+
+### 3 & 4. Data layer swap + explicit relation populating
+New/changed `next-app/utils/` modules: `murals-api.js` (rewritten), `photos-api.js` and
+`likes-api.js` (new), `users-api.js` (trimmed to auth + `deleteAccount()`),
+`mural-helpers.js` (new — see below). Every mural fetch requests the same populate depth
+(`user`, `favoritedBy`, `photos.photo`, `photos.likes.user`) via a shared `POPULATE`
+constant, matched on the Strapi side by `FULL_POPULATE` in the mural controller's
+`search`/`searchList` actions, so a mural looks the same shape regardless of which
+endpoint returned it. "My murals" / "my favorites" (old `/api/users/murals` and
+`/api/users/favorites`) are now `GET /api/murals` with `filters[user][id][$eq]`/
+`filters[favoritedBy][id][$eq]`, since Strapi has no equivalent of "the current user's
+X" convenience routes — the frontend has to know its own numeric id (available on the
+cached `user` object) and filter explicitly.
+
+Photo upload uses the two-step pattern from Phase 2's gotchas for real now:
+`photosAPI.uploadFile()` (`POST /api/upload`) then a `POST /api/photos` referencing the
+returned file id. Liking a photo (`likesAPI.likePhoto`) and adding a photo
+(`photosAPI.addPhoto`) both only return the new Like/Photo record, not the whole mural
+tree the way the old combined Express endpoints did — `PhotoListItem` and `AddPhoto` now
+explicitly re-fetch the mural (`muralsAPI.getMural`) and re-dispatch it after a
+successful mutation, rather than trusting the mutation's own response. Verified this
+specifically: liking one of two unliked photos correctly drops the visible "Favorite
+Picture" button count from 2 to 1 without a page reload.
+
+### 5. Photo/Like UI against the new content types
+`utils/mural-helpers.js`'s `getFavoritePhoto(mural)` computes the featured photo
+(most-liked, ties/zero-likes fall back to the first photo) instead of reading the old
+stored `favoritePhoto` field — confirmed dropped back in §6, now actually implemented the
+way that section said it should be. Used in `MuralCard`, `MuralListItem`, and
+`PhotoCarousel` (which also needed a small dedicated guard: the carousel prepends a
+non-mural "logo" slide with no `documentId`, and clicking it used to navigate to a
+broken `/mural/home/undefined` URL in the original app too — same latent bug, now
+guarded since it was directly adjacent to code already being rewritten for the schema
+change).
+
+### Bugs found and fixed along the way (not scope creep - directly blocking correctness of what Phase 4 asked for)
+- **`MuralCard`'s delete handler never awaited `deleteMural()`** and had no working error
+  path (a promise rejection inside an unawaited call in a non-`async` function is neither
+  caught by `try/catch` nor surfaced anywhere). This would have made the new ownership
+  policy's 403 invisible from the UI - a rejected delete would look identical to a
+  successful one, navigating away regardless. Made `handleDelete` `async` and properly
+  awaited; this is exactly the kind of thing task 6's "test the ownership check... via the
+  UI" would have silently failed to actually test if left alone.
+- **Home page's `getRandomMural` recursed unboundedly** looking for a mural with a
+  100+ character description, with no fallback if none qualify. This was always a latent
+  assumption in the original algorithm, but the Phase 3 test data - and, more importantly,
+  the Phase-4-adjacent decision to make `description` optional - means a dataset with no
+  long-enough description is now a realistic case, not just a contrived one. Hit this
+  directly during Phase 4 verification (real `RangeError: Maximum call stack size
+  exceeded`, silently swallowed by Home's generic `catch`, surfacing as a misleading
+  "Could not get murals" even though the fetch itself succeeded). Fixed with a bounded
+  retry count that falls back to any mural.
+- `EditMural`'s form is seeded directly from the populated mural object, which now
+  includes full relation objects (`user`, `favoritedBy`, `photos`) - sending that back
+  wholesale in a `PUT` would have tried to write populated objects into relation fields.
+  The edit payload is now built explicitly from just the scalar fields actually editable
+  in that form.

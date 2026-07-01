@@ -1,38 +1,76 @@
 import sendRequest from './send-request';
+
 const BASE_URL = '/api/murals';
 
-export function createMural(muralData) {
-  return sendRequest(BASE_URL, 'POST', muralData);
+// Matches FULL_POPULATE in strapi-cms/src/api/mural/controllers/mural.js's
+// search/searchList actions, so every mural - however it was fetched -
+// carries the same shape: ownership checks need `user`, favoriting needs
+// `favoritedBy`, and photo/like display needs `photos.photo` (the media
+// object) plus `photos.likes.user`. Strapi omits a relation entirely
+// (not even its id) unless it's explicitly populated like this.
+const POPULATE =
+  'populate[user]=true' +
+  '&populate[favoritedBy]=true' +
+  '&populate[photos][populate][photo]=true' +
+  '&populate[photos][populate][likes][populate][user]=true';
+
+// The old Mongoose `Mural.find({})` had no pagination; Strapi defaults to
+// 25 per page. Bumped up to roughly match old unpaginated behavior at this
+// app's scale rather than actually building pagination UI.
+const UNPAGINATED = 'pagination[pageSize]=100';
+
+export async function createMural(data) {
+  const res = await sendRequest(`${BASE_URL}?${POPULATE}`, 'POST', { data });
+  return { mural: res.data };
 }
 
-export function getMurals(){
-  return sendRequest(BASE_URL)
+export async function getMurals() {
+  const res = await sendRequest(`${BASE_URL}?${POPULATE}&${UNPAGINATED}`);
+  return { murals: res.data };
 }
 
-export function getMural(muralId){
-  return sendRequest(`${BASE_URL}/${muralId}`)
+export async function getMural(muralId) {
+  const res = await sendRequest(`${BASE_URL}/${muralId}?${POPULATE}`);
+  return { mural: res.data };
 }
 
-export function getMuralsWithPhoto(){
-  return sendRequest(`${BASE_URL}/photo`)
+export async function getMuralsWithPhoto() {
+  const res = await sendRequest(`${BASE_URL}?${POPULATE}&${UNPAGINATED}`);
+  return { murals: res.data.filter((mural) => mural.photos && mural.photos.length > 0) };
 }
 
-export function searchMuralsByType(searchData){
-  return sendRequest(`${BASE_URL}/list/${searchData.type}/${searchData.term}`)
+export async function searchMuralsByType(searchData) {
+  return sendRequest(`${BASE_URL}/list/${searchData.type}/${encodeURIComponent(searchData.term)}`);
 }
 
-export function searchMurals(searchData){
-  return sendRequest(`${BASE_URL}/search/${searchData.type}/${searchData.term}`)
+export async function searchMurals(searchData) {
+  const res = await sendRequest(`${BASE_URL}/search/${searchData.type}/${encodeURIComponent(searchData.term)}`);
+  return { murals: res.data };
 }
 
-export function editMural(muralData, muralId){
-  return sendRequest(`${BASE_URL}/${muralId}`, 'PUT', muralData)
+export async function editMural(data, muralId) {
+  const res = await sendRequest(`${BASE_URL}/${muralId}?${POPULATE}`, 'PUT', { data });
+  return { mural: res.data };
 }
 
-export function addPhoto(photoData, muralId){
-  return sendRequest(`${BASE_URL}/photo/${muralId}`, 'PUT', photoData)
+export async function deleteMural(muralId) {
+  const res = await sendRequest(`${BASE_URL}/${muralId}`, 'DELETE');
+  return { mural: res.data };
 }
 
-export function deleteMural(muralId){
-  return sendRequest(`${BASE_URL}/${muralId}`, 'DELETE')
+export async function getUserMurals(userId) {
+  const res = await sendRequest(`${BASE_URL}?filters[user][id][$eq]=${userId}&${POPULATE}&${UNPAGINATED}`);
+  return { murals: res.data };
+}
+
+export async function getUserFavorites(userId) {
+  const res = await sendRequest(`${BASE_URL}?filters[favoritedBy][id][$eq]=${userId}&${POPULATE}&${UNPAGINATED}`);
+  return { murals: res.data };
+}
+
+export async function favoriteMural(muralId, userId) {
+  const res = await sendRequest(`${BASE_URL}/${muralId}?${POPULATE}`, 'PUT', {
+    data: { favoritedBy: { connect: [userId] } },
+  });
+  return { mural: res.data };
 }

@@ -61,10 +61,10 @@ function Map(props){
                 'coordinates': [mural.longitude, mural.latitude]
               },
               'properties': {
-                'id': mural._id,
+                'id': mural.documentId,
                 'title': mural.title,
                 'artist': mural.artist,
-                'image': mural.photos.length ? mural.photos[0].photo : null
+                'image': mural.photos.length ? mural.photos[0].photo?.url : null
               }
             }))
           }

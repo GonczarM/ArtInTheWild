@@ -6,6 +6,7 @@ import { Button, Card, Container, Tab, Tabs } from 'react-bootstrap';
 
 import { UserContext, UserActionsContext } from '../../../utils/contexts';
 import * as userAPI from '../../../utils/users-api'
+import * as muralsAPI from '../../../utils/murals-api'
 import MuralList from '../../../components/MuralList/MuralList'
 import ErrorMessage from '../../../components/ErrorMessage/ErrorMessage';
 
@@ -30,9 +31,9 @@ const UserShow = () => {
 
   const getMurals = async () => {
     try{
-      const userMurals = await userAPI.getUserMurals()
+      const userMurals = await muralsAPI.getUserMurals(user.id)
       if(userMurals.murals.length) setMurals(userMurals.murals)
-      const userFavorites = await userAPI.getUserFavorites()
+      const userFavorites = await muralsAPI.getUserFavorites(user.id)
       if(userFavorites.murals.length) setFavorites(userFavorites.murals)
     }catch{
       setError('Could not get murals. Please try again.')
@@ -41,7 +42,7 @@ const UserShow = () => {
 
   const handleDelete = async () => {
     try{
-      await userAPI.deleteUser()
+      await userAPI.deleteAccount()
       logoutUser()
     }catch({message}){
 			if(message === 'Unauthorized'){

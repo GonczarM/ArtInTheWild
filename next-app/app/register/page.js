@@ -9,6 +9,7 @@ import ErrorMessage from '../../components/ErrorMessage/ErrorMessage'
 
 const initialUser = {
 	username: '',
+	email: '',
 	password: ''
 }
 
@@ -30,8 +31,8 @@ function Register(){
 			loginUser(user)
 		}
 		catch({message}){
-			if(message === 'Conflict'){
-				setError('This username already exists. Please try again.')
+			if(message === 'Email or Username are already taken'){
+				setError('This username or email already exists. Please try again.')
 			}else{
 				setError('Could not register. Please try again.')
 			}
@@ -50,6 +51,17 @@ function Register(){
 						type="text"
 						name="username"
 						value={form.username}
+						onChange={handleChange}
+						required
+					/>
+				</Form.Group>
+				<Form.Group controlId='email'>
+					<Form.Label>Email</Form.Label>
+					<Form.Control
+						placeholder='email'
+						type="email"
+						name="email"
+						value={form.email}
 						onChange={handleChange}
 						required
 					/>

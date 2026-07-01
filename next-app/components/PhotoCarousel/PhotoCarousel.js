@@ -6,6 +6,7 @@ import { Carousel, Spinner } from 'react-bootstrap';
 
 import { getMuralsWithPhoto } from '../../utils/murals-api';
 import { MuralDispatchContext } from '../../utils/contexts';
+import { getFavoritePhoto } from '../../utils/mural-helpers';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 const Logo = '/artInTheWild.jpg';
@@ -25,19 +26,23 @@ function PhotoCarousel() {
   }, [])
 
 	const handleClick = (mural) => {
+		if(!mural.documentId) return // the prepended logo slide isn't a real mural
 		dispatch({
       type: 'changed',
       mural: {...mural, updatedBy:'home'}
     })
-		router.push(`/mural/home/${mural._id}`)
+		router.push(`/mural/home/${mural.documentId}`)
 	}
 
   const getMurals = async () => {
     try{
       const muralsResponse = await getMuralsWithPhoto()
-      const muralsWithLogo = [...muralsResponse.murals]
-      muralsWithLogo.unshift({favoritePhoto:Logo})
-      setMurals(muralsWithLogo)
+      const muralsWithImage = muralsResponse.murals.map((mural) => ({
+        ...mural,
+        image: getFavoritePhoto(mural)?.photo?.url,
+      }))
+      muralsWithImage.unshift({image: Logo})
+      setMurals(muralsWithImage)
     }catch{
       setError('Could not get murals. Please try again')
     }
@@ -50,7 +55,7 @@ function PhotoCarousel() {
         {murals && murals.map((mural, i) => (
         <Carousel.Item key={i} onClick={() => handleClick(mural)}>
           <img
-            src={mural.favoritePhoto}
+            src={mural.image}
             onLoad={() => setImgLoading(false)}
             style={{ display: imgLoading ? 'none' : 'block'}}
           />

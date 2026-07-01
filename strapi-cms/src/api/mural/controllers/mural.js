@@ -20,6 +20,20 @@ function assertSearchableField(type) {
   }
 }
 
+// Matches the populate depth next-app/utils/murals-api.js requests on every
+// other mural endpoint, so search results carry the same shape (ownership
+// checks, photo/like display, favoriting) as a regular list/detail fetch.
+const FULL_POPULATE = {
+  user: true,
+  favoritedBy: true,
+  photos: {
+    populate: {
+      photo: true,
+      likes: { populate: ['user'] },
+    },
+  },
+};
+
 module.exports = createCoreController('api::mural.mural', ({ strapi }) => ({
   async search(ctx) {
     const { type, term } = ctx.params;
@@ -27,7 +41,7 @@ module.exports = createCoreController('api::mural.mural', ({ strapi }) => ({
 
     const results = await strapi.documents('api::mural.mural').findMany({
       filters: { [type]: { $containsi: term } },
-      populate: ['photos'],
+      populate: FULL_POPULATE,
     });
 
     const sanitizedResults = await this.sanitizeOutput(results, ctx);

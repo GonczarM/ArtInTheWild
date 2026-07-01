@@ -1,30 +1,21 @@
 import sendRequest from './send-request';
-const BASE_URL = '/api/users';
+const AUTH_URL = '/api/auth/local';
 
 export function signUp(userData) {
-  return sendRequest(`${BASE_URL}/register`, 'POST', userData);
+  return sendRequest(`${AUTH_URL}/register`, 'POST', {
+    username: userData.username,
+    email: userData.email,
+    password: userData.password,
+  });
 }
 
 export function login(credentials) {
-  return sendRequest(`${BASE_URL}/login`, 'POST', credentials);
+  return sendRequest(AUTH_URL, 'POST', {
+    identifier: credentials.username,
+    password: credentials.password,
+  });
 }
 
-export function getUserMurals() {
-  return sendRequest(`${BASE_URL}/murals`);
-}
-
-export function getUserFavorites(){
-  return sendRequest(`${BASE_URL}/favorites`)
-}
-
-export function favoriteMural(muralId){
-  return sendRequest(`${BASE_URL}/favorite/${muralId}`, 'PUT')
-}
-
-export function favoritePhoto(photoId){
-  return sendRequest(`${BASE_URL}/photo/${photoId}`, 'PUT')
-}
-
-export function deleteUser(){
-  return sendRequest(`${BASE_URL}`, 'DELETE')
+export function deleteAccount() {
+  return sendRequest('/api/account/me', 'DELETE');
 }

@@ -30,7 +30,7 @@ function Login(){
 			loginUser(user)
 		}
 		catch({message}){
-			if(message === 'Conflict'){
+			if(message === 'Invalid identifier or password'){
 				setError('Incorrect username or password. Please try again.')
 			}else{
       	setError('Could not login. Please try again.')

@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 
 // Optimistic auth check (decodes the JWT payload, does not verify the signature -
-// Express still owns real verification/authorization on every API call).
+// Strapi still owns real verification/authorization on every API call). Strapi's
+// JWT is a standard { id, iat, exp } payload, same shape the old custom JWT had
+// for this specific field, so this needed no logic changes for the Phase 4 auth
+// swap - just this comment.
 // Mirrors the original client-side guard in UserShow: if there's no logged-in user,
 // bounce to the home page instead of rendering the profile page.
 function hasValidToken(request) {

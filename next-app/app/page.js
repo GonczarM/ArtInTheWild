@@ -33,12 +33,16 @@ function Home(){
     }
   }
 
-  const getRandomMural = (arr) => {
+  // Prefers a mural with a substantial description, but murals can now be
+  // created with a short or no description (loosened schema requirements -
+  // see MIGRATION_NOTES.md), so unbounded recursion here could stack-overflow
+  // if none happen to qualify. Falls back to any mural after enough tries.
+  const getRandomMural = (arr, attemptsLeft = 20) => {
     const ranNum = Math.floor(Math.random()* arr.length)
     const randomMural = arr[ranNum]
-    if(randomMural.description.length < 100
+    if((randomMural.description?.length || 0) < 100 && attemptsLeft > 0
     ){
-      return getRandomMural(arr)
+      return getRandomMural(arr, attemptsLeft - 1)
     }else{
       return randomMural
     }

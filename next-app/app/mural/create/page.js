@@ -7,6 +7,7 @@ import { Button, Container, Form, Spinner, Image } from 'react-bootstrap';
 
 import { MuralDispatchContext, UserContext } from '../../../utils/contexts';
 import * as muralsAPI from '../../../utils/murals-api'
+import * as photosAPI from '../../../utils/photos-api'
 import * as mapboxAPI from '../../../utils/mapbox-api'
 import ErrorMessage from '../../../components/ErrorMessage/ErrorMessage';
 
@@ -96,17 +97,31 @@ function CreateMural(){
 			setIsLoading(prevIsLoading => !prevIsLoading)
 			return
 		}
-		const data = new FormData()
-		for(const prop in copyOfForm){
-			data.append(prop, copyOfForm[prop])
+		const data = {
+			title: copyOfForm.title,
+			artist: copyOfForm.artist,
+			description: copyOfForm.description,
+			affiliation: copyOfForm.affiliation,
+			address: copyOfForm.address,
+			zipcode: copyOfForm.zipcode,
+			latitude: copyOfForm.latitude,
+			longitude: copyOfForm.longitude,
+			year: copyOfForm.year ? Number(copyOfForm.year) : undefined,
+			user: user ? user.id : undefined,
 		}
 		try{
 			const createdMural = await muralsAPI.createMural(data)
+			if(copyOfForm.photo){
+				await photosAPI.addPhoto(copyOfForm.photo, createdMural.mural.documentId)
+			}
+			const finalMural = copyOfForm.photo
+				? (await muralsAPI.getMural(createdMural.mural.documentId)).mural
+				: createdMural.mural
 			dispatch({
 				type: 'changed',
-				mural: {...createdMural.mural, updatedBy: user ? user.username : 'user'}
+				mural: {...finalMural, updatedBy: user ? user.username : 'user'}
 			})
-			router.push(`/mural/${user ? user.username : 'user'}/${createdMural.mural._id}`)
+			router.push(`/mural/${user ? user.username : 'user'}/${finalMural.documentId}`)
 		}catch{
 			setError('Could not create Mural. Please try again.')
 		}finally{

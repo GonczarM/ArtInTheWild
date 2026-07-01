@@ -18,7 +18,7 @@ const MuralsList = ({ murals, updatedBy }) => {
       type: 'changed',
       mural: {...mural, updatedBy}
     })
-		router.push(`/mural/${updatedBy}/${mural._id}`)
+		router.push(`/mural/${updatedBy}/${mural.documentId}`)
 	}
 
 	return(

@@ -5,9 +5,9 @@ import { Card, Spinner, Button } from "react-bootstrap";
 import { useRouter, useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 
-import * as usersAPI from '../../utils/users-api'
 import * as muralsAPI from '../../utils/murals-api'
 import { MuralDispatchContext } from '../../utils/contexts';
+import { getFavoritePhoto } from '../../utils/mural-helpers';
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 // mapbox-gl touches `window` at module scope, so it can't be server-rendered.
@@ -17,7 +17,7 @@ function MuralCard({ mural, user, handleOpen }) {
 
   const [imgLoading, setImgLoading] = useState(true)
   const [error, setError] = useState('')
-  const { muralId, updatedBy } = useParams()
+  const { updatedBy } = useParams()
 
   const dispatch = useContext(MuralDispatchContext)
 
@@ -25,10 +25,10 @@ function MuralCard({ mural, user, handleOpen }) {
 
   const favoriteMural = async () => {
     try{
-		  const mural = await usersAPI.favoriteMural(muralId)
+		  const updated = await muralsAPI.favoriteMural(mural.documentId, user.id)
 		  dispatch({
 			  type: 'changed',
-			  mural: {...mural.mural, updatedBy}
+			  mural: {...updated.mural, updatedBy}
 		  })
     }catch({message}){
 			if(message === 'Unauthorized' || message === 'Forbidden'){
@@ -39,16 +39,14 @@ function MuralCard({ mural, user, handleOpen }) {
     }
 	}
 
-	const hasUserFavorited = (favoriteUser) => {
-		return favoriteUser === user._id || favoriteUser._id === user._id
-	}
+	const hasUserFavorited = (favoriteUser) => favoriteUser.id === user.id
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     try{
-      muralsAPI.deleteMural(mural._id)
+      await muralsAPI.deleteMural(mural.documentId)
       router.push(`/user/${user.username}`)
     }catch({message}){
-			if(message === 'Unauthorized'){
+			if(message === 'Unauthorized' || message === 'Forbidden'){
 				setError('Unauthorized. Please login and try again.')
 			}else{
         setError('Could not delete Mural. Please try again.')
@@ -64,16 +62,19 @@ function MuralCard({ mural, user, handleOpen }) {
     }
   }
 
+  const favoritePhoto = getFavoritePhoto(mural)
+  const isOwner = user && mural.user?.id === user.id
+
   return (
     <>
     {error && <ErrorMessage error={error} setError={setError} />}
     <Card className='text-center'>
-      {mural.favoritePhoto && <Card.Img
-        src={mural.favoritePhoto}
+      {favoritePhoto && <Card.Img
+        src={favoritePhoto.photo?.url}
         onLoad={() => setImgLoading(false)}
         style={{ display: imgLoading ? 'none' : 'block'}}
       />}
-      {mural.favoritePhoto && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
+      {favoritePhoto && imgLoading && <Spinner style={{ display: 'block', margin: 'auto'}}/>}
       <Card.Body>
         <Card.Title >{mural.title}</Card.Title>
         {mural.artist && <Card.Subtitle>by {mural.artist}</Card.Subtitle>}
@@ -87,30 +88,32 @@ function MuralCard({ mural, user, handleOpen }) {
         </>}
           <Card.Subtitle>Address</Card.Subtitle>
           <Card.Text>{mural.address}</Card.Text>
+          {mural.zipcode && <>
           <Card.Subtitle>ZIP Code</Card.Subtitle>
           <Card.Text>{mural.zipcode}</Card.Text>
-        {user && !mural.favorite.some(hasUserFavorited) && mural.user !== user._id ?
+          </>}
+        {user && !mural.favoritedBy.some(hasUserFavorited) && !isOwner ?
         <>
           <Button onClick={favoriteMural}>Favorite Mural</Button><br></br>
         </>
         :
         <>
-          <span>{mural.favorite.length}</span>
+          <span>{mural.favoritedBy.length}</span>
           <Button variant='outline' className='bi bi-suit-heart-fill'></Button><br></br>
         </>
         }
         <Button onClick={handleAddPhotoClick}>Add Photo</Button><br></br>
-        {user && mural.user === user._id &&
+        {isOwner &&
         <>
           <Button
             variant='secondary'
-            onClick={() => router.push(`/mural/edit/${updatedBy}/${mural._id}`)}
+            onClick={() => router.push(`/mural/edit/${updatedBy}/${mural.documentId}`)}
           >
             Edit Mural
           </Button><br></br>
           <Button variant='danger' onClick={handleDelete}>Delete Mural</Button>
         </>}
-        {mural.address && <Map
+        {mural.latitude != null && mural.longitude != null && <Map
           murals={[mural]}
           geometry={{longitude: mural.longitude, latitude: mural.latitude, zoom: 14}}
         />}

@@ -5,10 +5,11 @@ import { useParams } from 'next/navigation';
 import {Button, Modal, Form, Spinner, Image} from 'react-bootstrap';
 
 import { MuralDispatchContext } from '../../utils/contexts';
+import * as photosAPI from '../../utils/photos-api'
 import * as muralsAPI from '../../utils/murals-api'
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
-function AddPhoto({ handleClose, addPhoto, updateMurals }) {
+function AddPhoto({ handleClose, addPhoto }) {
 
   const [file, setFile] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -21,10 +22,10 @@ function AddPhoto({ handleClose, addPhoto, updateMurals }) {
     event.preventDefault()
     try{
       setIsLoading(true)
-      const data = new FormData()
-      data.append('photo', file)
-      const updatedMural = await muralsAPI.addPhoto(data, muralId)
-      if(updateMurals) updateMurals(updatedMural.mural)
+      await photosAPI.addPhoto(file, muralId)
+      // addPhoto only returns the new Photo, not the whole mural tree -
+      // re-fetch to pick it up everywhere the mural is shown.
+      const updatedMural = await muralsAPI.getMural(muralId)
       dispatch({
         type: 'changed',
         mural: {...updatedMural.mural, updatedBy}

@@ -17,10 +17,27 @@ const AddressAutofill = dynamic(
   { ssr: false }
 )
 
+// Strapi returns `null` for any unset optional field (title/address are the
+// only required Mural fields now - see MIGRATION_NOTES.md), unlike the old
+// Mongoose data, which always had these as at least an empty string. Feeding
+// a Form.Control a null value trips a React warning and half-breaks the
+// input, so it's normalized to '' here for editing.
+function muralToFormValues(mural) {
+	if(!mural) return mural
+	return {
+		...mural,
+		artist: mural.artist ?? '',
+		year: mural.year ?? '',
+		description: mural.description ?? '',
+		address: mural.address ?? '',
+		zipcode: mural.zipcode ?? '',
+	}
+}
+
 const EditMural = () => {
 
 	const mural = useContext(MuralContext)
-	const [form, setForm] = useState(mural)
+	const [form, setForm] = useState(() => muralToFormValues(mural))
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const [error, setError] = useState('')
@@ -78,23 +95,36 @@ const EditMural = () => {
     event.preventDefault()
 		setIsLoading(true)
 		const address = `${form.address} ${form.zipcode}`
-		const copyOfForm = {...form}
+		let longitude, latitude
 		try{
 			const coordinates = await mapboxAPI.geocode(address)
-			copyOfForm.longitude = coordinates[0]
-			copyOfForm.latitude = coordinates[1]
+			longitude = coordinates[0]
+			latitude = coordinates[1]
 		}catch{
 			setError('Could not get coordinates. Please try again.')
 			setIsLoading(prevIsLoading => !prevIsLoading)
 			return
 		}
+		// Relations (user/favoritedBy/photos) live on `mural`/`form` too since
+		// form was seeded from the populated mural, but they're never edited
+		// here - only the scalar fields below get sent back.
+		const data = {
+			title: form.title,
+			artist: form.artist,
+			description: form.description,
+			address: form.address,
+			zipcode: form.zipcode,
+			year: form.year ? Number(form.year) : undefined,
+			latitude,
+			longitude,
+		}
 		try{
-			const updatedMural = await muralsAPI.editMural(copyOfForm, muralId)
+			const updatedMural = await muralsAPI.editMural(data, muralId)
 			dispatch({
 				type: 'changed',
 				mural: {...updatedMural.mural, updatedBy: user.username}
 			})
-			router.push(`/mural/${user.username}/${updatedMural.mural._id}`)
+			router.push(`/mural/${user.username}/${updatedMural.mural.documentId}`)
 		}catch({message}){
 			if(message === 'Unauthorized' || message === 'Forbidden'){
 				setError('Unauthorized. Please login and try again.')
@@ -112,7 +142,7 @@ const EditMural = () => {
 			{form && <Container>
 				<Breadcrumb>
 					<Breadcrumb.Item linkAs={Link} href={`/user/${updatedBy}`}>{updatedBy}</Breadcrumb.Item>
-					<Breadcrumb.Item linkAs={Link} href={`/mural/${updatedBy}/${mural._id}`}>{mural.title}</Breadcrumb.Item>
+					<Breadcrumb.Item linkAs={Link} href={`/mural/${updatedBy}/${mural.documentId}`}>{mural.title}</Breadcrumb.Item>
 					<Breadcrumb.Item active>Edit</Breadcrumb.Item>
 				</Breadcrumb>
 				<h1 className='text-center'>Edit Mural</h1>

@@ -10,13 +10,12 @@
 //   search routes - matches the old app's public GET /api/murals/*.
 // - Authenticated (any logged-in user): everything Public has, plus
 //   create/update/delete on Mural/Photo and create/delete on Like.
-//   Per-owner restrictions (e.g. only the mural's creator can edit/delete
-//   it) are NOT enforced here - Strapi's default role permissions are
-//   "any authenticated user can," same shape as the old app's
-//   ensureLoggedIn middleware. The old app's extra ownership check
-//   (`req.user._id === mural.user`) has no Strapi equivalent yet; flagged
-//   in MIGRATION_NOTES.md as a Phase 4 follow-up rather than built here,
-//   since it wasn't part of the Phase 2 schema-building scope.
+//   Mural update/delete are further gated by the `is-owner` policy
+//   (src/api/mural/policies/is-owner.js, wired in routes/mural.js) - closed
+//   in Phase 4, was previously "any authenticated user can" with no
+//   per-owner check. Account deletion is a separate self-scoped custom
+//   route (src/api/account/) rather than the built-in
+//   `DELETE /api/users/:id`, which has no self-only restriction at all.
 const ROLE_ACTIONS = {
   public: [
     // Without this, GET /api/murals?populate=user omits the `user` relation
@@ -57,6 +56,7 @@ const ROLE_ACTIONS = {
     'api::like.like.findOne',
     'api::like.like.create',
     'api::like.like.delete',
+    'api::account.account.deleteMe',
   ],
 };
 
