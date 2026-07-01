@@ -679,3 +679,65 @@ photo to a seeded mural and liking it, since seeded murals start with none. Afte
 verification, re-ran `seed-chicago.js` once more to wash out every test artifact (test
 users, test murals) created along the way, leaving Strapi holding exactly the 403 clean
 Chicago records and nothing else.
+
+## 10. Dependency Update (2026-06-30)
+
+Routine package-currency pass across both apps. `next-app` deps: `react`/`react-dom`
+19.2.4 → 19.2.7 (exact-pinned, matching create-next-app convention), `mapbox-gl` 2.15.0 →
+3.25.0. `strapi-cms`: `better-sqlite3` 12.8.0 → 12.11.1 (exact-pinned). Everything else in
+both apps was already current, or intentionally left alone (see below).
+
+- **mapbox-gl v3 is a licensing change, not just a technical upgrade.** v3 moved off the
+  BSD-3-Clause license onto Mapbox's own proprietary Terms of Service with usage-based
+  billing for the library itself, on top of the Geocoding API/tiles billing this app
+  already pays for via the access token. Surfaced this to the user rather than deciding
+  unilaterally; they chose to accept the new terms and upgrade anyway. Checked the
+  installed `mapbox-gl.d.ts` directly (web docs kept returning unhelpful content) —
+  `loadImage`, `accessToken`, `addImage`, and `Popup` are all unchanged from v2, so no
+  `Map.js` code changes were needed for the mapbox-gl API surface itself, only for
+  unrelated new lint rules (below). Re-verified map rendering, marker click → popup, and
+  navigation to a mural's detail page via Playwright smoke test post-upgrade — no console
+  errors, no WebGL failures.
+- **`strapi-cms`'s `react`/`react-dom`/`react-router-dom`/`styled-components` were left
+  alone.** Checked Strapi 5.49.0's actual declared admin-panel peer ranges
+  (`react/react-dom: ^17 || ^18`, `react-router-dom: ^6.30.3`, `styled-components: ^6.0.0`)
+  directly against `node_modules/@strapi/admin/package.json` rather than trusting npm's
+  "latest" — the installed versions are already the newest ones Strapi's peer constraints
+  allow. Bumping to React 19 / react-router 7 here would have broken the admin panel.
+- **ESLint 10 does not actually work with `eslint-config-next@16.2.9`**, despite that
+  package's peer range technically allowing `eslint: >=9.0.0`. `npx eslint .` crashed
+  immediately (`scopeManager.addGlobals is not a function`) under 10.6.0. Reverted to the
+  latest 9.x (`9.39.4`) — the peer range is aspirational, not tested.
+- **`eslint-plugin-react-hooks` v7 (pulled in transitively by the eslint 9.39.4
+  reinstall) added new React-Compiler-oriented lint rules that surfaced real, if
+  low-risk, findings:**
+  - `react-hooks/immutability` flagged five spots (`app/page.js`, `app/search/page.js`,
+    `app/mural/[updatedBy]/[muralId]/page.js`, `components/Map/Map.js`,
+    `components/PhotoCarousel/PhotoCarousel.js`) where a `useEffect` called a `const`
+    function declared later in the same component. Functionally harmless (effects run
+    after the full render commits, by which point the declaration exists), but fixed by
+    reordering each function's declaration above the effect that calls it — a
+    zero-risk, purely organizational change.
+  - `react-hooks/purity` flagged `Home`'s `getRandomMural` for calling `Math.random()`
+    inside a component function body. Fixed by hoisting it to module scope, since it's
+    already a pure function of its argument and doesn't touch component state.
+  - `react-hooks/set-state-in-effect` turned out to flag **every** "fetch on mount"
+    effect in the app (it does call-graph analysis to see that the called async function
+    eventually calls a state setter) — `Home`, `MuralSearch`, `ShowMural`, `PhotoCarousel`,
+    `Map`, and `Providers`. That's this app's pervasive, deliberate data-fetching idiom
+    with no Suspense/React Query layer to move it to, so rather than sprinkling six-plus
+    line-level suppressions, disabled the rule project-wide in `eslint.config.mjs` with a
+    comment explaining why.
+  - `react/no-unescaped-entities` flagged three literal apostrophes in JSX text
+    (`app/search/page.js`, `app/user/[username]/page.js` ×2) — fixed with `&apos;`.
+- **`npm audit`'s moderate-severity PostCSS XSS finding** (bundled transitively inside
+  `next` itself, across a range including the current 16.2.9) was left as-is. It's a
+  build-time CSS-stringification concern, not runtime user-controlled input, and the
+  suggested `npm audit fix --force` would downgrade `next` to `9.3.3` — clearly wrong.
+
+### Verification
+Production build succeeded for both apps (`next build`, `strapi build`). Ran both dev
+servers and a Playwright smoke test covering: home page load, mural carousel/list render,
+search page load, mapbox map render on the search page (no WebGL/console errors), marker
+click → popup, navigation from a home-page mural card to its detail page, and the login
+page rendering — all passed with zero console/page errors.

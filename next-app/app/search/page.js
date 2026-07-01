@@ -22,6 +22,20 @@ function MuralSearch(){
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
 
+	const getMurals = async () => {
+		try{
+			const muralsRes = await muralsAPI.getMurals()
+			const filteredMurals = muralsRes.murals.filter(mural => {
+				if(mural.longitude && mural.latitude && mural.title){
+					return mural
+				}
+			})
+			setMurals(filteredMurals)
+		}catch{
+			setError('Could not get Murals. Please try again.')
+		}
+  }
+
 	useEffect(() => {
 		if(!murals){
 			getMurals()
@@ -36,20 +50,6 @@ function MuralSearch(){
 		setShowMap(true)
 		setSearch({...search, term:'', hasSearched: false})
 	}
-
-	const getMurals = async () => {
-		try{
-			const muralsRes = await muralsAPI.getMurals()
-			const filteredMurals = muralsRes.murals.filter(mural => {
-				if(mural.longitude && mural.latitude && mural.title){
-					return mural
-				}
-			})
-			setMurals(filteredMurals)
-		}catch{
-			setError('Could not get Murals. Please try again.')
-		}
-  }
 
 	const updateSearch = async (event) => {
 		setSearch({...search, term:event.target.value})
@@ -140,7 +140,7 @@ function MuralSearch(){
 			</Form>
 			{murals && !murals.length && <h2>No Murals Found from that {search.type}</h2>}
 			{murals && murals.length > 0 && search.hasSearched && <>
-				{search.type === 'artist' && <h1 className='text-center'>{murals[0].artist}'s murals</h1>}
+				{search.type === 'artist' && <h1 className='text-center'>{murals[0].artist}&apos;s murals</h1>}
 				{search.type === 'title' && <h1 className='text-center'>Mural {murals[0].title}</h1>}
 				{search.type === 'zipcode' && <h1 className='text-center'>Murals in {murals[0].zipcode}</h1>}
 				<Button onClick={() => setShowMap(!showMap)}>

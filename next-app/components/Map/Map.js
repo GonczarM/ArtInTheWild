@@ -25,11 +25,27 @@ function Map(props){
 
   const router = useRouter()
 
+  const handleClick = async (muralId) => {
+    try{
+      const mural = await muralsAPI.getMural(muralId)
+      dispatch({
+        type: 'changed',
+        mural: {...mural.mural, updatedBy: 'search'}
+      })
+      router.push(`/mural/search/${muralId}`)
+    }catch{
+      setError('Could not get mural, please try again.')
+    }
+  }
+
   useEffect(() => {
     popupRef.current = new mapboxgl.Popup();
   }, [])
 
   useEffect(() => {
+    // Deliberately not just using props.murals directly: this keeps the
+    // last non-empty value instead of tearing the map down whenever the
+    // parent briefly re-renders with an empty/not-yet-loaded prop.
     if(props.murals && props.murals.length){
       setMurals(props.murals)
     }
@@ -39,7 +55,7 @@ function Map(props){
     if(!murals) return
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'mapbox://styles/mapbox/standard',
       center: [props.geometry.longitude, props.geometry.latitude],
       zoom: props.geometry.zoom
     });
@@ -107,19 +123,6 @@ function Map(props){
     };
 
   }, [murals])
-
-  const handleClick = async (muralId) => {
-    try{
-      const mural = await muralsAPI.getMural(muralId)
-      dispatch({
-        type: 'changed',
-        mural: {...mural.mural, updatedBy: 'search'}
-      })
-      router.push(`/mural/search/${muralId}`)
-    }catch{
-      setError('Could not get mural, please try again.')
-    }
-  }
 
   return (
     <>

@@ -71,7 +71,7 @@ const UserShow = () => {
           />
           :
           <>
-            <h2 className='text-center'>Looks Like you Don't Have any Murals</h2>
+            <h2 className='text-center'>Looks Like you Don&apos;t Have any Murals</h2>
             <Button className='create' onClick={() => router.push('/mural/create')}>Create Mural</Button>
           </>
           }
@@ -84,7 +84,7 @@ const UserShow = () => {
           />
           :
           <>
-            <h2 className='text-center'>Looks Like you Don't Have any Favorited Murals</h2>
+            <h2 className='text-center'>Looks Like you Don&apos;t Have any Favorited Murals</h2>
           </>
           }
         </Tab>

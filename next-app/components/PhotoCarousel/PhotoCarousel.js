@@ -21,10 +21,6 @@ function PhotoCarousel() {
 
 	const router = useRouter()
 
-  useEffect(() => {
-    getMurals()
-  }, [])
-
 	const handleClick = (mural) => {
 		if(!mural.documentId) return // the prepended logo slide isn't a real mural
 		dispatch({
@@ -47,6 +43,10 @@ function PhotoCarousel() {
       setError('Could not get murals. Please try again')
     }
   }
+
+  useEffect(() => {
+    getMurals()
+  }, [])
 
   return (
     <>

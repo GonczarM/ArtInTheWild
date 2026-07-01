@@ -23,12 +23,6 @@ function ShowMural(){
 
 	const dispatch = useContext(MuralDispatchContext)
 
-	useEffect(() => {
-		if(!mural){
-			getMural()
-		}
-	}, [mural])
-
 	const getMural = async () => {
 		try{
 			const mural = await muralsAPI.getMural(muralId)
@@ -40,6 +34,12 @@ function ShowMural(){
 			setError('Could not get mural. Please try again.')
 		}
 	}
+
+	useEffect(() => {
+		if(!mural){
+			getMural()
+		}
+	}, [mural])
 
 	const URL = updatedBy === 'home' ? '/'
 		: user && updatedBy === user.username ? `/user/${user.username}`
